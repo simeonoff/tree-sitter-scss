@@ -799,7 +799,7 @@ module.exports = grammar({
       ")"
     ),
 
-    map_value: ($) => seq("(", sep(',', $.map_pair), ")"),
+    map_value: ($) => seq("(", sep(',', $.map_pair), optional(","), ")"),
 
     map_pair: ($) => prec(2,
       seq(
