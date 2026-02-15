@@ -749,6 +749,7 @@ module.exports = grammar({
           $.grid_value,
           $.binary_expression,
           $.unary_expression,
+          $.list_value,
           $.map_value,
           $.parenthesized_value,
           $.call_expression,
@@ -788,6 +789,15 @@ module.exports = grammar({
     null_value: (_) => "null",
 
     parenthesized_value: ($) => seq("(", $._value, ")"),
+
+    list_value: ($) => seq(
+      "(",
+      $._value,
+      ",",
+      sep(",", $._value),
+      optional(","),
+      ")"
+    ),
 
     map_value: ($) => seq("(", sep(',', $.map_pair), ")"),
 
@@ -981,13 +991,13 @@ module.exports = grammar({
           // Only regular values, or…
           sep(
             choice(",", ";"),
-            repeat($._value)
+            $.argument
           ),
           // one or more arguments followed by a rest argument, or…
           seq(
             sep1(
               choice(",", ";"),
-              repeat($._value)
+              $.argument
             ),
             ",",
             $.rest_argument
@@ -996,6 +1006,19 @@ module.exports = grammar({
           $.rest_argument
         ),
         ")"
+      ),
+
+    argument: ($) =>
+      choice(
+        $.named_argument,
+        repeat1($._value)
+      ),
+
+    named_argument: ($) =>
+      seq(
+        alias($._variable_identifier, $.argument_name),
+        ":",
+        $._value
       ),
 
     rest_argument: ($) =>
