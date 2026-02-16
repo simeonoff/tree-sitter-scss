@@ -126,6 +126,32 @@ Supports statements
     (block)))
 
 ==============================
+Property statements
+==============================
+
+@property --brand-color {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #c0ffee;
+}
+
+---
+
+(stylesheet
+  (property_statement
+    (property_name)
+    (block
+      (declaration
+        (property_name)
+        (string_value))
+      (declaration
+        (property_name)
+        (boolean_value))
+      (declaration
+        (property_name)
+        (color_value)))))
+
+==============================
 Charset statements
 ==============================
 

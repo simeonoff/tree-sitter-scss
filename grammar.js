@@ -70,6 +70,7 @@ module.exports = grammar({
         $.namespace_statement,
         $.keyframes_statement,
         $.supports_statement,
+        $.property_statement,
         $.use_statement,
         $.forward_statement,
         $.mixin_statement,
@@ -148,6 +149,13 @@ module.exports = grammar({
     to: (_) => "to",
 
     supports_statement: ($) => seq("@supports", $._query, $.block),
+
+    property_statement: ($) =>
+      seq(
+        "@property",
+        alias($._identifier_with_interpolation, $.property_name),
+        $.block
+      ),
 
     postcss_statement: ($) => prec(
       -1,
@@ -418,6 +426,7 @@ module.exports = grammar({
         $.namespace_statement,
         $.keyframes_statement,
         $.supports_statement,
+        $.property_statement,
         $.postcss_statement,
         $.mixin_statement,
         $.include_statement,

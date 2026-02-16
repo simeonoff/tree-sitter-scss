@@ -993,6 +993,10 @@
           "named": true
         },
         {
+          "type": "property_statement",
+          "named": true
+        },
+        {
           "type": "return_statement",
           "named": true
         },
@@ -3770,6 +3774,25 @@
     }
   },
   {
+    "type": "property_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "property_name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "pseudo_class_selector",
     "named": true,
     "fields": {},
@@ -4421,6 +4444,10 @@
         },
         {
           "type": "placeholder",
+          "named": true
+        },
+        {
+          "type": "property_statement",
           "named": true
         },
         {
@@ -5345,6 +5372,10 @@
   },
   {
     "type": "@namespace",
+    "named": false
+  },
+  {
+    "type": "@property",
     "named": false
   },
   {

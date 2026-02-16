@@ -46,6 +46,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "property_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "use_statement"
         },
         {
@@ -384,6 +388,28 @@
         {
           "type": "SYMBOL",
           "name": "_query"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "property_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@property"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "property_name"
         },
         {
           "type": "SYMBOL",
@@ -1736,6 +1762,10 @@
         {
           "type": "SYMBOL",
           "name": "supports_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "property_statement"
         },
         {
           "type": "SYMBOL",
