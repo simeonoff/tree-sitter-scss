@@ -535,6 +535,11 @@ $knowledge-variants: (
   "turquoise": bar.$turquoise
 );
 $map: (1: 2, 3: 4);
+$map: (
+  "a": 3,
+  "aa": 4.5,
+  "aaa": 7,
+);
 ---
 
 (stylesheet
@@ -576,6 +581,19 @@ $map: (1: 2, 3: 4);
         value: (integer_value))
       (map_pair
         key: (integer_value)
+        value: (integer_value))
+    ))
+  (declaration
+    (variable_name)
+    (map_value
+      (map_pair
+        key: (string_value)
+        value: (integer_value))
+      (map_pair
+        key: (string_value)
+        value: (float_value))
+      (map_pair
+        key: (string_value)
         value: (integer_value))
     )))
 

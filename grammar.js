@@ -55,7 +55,7 @@ module.exports = grammar({
     [$._selector, $._identifier_with_interpolation],
   ],
 
-  inline: ($) => [$._top_level_item, $._block_item],
+  inline: ($) => [$._top_level_item, $._block_item, $.argument],
 
   rules: {
     stylesheet: ($) => repeat($._top_level_item),
@@ -79,6 +79,7 @@ module.exports = grammar({
         $.for_statement,
         $.while_statement,
         $.function_statement,
+        $.utility_statement,
         $.error_statement,
         $.warn_statement,
         $.debug_statement,
@@ -366,6 +367,12 @@ module.exports = grammar({
 
     return_statement: ($) => seq("@return", $._value, ";"),
 
+    utility_statement: ($) => seq(
+      "@utility",
+      alias($._identifier_with_interpolation, $.name),
+      $.block
+    ),
+
     at_root_statement: ($) =>
       seq(
         "@at-root",
@@ -421,6 +428,7 @@ module.exports = grammar({
         $.while_statement,
         $.function_statement,
         $.return_statement,
+        $.utility_statement,
         $.at_root_statement,
         $.error_statement,
         $.warn_statement,

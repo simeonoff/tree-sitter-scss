@@ -82,6 +82,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "utility_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "error_statement"
         },
         {
@@ -1515,6 +1519,28 @@
         }
       ]
     },
+    "utility_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@utility"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
     "at_root_statement": {
       "type": "SEQ",
       "members": [
@@ -1750,6 +1776,10 @@
         {
           "type": "SYMBOL",
           "name": "return_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "utility_statement"
         },
         {
           "type": "SYMBOL",
@@ -4512,7 +4542,8 @@
   ],
   "inline": [
     "_top_level_item",
-    "_block_item"
+    "_block_item",
+    "argument"
   ],
   "supertypes": [],
   "reserved": {}

@@ -747,6 +747,61 @@ Functions (parameter spread)
 )
 
 =================================
+Functions (named arguments)
+=================================
+
+@function to-hsl($color) {
+  @return (
+    math.round(color.channel($color, 'hue', $space: hsl)),
+    math.round(color.channel($color, 'saturation', $space: hsl)),
+    math.round(color.channel($color, 'lightness', $space: hsl))
+  );
+}
+
+---
+
+(stylesheet
+  (function_statement
+    (name)
+    (parameters (parameter (variable_name)))
+    (block
+      (return_statement
+        (list_value
+          (call_expression
+            (module)
+            (function_name)
+            (arguments
+              (call_expression
+                (module)
+                (function_name)
+                (arguments
+                  (variable_value)
+                  (string_value)
+                  (named_argument (argument_name) (plain_value))))))
+          (call_expression
+            (module)
+            (function_name)
+            (arguments
+              (call_expression
+                (module)
+                (function_name)
+                (arguments
+                  (variable_value)
+                  (string_value)
+                  (named_argument (argument_name) (plain_value))))))
+          (call_expression
+            (module)
+            (function_name)
+            (arguments
+              (call_expression
+                (module)
+                (function_name)
+                (arguments
+                  (variable_value)
+                  (string_value)
+                  (named_argument (argument_name) (plain_value)))))))))))
+
+=================================
 Argument spread
 =================================
 
