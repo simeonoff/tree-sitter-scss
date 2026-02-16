@@ -1077,7 +1077,8 @@ module.exports = grammar({
         repeat1(
           choice(
             $._identifier,
-            $.interpolation
+            $.interpolation,
+            token(/-+/)
           )
         )
       ),

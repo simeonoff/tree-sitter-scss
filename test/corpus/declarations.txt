@@ -597,6 +597,32 @@ $map: (
         value: (integer_value))
     )))
 
+===========================
+Custom properties
+===========================
+
+:root {
+  --#{$colorName}-#{$shade}: var(--ig-#{$colorName}-#{$shade});
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors (pseudo_class_selector (class_name)))
+    (block
+      (declaration
+        (property_name
+          (interpolation (variable_value))
+          (interpolation (variable_value)))
+        (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value)
+            (binary_expression
+              left: (plain_value (interpolation (variable_value)))
+              right: (plain_value (interpolation (variable_value))))))))))
+
 
 ==============
 Grid values

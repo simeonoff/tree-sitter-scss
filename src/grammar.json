@@ -4433,6 +4433,13 @@
             {
               "type": "SYMBOL",
               "name": "interpolation"
+            },
+            {
+              "type": "TOKEN",
+              "content": {
+                "type": "PATTERN",
+                "value": "-+"
+              }
             }
           ]
         }
