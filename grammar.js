@@ -81,6 +81,7 @@ module.exports = grammar({
         $.while_statement,
         $.function_statement,
         $.utility_statement,
+        $.layer_statement,
         $.error_statement,
         $.warn_statement,
         $.debug_statement,
@@ -381,6 +382,12 @@ module.exports = grammar({
       $.block
     ),
 
+    layer_statement: ($) => seq(
+      "@layer",
+      alias($._identifier_with_interpolation, $.name),
+      $.block
+    ),
+
     at_root_statement: ($) =>
       seq(
         "@at-root",
@@ -438,6 +445,7 @@ module.exports = grammar({
         $.function_statement,
         $.return_statement,
         $.utility_statement,
+        $.layer_statement,
         $.at_root_statement,
         $.error_statement,
         $.warn_statement,
