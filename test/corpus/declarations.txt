@@ -680,9 +680,8 @@ PostCSS
         (plain_value)
         (plain_value)
         (important))))
-  (at_rule
-    (at_keyword)
-    (keyword_query)
+  (layer_statement
+    (name)
     (block
       (rule_set
         (selectors (class_selector (class_name)))
