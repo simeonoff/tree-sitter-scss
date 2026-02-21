@@ -82,6 +82,7 @@ module.exports = grammar({
         $.function_statement,
         $.utility_statement,
         $.layer_statement,
+        $.scope_statement,
         $.error_statement,
         $.warn_statement,
         $.debug_statement,
@@ -388,6 +389,26 @@ module.exports = grammar({
       $.block
     ),
 
+    scope_statement: ($) => seq(
+      "@scope",
+      optional($.scope_start),
+      optional($.scope_end),
+      $.block
+    ),
+
+    scope_start: ($) => seq(
+      "(",
+      sep1(",", $._selector),
+      ")"
+    ),
+
+    scope_end: ($) => seq(
+      "to",
+      "(",
+      sep1(",", $._selector),
+      ")"
+    ),
+
     at_root_statement: ($) =>
       seq(
         "@at-root",
@@ -446,6 +467,7 @@ module.exports = grammar({
         $.return_statement,
         $.utility_statement,
         $.layer_statement,
+        $.scope_statement,
         $.at_root_statement,
         $.error_statement,
         $.warn_statement,
