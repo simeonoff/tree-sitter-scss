@@ -1,7 +1,7 @@
 module.exports = grammar({
   name: "scss",
 
-  extras: ($) => [/\s/, $.comment, $.single_line_comment],
+  extras: ($) => [/\s/, $.comment, $.single_line_comment, $.sassdoc_block],
 
   externals: ($) => [
     $._descendant_operator,
@@ -1101,6 +1101,12 @@ module.exports = grammar({
     comment: (_) => token(seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
 
     single_line_comment: (_) => token(seq("//", /.*/)),
+
+    // SassDoc documentation block - consecutive /// comments
+    sassdoc_block: (_) => token(prec(1, seq(
+      "///", /.*/,
+      repeat(seq(/\n[ \t]*/, "///", /.*/))
+    ))),
 
     interpolation: ($) =>
       seq(
