@@ -5733,6 +5733,11 @@
     "named": false
   },
   {
+    "type": "sassdoc_block",
+    "named": true,
+    "extra": true
+  },
+  {
     "type": "selector",
     "named": false
   },

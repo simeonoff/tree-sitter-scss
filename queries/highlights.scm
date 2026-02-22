@@ -1,63 +1,155 @@
-(comment) @comment
+[
+  (comment)
+  (single_line_comment)
+  (sassdoc_block)
+] @comment
 
-(tag_name) @tag
-(nesting_selector) @tag
-(universal_selector) @tag
+[
+  (tag_name)
+  (universal_selector)
+  (nesting_selector)
+] @tag
+(attribute_selector (plain_value) @string)
+(parenthesized_query
+  (keyword_query) @property)
 
-"~" @operator
-">" @operator
-"+" @operator
-"-" @operator
-"*" @operator
-"/" @operator
-"=" @operator
-"^=" @operator
-"|=" @operator
-"~=" @operator
-"$=" @operator
-"*=" @operator
+[
+  "~"
+  ">"
+  "+"
+  "-"
+  "*"
+  "/"
+  "="
+  "^="
+  "|"
+  "|="
+  "~="
+  "$="
+  "*="
+  ">="
+  "<="
+] @operator
 
-"and" @operator
-"or" @operator
-"not" @operator
-"only" @operator
+[
+  "and"
+  "or"
+  "not"
+  "only"
+] @keyword.operator
 
 (attribute_selector (plain_value) @string)
-(pseudo_element_selector (tag_name) @attribute)
-(pseudo_class_selector (class_name) @attribute)
+(pseudo_element_selector "::" (tag_name) @selector.pseudo)
+(pseudo_class_selector ":" (class_name) @selector.pseudo)
 
-(class_name) @property
-(id_name) @property
-(namespace_name) @property
-(property_name) @property
-(feature_name) @property
+(variable_name) @variable.other.member
+(variable_value) @variable.other.member
+(argument_name) @variable.parameter
+
+[
+  (feature_name)
+  (identifier)
+] @property
+
+((property_name) @property)
+
+(id_name) @selector.id
+(class_name) @selector.class
+(namespace_name) @namespace
+(namespace_selector (tag_name) @namespace "|")
 
 (attribute_name) @attribute
 
 (function_name) @function
+(mixin_name) @function
 
-((property_name) @variable
- (#match? @variable "^--"))
-((plain_value) @variable
- (#match? @variable "^--"))
+(function_statement (name) @function)
+(mixin_statement (name) @function)
 
-"@media" @keyword
-"@import" @keyword
-"@charset" @keyword
-"@namespace" @keyword
-"@supports" @keyword
-"@keyframes" @keyword
-(at_keyword) @keyword
-(to) @keyword
-(from) @keyword
-(important) @keyword
+[
+  (plain_value)
+  (keyframes_name)
+  (keyword_query)
+] @constant.builtin
+
+(interpolation "#{" @punctuation.special "}" @punctuation.special)
+(property_name (interpolation (variable_value) @variable.other.member))
+
+[
+  "@media"
+  "@import"
+  "@charset"
+  "@namespace"
+  "@supports"
+  "@keyframes"
+  "@utility"
+  "@layer"
+  "@scope"
+  "@property"
+  "@at-root"
+  "@debug"
+  "@error"
+  "@extend"
+  "@mixin"
+  "@warn"
+  (at_keyword)
+  (to)
+  (from)
+  (important)
+] @keyword
+
+"@function" @keyword.function
+
+"@return" @keyword.control.return
+
+[
+    "@else"
+    "@if"
+] @keyword.control.conditional
+
+[
+  "@while"
+  "@each"
+  "@for"
+  "through"
+  "in"
+  "from"
+  "if"
+] @keyword.repeat
+
+[
+    "@forward"
+    "@import"
+    "@include"
+    "@use"
+] @keyword.control.import
 
 (string_value) @string
 (color_value) @string.special
 
-(integer_value) @number
-(float_value) @number
-(unit) @type
+[
+  (integer_value)
+  (float_value)
+] @number
+(unit) @type.unit
 
-"#" @punctuation.delimiter
-"," @punctuation.delimiter
+(boolean_value) @boolean
+(null_value) @constant.builtin
+
+[
+  ","
+  ":"
+  "."
+  "::"
+  ";"
+] @punctuation.delimiter
+(id_selector "#" @punctuation.delimiter)
+
+[
+  "{"
+  ")"
+  "("
+  "}"
+  "["
+  "]"
+] @punctuation.bracket
