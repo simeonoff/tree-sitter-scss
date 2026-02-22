@@ -8,6 +8,7 @@
 (media_statement) @fold
 (supports_statement) @fold
 (keyframes_statement) @fold
+(container_statement) @fold
 (layer_statement) @fold
 (scope_statement) @fold
 

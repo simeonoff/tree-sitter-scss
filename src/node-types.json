@@ -449,7 +449,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -902,7 +914,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -930,6 +954,10 @@
         },
         {
           "type": "charset_statement",
+          "named": true
+        },
+        {
+          "type": "container_statement",
           "named": true
         },
         {
@@ -1458,6 +1486,61 @@
         },
         {
           "type": "variable_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "container_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_query",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "container_name",
+          "named": true
+        },
+        {
+          "type": "feature_query",
+          "named": true
+        },
+        {
+          "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "parenthesized_query",
+          "named": true
+        },
+        {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
+          "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
+          "named": true
+        },
+        {
+          "type": "unary_query",
           "named": true
         }
       ]
@@ -2755,11 +2838,23 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
           "named": true
         },
         {
           "type": "string_value",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -3321,7 +3416,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -3609,7 +3716,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -3974,6 +4093,42 @@
     }
   },
   {
+    "type": "range_operator",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "range_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "feature_name",
+          "named": true
+        },
+        {
+          "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "integer_value",
+          "named": true
+        },
+        {
+          "type": "range_operator",
+          "named": true
+        },
+        {
+          "type": "variable_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "rest_argument",
     "named": true,
     "fields": {},
@@ -4261,6 +4416,40 @@
         },
         {
           "type": "scope_start",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "scroll_state_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "state_name",
+          "named": true
+        },
+        {
+          "type": "state_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "scroll_state_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "scroll_state_condition",
           "named": true
         }
       ]
@@ -4562,6 +4751,104 @@
     }
   },
   {
+    "type": "style_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "boolean_value",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "color_value",
+          "named": true
+        },
+        {
+          "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "integer_value",
+          "named": true
+        },
+        {
+          "type": "list_value",
+          "named": true
+        },
+        {
+          "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "nesting_value",
+          "named": true
+        },
+        {
+          "type": "null_value",
+          "named": true
+        },
+        {
+          "type": "parenthesized_value",
+          "named": true
+        },
+        {
+          "type": "plain_value",
+          "named": true
+        },
+        {
+          "type": "property_name",
+          "named": true
+        },
+        {
+          "type": "string_value",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_module",
+          "named": true
+        },
+        {
+          "type": "variable_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "style_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "style_condition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "stylesheet",
     "named": true,
     "root": true,
@@ -4576,6 +4863,10 @@
         },
         {
           "type": "charset_statement",
+          "named": true
+        },
+        {
+          "type": "container_statement",
           "named": true
         },
         {
@@ -4706,7 +4997,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -4942,7 +5245,19 @@
           "named": true
         },
         {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
           "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "style_query",
           "named": true
         },
         {
@@ -5520,6 +5835,10 @@
     "named": false
   },
   {
+    "type": "@container",
+    "named": false
+  },
+  {
     "type": "@debug",
     "named": false
   },
@@ -5649,6 +5968,10 @@
     "extra": true
   },
   {
+    "type": "container_name",
+    "named": true
+  },
+  {
     "type": "default",
     "named": true
   },
@@ -5738,6 +6061,10 @@
     "extra": true
   },
   {
+    "type": "scroll-state",
+    "named": false
+  },
+  {
     "type": "selector",
     "named": false
   },
@@ -5749,6 +6076,18 @@
     "type": "single_line_comment",
     "named": true,
     "extra": true
+  },
+  {
+    "type": "state_name",
+    "named": true
+  },
+  {
+    "type": "state_value",
+    "named": true
+  },
+  {
+    "type": "style",
+    "named": false
   },
   {
     "type": "through",
