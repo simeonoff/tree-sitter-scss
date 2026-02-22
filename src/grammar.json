@@ -4591,7 +4591,7 @@
             },
             {
               "type": "PATTERN",
-              "value": ".*"
+              "value": "[^\\/].*"
             },
             {
               "type": "REPEAT",
@@ -4608,7 +4608,7 @@
                   },
                   {
                     "type": "PATTERN",
-                    "value": ".*"
+                    "value": "[^\\/].*"
                   }
                 ]
               }

@@ -1,4 +1,6 @@
 (comment) @comment
+(single_line_comment) @comment
+(sassdoc_block) @comment
 
 (tag_name) @tag
 (nesting_selector) @tag

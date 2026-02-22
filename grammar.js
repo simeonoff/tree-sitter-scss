@@ -1103,9 +1103,10 @@ module.exports = grammar({
     single_line_comment: (_) => token(seq("//", /.*/)),
 
     // SassDoc documentation block - consecutive /// comments
+    // Only matches exactly /// (not //// or more)
     sassdoc_block: (_) => token(prec(1, seq(
-      "///", /.*/,
-      repeat(seq(/\n[ \t]*/, "///", /.*/))
+      "///", /[^\/].*/,
+      repeat(seq(/\n[ \t]*/, "///", /[^\/].*/))
     ))),
 
     interpolation: ($) =>
