@@ -189,6 +189,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -293,6 +297,10 @@
         },
         {
           "type": "id_selector",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -603,6 +611,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -711,6 +723,10 @@
           },
           {
             "type": "grid_value",
+            "named": true
+          },
+          {
+            "type": "if_expression",
             "named": true
           },
           {
@@ -839,6 +855,10 @@
           },
           {
             "type": "grid_value",
+            "named": true
+          },
+          {
+            "type": "if_expression",
             "named": true
           },
           {
@@ -1130,6 +1150,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -1445,6 +1469,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -1579,6 +1607,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -1663,6 +1695,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -1754,6 +1790,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -1978,6 +2018,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -2099,6 +2143,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -2179,6 +2227,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -2266,6 +2318,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -2394,6 +2450,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -2478,6 +2538,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -2580,6 +2644,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -2720,6 +2788,100 @@
     }
   },
   {
+    "type": "if_branch",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "if_condition",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": true,
+        "required": true,
+        "types": [
+          {
+            "type": "binary_expression",
+            "named": true
+          },
+          {
+            "type": "boolean_value",
+            "named": true
+          },
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "color_value",
+            "named": true
+          },
+          {
+            "type": "float_value",
+            "named": true
+          },
+          {
+            "type": "grid_value",
+            "named": true
+          },
+          {
+            "type": "if_expression",
+            "named": true
+          },
+          {
+            "type": "integer_value",
+            "named": true
+          },
+          {
+            "type": "list_value",
+            "named": true
+          },
+          {
+            "type": "map_value",
+            "named": true
+          },
+          {
+            "type": "nesting_value",
+            "named": true
+          },
+          {
+            "type": "null_value",
+            "named": true
+          },
+          {
+            "type": "parenthesized_value",
+            "named": true
+          },
+          {
+            "type": "plain_value",
+            "named": true
+          },
+          {
+            "type": "string_value",
+            "named": true
+          },
+          {
+            "type": "unary_expression",
+            "named": true
+          },
+          {
+            "type": "variable_module",
+            "named": true
+          },
+          {
+            "type": "variable_value",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "if_clause",
     "named": true,
     "fields": {},
@@ -2733,6 +2895,170 @@
         },
         {
           "type": "condition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "if_else_condition",
+          "named": true
+        },
+        {
+          "type": "if_media_condition",
+          "named": true
+        },
+        {
+          "type": "if_sass_condition",
+          "named": true
+        },
+        {
+          "type": "if_style_condition",
+          "named": true
+        },
+        {
+          "type": "if_supports_condition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "function_name",
+          "named": true
+        },
+        {
+          "type": "if_branch",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_media_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_query",
+          "named": true
+        },
+        {
+          "type": "feature_query",
+          "named": true
+        },
+        {
+          "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "unary_query",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_sass_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "boolean_value",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "color_value",
+          "named": true
+        },
+        {
+          "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
+          "named": true
+        },
+        {
+          "type": "integer_value",
+          "named": true
+        },
+        {
+          "type": "list_value",
+          "named": true
+        },
+        {
+          "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "nesting_value",
+          "named": true
+        },
+        {
+          "type": "null_value",
+          "named": true
+        },
+        {
+          "type": "parenthesized_value",
+          "named": true
+        },
+        {
+          "type": "plain_value",
+          "named": true
+        },
+        {
+          "type": "string_value",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_module",
+          "named": true
+        },
+        {
+          "type": "variable_value",
           "named": true
         }
       ]
@@ -2756,6 +3082,200 @@
         },
         {
           "type": "if_clause",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_style_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "style_condition",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "if_supports_condition",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "adjacent_sibling_selector",
+          "named": true
+        },
+        {
+          "type": "attribute_selector",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "binary_query",
+          "named": true
+        },
+        {
+          "type": "boolean_value",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "child_selector",
+          "named": true
+        },
+        {
+          "type": "class_selector",
+          "named": true
+        },
+        {
+          "type": "color_value",
+          "named": true
+        },
+        {
+          "type": "descendant_selector",
+          "named": true
+        },
+        {
+          "type": "feature_name",
+          "named": true
+        },
+        {
+          "type": "feature_query",
+          "named": true
+        },
+        {
+          "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "id_selector",
+          "named": true
+        },
+        {
+          "type": "if_expression",
+          "named": true
+        },
+        {
+          "type": "integer_value",
+          "named": true
+        },
+        {
+          "type": "interpolation",
+          "named": true
+        },
+        {
+          "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "list_value",
+          "named": true
+        },
+        {
+          "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "namespace_selector",
+          "named": true
+        },
+        {
+          "type": "nesting_selector",
+          "named": true
+        },
+        {
+          "type": "nesting_value",
+          "named": true
+        },
+        {
+          "type": "null_value",
+          "named": true
+        },
+        {
+          "type": "parenthesized_query",
+          "named": true
+        },
+        {
+          "type": "parenthesized_value",
+          "named": true
+        },
+        {
+          "type": "plain_value",
+          "named": true
+        },
+        {
+          "type": "pseudo_class_selector",
+          "named": true
+        },
+        {
+          "type": "pseudo_element_selector",
+          "named": true
+        },
+        {
+          "type": "range_query",
+          "named": true
+        },
+        {
+          "type": "scroll_state_query",
+          "named": true
+        },
+        {
+          "type": "selector_query",
+          "named": true
+        },
+        {
+          "type": "sibling_selector",
+          "named": true
+        },
+        {
+          "type": "string_value",
+          "named": true
+        },
+        {
+          "type": "style_query",
+          "named": true
+        },
+        {
+          "type": "tag_name",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "unary_query",
+          "named": true
+        },
+        {
+          "type": "universal_selector",
+          "named": true
+        },
+        {
+          "type": "variable_module",
+          "named": true
+        },
+        {
+          "type": "variable_value",
           "named": true
         }
       ]
@@ -2799,6 +3319,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -2955,6 +3479,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -3162,6 +3690,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -3241,6 +3773,10 @@
             "named": true
           },
           {
+            "type": "if_expression",
+            "named": true
+          },
+          {
             "type": "integer_value",
             "named": true
           },
@@ -3312,6 +3848,10 @@
           },
           {
             "type": "grid_value",
+            "named": true
+          },
+          {
+            "type": "if_expression",
             "named": true
           },
           {
@@ -3510,6 +4050,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -3768,6 +4312,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -4188,6 +4736,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -4783,6 +5335,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -5067,6 +5623,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -5171,6 +5731,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -5311,6 +5875,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -5476,6 +6044,10 @@
           "named": true
         },
         {
+          "type": "if_expression",
+          "named": true
+        },
+        {
           "type": "integer_value",
           "named": true
         },
@@ -5556,6 +6128,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -5654,6 +6230,10 @@
         },
         {
           "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
           "named": true
         },
         {
@@ -6008,6 +6588,10 @@
     "named": false
   },
   {
+    "type": "if_else_condition",
+    "named": true
+  },
+  {
     "type": "important",
     "named": true
   },
@@ -6018,6 +6602,10 @@
   {
     "type": "key",
     "named": true
+  },
+  {
+    "type": "media",
+    "named": false
   },
   {
     "type": "mixin_name",
@@ -6056,6 +6644,10 @@
     "named": false
   },
   {
+    "type": "sass",
+    "named": false
+  },
+  {
     "type": "sassdoc_block",
     "named": true,
     "extra": true
@@ -6087,6 +6679,10 @@
   },
   {
     "type": "style",
+    "named": false
+  },
+  {
+    "type": "supports",
     "named": false
   },
   {
