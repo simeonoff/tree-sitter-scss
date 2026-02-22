@@ -4,6 +4,9 @@ SCSS grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter).
 
 This is an actively maintained fork of [savetheclocktower/tree-sitter-scss](https://github.com/savetheclocktower/tree-sitter-scss), which itself was based on [tree-sitter-css](https://github.com/tree-sitter/tree-sitter-css).
 
+![Showcase](.github/showcase.png)
+*Neovim (tree-sitter-scss) vs VS Code vs Zed — highlighting CSS `if()`, `@property`, `@container`, `@scope`, and SassDoc*
+
 ## Why This Fork?
 
 The upstream parser is excellent but development has slowed. This fork adds:

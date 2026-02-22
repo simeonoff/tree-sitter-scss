@@ -1,0 +1,42 @@
+@use "sass:meta";
+
+:root {
+  @property --scheme {
+    syntax: "<custom-ident>";
+    inherits: true;
+    initial-value: default;
+  }
+
+  @property --accent {
+    syntax: "<color>";
+    inherits: false;
+    initial-value: #03045e;
+  }
+}
+
+/// Resolves a color scheme variable to its value, with an optional fallback.
+/// @since 1.0.0
+/// @access public
+/// @author John Doe
+/// @param {String} $scheme - The color scheme name
+/// @param {Color} $fallback [black] - Fallback color
+/// @example scss - Using resolve-color function
+///   $result: resolve-color("ice", #caf0f8);
+///   // => #caf0f8
+/// @returns {Color} The resolved color value
+@function resolve-color($scheme, $fallback: black) {
+  @return if(sass(meta.variable-defined($scheme)): $scheme; else: $fallback);
+}
+
+@container sidebar (width > 300px) {
+  .card {
+    color: if(style(--scheme: ice): var(--accent) ; else: black;);
+    padding: if(media(width < 768px): 0.5rem; else: 1.5rem);
+  }
+}
+
+@scope (.theme) to (.theme-inner) {
+  @layer components {
+    color: if(media(prefers-color-scheme: dark): #f0f0f0; else: #1a1a1a;);
+  }
+}
