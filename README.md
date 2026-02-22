@@ -9,6 +9,8 @@ This is an actively maintained fork of [savetheclocktower/tree-sitter-scss](http
 The upstream parser is excellent but development has slowed. This fork adds:
 
 ### New CSS/SCSS Features
+- **CSS `if()` function** - Conditional values with `style()`, `media()`, `supports()` conditions
+- **Sass `if()` with `sass()` condition** - Per the [breaking change](https://sass-lang.com/documentation/breaking-changes/if-function/), alongside legacy `if($cond, $val, $val)`
 - **`@container` queries** - Container Queries with size, style, and scroll-state conditions
 - **`@scope` at-rule** - CSS Cascading and Inheritance Level 6
 - **`@layer` at-rule** - CSS Cascade Layers
@@ -107,6 +109,8 @@ The injection is automatic via `injections.scm`:
 
 ### Values
 
+- CSS `if()`: `if(style(--scheme: dark): #eee; else: #333;)`
+- Sass `if()`: `if(sass($condition): 10px; else: 20px)` and legacy `if($cond, $a, $b)`
 - Variables: `$name`, `$hyphenated-name`
 - Maps: `(key: value, ...)` with trailing comma support
 - Lists: `(a, b, c)` and `a b c`

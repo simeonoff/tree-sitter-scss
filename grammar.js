@@ -54,6 +54,8 @@ module.exports = grammar({
   conflicts: ($) => [
     [$._selector, $._identifier_with_interpolation],
     [$.container_statement, $._identifier_with_interpolation],
+    [$.if_expression, $.arguments],
+    [$.selector_query, $.if_supports_condition],
   ],
 
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
@@ -891,6 +893,7 @@ module.exports = grammar({
           $.map_value,
           $.parenthesized_value,
           $.call_expression,
+          $.if_expression,
           alias($.nesting_selector, $.nesting_value)
         )
       ),
@@ -920,7 +923,8 @@ module.exports = grammar({
         ),
         $.map_value,
         $.parenthesized_value,
-        $.call_expression
+        $.call_expression,
+        $.if_expression
       ),
 
     boolean_value: (_) => choice("true", "false"),
@@ -1045,10 +1049,13 @@ module.exports = grammar({
 
     call_expression: ($) => (
       choice(
-        // Special case for a function named `url`.
         seq(
           field('name', alias('url', $.function_name)),
           field('arguments', alias($.arguments_for_url, $.arguments)),
+        ),
+        seq(
+          field('name', alias('if', $.function_name)),
+          field('arguments', $.arguments)
         ),
         seq(
           optional(
@@ -1064,6 +1071,133 @@ module.exports = grammar({
       )
     ),
 
+    if_expression: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          alias("if", $.function_name),
+          token.immediate("("),
+          optional(
+            seq(
+              sep1(";", $.if_branch),
+              optional(";")
+            )
+          ),
+          ")"
+        )
+      ),
+
+    if_branch: ($) =>
+      seq(
+        field('condition', $.if_condition),
+        ":",
+        field('value', repeat1($._value))
+      ),
+
+    if_condition: ($) =>
+      choice(
+        $.if_style_condition,
+        $.if_media_condition,
+        $.if_supports_condition,
+        $.if_sass_condition,
+        $.if_else_condition
+      ),
+
+    if_style_condition: ($) =>
+      seq(
+        "style",
+        "(",
+        sep1(
+          choice("and", "or"),
+          choice(
+            $.style_condition,
+            seq("not", $.style_condition),
+            seq("(", $.style_condition, ")")
+          )
+        ),
+        ")"
+      ),
+
+    if_media_condition: ($) =>
+      seq(
+        "media",
+        "(",
+        $._if_media_query,
+        ")"
+      ),
+
+    _if_media_query: ($) =>
+      choice(
+        alias($._identifier_with_interpolation, $.keyword_query),
+        alias($._if_media_feature_query, $.feature_query),
+        alias($._if_media_range_query, $.range_query),
+        alias($._if_media_binary_query, $.binary_query),
+        alias($._if_media_unary_query, $.unary_query),
+        seq("(", $._if_media_query, ")")
+      ),
+
+    _if_media_feature_query: ($) =>
+      prec(-1, seq(
+        alias($._identifier, $.feature_name),
+        ":",
+        repeat1($._value)
+      )),
+
+    _if_media_range_query: ($) => prec.dynamic(1, choice(
+      seq(
+        alias($._identifier, $.feature_name),
+        alias($._range_operator, $.range_operator),
+        $._range_value
+      ),
+      seq(
+        $._range_value,
+        alias($._range_operator, $.range_operator),
+        alias($._identifier, $.feature_name),
+        optional(seq(alias($._range_operator, $.range_operator), $._range_value))
+      )
+    )),
+
+    _if_media_binary_query: ($) => prec.left(
+      seq(
+        $._if_media_query,
+        choice("and", "or"),
+        $._if_media_query
+      )
+    ),
+
+    _if_media_unary_query: ($) => prec(1,
+      seq(
+        choice("not", "only"),
+        $._if_media_query
+      )
+    ),
+
+    if_supports_condition: ($) =>
+      seq(
+        "supports",
+        "(",
+        choice(
+          seq(
+            alias($._identifier, $.feature_name),
+            ":",
+            repeat1($._value)
+          ),
+          seq("selector", "(", $._selector, ")"),
+          $._query
+        ),
+        ")"
+      ),
+
+    if_sass_condition: ($) =>
+      seq(
+        "sass",
+        "(",
+        $._value,
+        ")"
+      ),
+
+    if_else_condition: (_) => "else",
+
     // NOTE: Technically, `/` should only be allowed in binary
     // expressions if we're inside a `calc`. They're not a part of Dart
     // Sass, but even tree-sitter-css still treats them as binary
@@ -1072,8 +1206,7 @@ module.exports = grammar({
     _binary_operator: (_) =>
       prec(
         3,
-        // TODO: Operator precedence will be painful if it ever has to be
-        // implemented:
+        // TODO: Operator precedence will be painful if it ever has to be implemented:
         // https://sass-lang.com/documentation/operators/#order-of-operations
         choice("+", "-", "*", "/", "==", "<", ">", "!=", "<=", ">=", "and", "or")
       ),

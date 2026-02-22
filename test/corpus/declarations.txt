@@ -11,7 +11,8 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
       (declaration
         (property_name)
@@ -28,9 +29,9 @@ a {
           module: (module)
           name: (function_name)
           arguments: (arguments
-            (integer_value (unit))
-            (integer_value))))
-    )))
+            (integer_value
+              (unit))
+            (integer_value)))))))
 
 =============================================
 Calls where each argument has multiple values
@@ -44,32 +45,56 @@ div {
 ---
 
 (stylesheet
-  (rule_set (selectors (tag_name)) (block
-    (declaration
-      (property_name)
-      (call_expression (function_name) (arguments
-        (plain_value)
-        (plain_value)
-        (integer_value (unit)))))
-    (declaration
-      (property_name)
-      (call_expression (function_name) (arguments
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))))))))
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (call_expression
+          (function_name)
+          (arguments
+            (plain_value)
+            (plain_value)
+            (integer_value
+              (unit)))))
+      (declaration
+        (property_name)
+        (call_expression
+          (function_name)
+          (arguments
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))))))))
 
 ============================
 Color literals
@@ -84,10 +109,15 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (color_value))
-      (declaration (property_name) (color_value)))))
+      (declaration
+        (property_name)
+        (color_value))
+      (declaration
+        (property_name)
+        (color_value)))))
 
 ============================
 Numbers
@@ -105,13 +135,34 @@ a {
 ---
 
 (stylesheet
-  (rule_set (selectors (tag_name)) (block
-    (declaration (property_name) (float_value (unit)))
-    (declaration (property_name) (integer_value (unit)))
-    (declaration (property_name) (float_value (unit)))
-    (declaration (property_name) (float_value (unit)))
-    (declaration (property_name) (integer_value (unit)))
-    (declaration (property_name) (float_value (unit))))))
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (float_value
+          (unit)))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit)))
+      (declaration
+        (property_name)
+        (float_value
+          (unit)))
+      (declaration
+        (property_name)
+        (float_value
+          (unit)))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit)))
+      (declaration
+        (property_name)
+        (float_value
+          (unit))))))
 
 ============================
 Binary arithmetic operators
@@ -127,14 +178,24 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
       (declaration
         (property_name)
-        (call_expression (function_name) (arguments (binary_expression (integer_value (unit)) (integer_value (unit))))))
+        (call_expression
+          (function_name)
+          (arguments
+            (binary_expression
+              (integer_value
+                (unit))
+              (integer_value
+                (unit))))))
       (declaration
         (property_name)
-        (binary_expression (integer_value) (integer_value)))
+        (binary_expression
+          (integer_value)
+          (integer_value)))
       (declaration
         (property_name)
         (call_expression
@@ -142,12 +203,24 @@ a {
           (arguments
             (binary_expression
               (binary_expression
-                (integer_value (unit))
-                (parenthesized_value (binary_expression (integer_value) (integer_value))))
+                (integer_value
+                  (unit))
+                (parenthesized_value
+                  (binary_expression
+                    (integer_value)
+                    (integer_value))))
               (parenthesized_value
                 (binary_expression
-                  (parenthesized_value (binary_expression (integer_value (unit)) (integer_value (unit))))
-                  (parenthesized_value (binary_expression (integer_value) (integer_value))))))))))))
+                  (parenthesized_value
+                    (binary_expression
+                      (integer_value
+                        (unit))
+                      (integer_value
+                        (unit))))
+                  (parenthesized_value
+                    (binary_expression
+                      (integer_value)
+                      (integer_value))))))))))))
 
 ============================
 Binary and unary expressions
@@ -165,33 +238,24 @@ Binary and unary expressions
   (debug_statement
     (binary_expression
       (boolean_value)
-      (boolean_value)
-    )
-  )
+      (boolean_value)))
   (debug_statement
     (binary_expression
       (integer_value)
-      (integer_value)
-    )
-  )
+      (integer_value)))
   (debug_statement
     (binary_expression
-      (integer_value (unit))
-      (integer_value (unit))
-    )
-  )
+      (integer_value
+        (unit))
+      (integer_value
+        (unit))))
   (debug_statement
     (unary_expression
-      (integer_value (unit))
-    )
-  )
+      (integer_value
+        (unit))))
   (debug_statement
     (unary_expression
-      (boolean_value)
-    )
-  )
-)
-
+      (boolean_value))))
 
 ============================
 Strings
@@ -206,10 +270,15 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (string_value))
-      (declaration (property_name) (string_value)))))
+      (declaration
+        (property_name)
+        (string_value))
+      (declaration
+        (property_name)
+        (string_value)))))
 
 ============================
 URLs
@@ -224,7 +293,8 @@ $b: url(http://something-else?foo=bar);
     (variable_name)
     (call_expression
       name: (function_name)
-      arguments: (arguments (plain_value)))))
+      arguments: (arguments
+        (plain_value)))))
 
 ============================
 Important declarations
@@ -238,9 +308,13 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (plain_value) (important)))))
+      (declaration
+        (property_name)
+        (plain_value)
+        (important)))))
 
 ============================
 Declarations without trailing semicolons
@@ -255,10 +329,15 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (plain_value))
-      (declaration (property_name) (plain_value)))))
+      (declaration
+        (property_name)
+        (plain_value))
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 ============================
 Declarations without space after colon
@@ -276,14 +355,22 @@ b {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (plain_value))
-      (declaration (property_name) (plain_value))))
+      (declaration
+        (property_name)
+        (plain_value))
+      (declaration
+        (property_name)
+        (plain_value))))
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (plain_value)))))
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 =======================================
 Comments right after numbers
@@ -298,19 +385,35 @@ a {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (property_name) (call_expression (function_name) (arguments
-        (integer_value (unit))
-        (comment)
-        (plain_value)
-        (integer_value (unit))
-        (integer_value (unit)))))
-      (declaration (property_name) (call_expression (function_name) (arguments
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))
-        (integer_value (unit))))))))
+      (declaration
+        (property_name)
+        (call_expression
+          (function_name)
+          (arguments
+            (integer_value
+              (unit))
+            (comment)
+            (plain_value)
+            (integer_value
+              (unit))
+            (integer_value
+              (unit)))))
+      (declaration
+        (property_name)
+        (call_expression
+          (function_name)
+          (arguments
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))
+            (integer_value
+              (unit))))))))
 
 =================================
 Declarations at the top level
@@ -322,8 +425,22 @@ a-property: calc(5px + var(--a-variable));
 ---
 
 (stylesheet
-  (declaration (property_name) (integer_value (unit)))
-  (declaration (property_name) (call_expression (function_name) (arguments (binary_expression (integer_value (unit)) (call_expression (function_name) (arguments (plain_value))))))))
+  (declaration
+    (property_name)
+    (integer_value
+      (unit)))
+  (declaration
+    (property_name)
+    (call_expression
+      (function_name)
+      (arguments
+        (binary_expression
+          (integer_value
+            (unit))
+          (call_expression
+            (function_name)
+            (arguments
+              (plain_value))))))))
 
 =================================
 Variables
@@ -346,19 +463,43 @@ a {
 ---
 
 (stylesheet
-  (declaration (variable_name) (plain_value) (plain_value))
-  (declaration (variable_name) (plain_value))
-  (declaration (variable_name) (boolean_value))
-  (declaration (variable_name) (boolean_value))
-  (declaration (variable_name) (null_value))
+  (declaration
+    (variable_name)
+    (plain_value)
+    (plain_value))
+  (declaration
+    (variable_name)
+    (plain_value))
+  (declaration
+    (variable_name)
+    (boolean_value))
+  (declaration
+    (variable_name)
+    (boolean_value))
+  (declaration
+    (variable_name)
+    (null_value))
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (variable_name) (plain_value) (global))
-      (declaration (property_name) (variable_value))
-      (declaration (property_name) (integer_value (unit)) (variable_value))
-      (declaration (property_name) (variable_module (module) (variable_value)))
-    )))
+      (declaration
+        (variable_name)
+        (plain_value)
+        (global))
+      (declaration
+        (property_name)
+        (variable_value))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit))
+        (variable_value))
+      (declaration
+        (property_name)
+        (variable_module
+          (module)
+          (variable_value))))))
 
 ============================
 Variables with !default
@@ -377,7 +518,11 @@ a {
 ---
 
 (stylesheet
-  (declaration (variable_name) (plain_value) (plain_value) (default))
+  (declaration
+    (variable_name)
+    (plain_value)
+    (plain_value)
+    (default))
   (declaration
     (variable_name)
     (map_value
@@ -386,17 +531,23 @@ a {
         value: (integer_value))
       (map_pair
         key: (integer_value)
-        value: (integer_value))
-    )
-    (default)
-  )
+        value: (integer_value)))
+    (default))
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
-      (declaration (variable_name) (plain_value))
-      (declaration (property_name) (variable_value))
-      (declaration (property_name) (integer_value (unit)) (variable_value))
-      )))
+      (declaration
+        (variable_name)
+        (plain_value))
+      (declaration
+        (property_name)
+        (variable_value))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit))
+        (variable_value)))))
 
 =================================
 Mixins with no arguments
@@ -409,9 +560,12 @@ Mixins with no arguments
 ---
 
 (stylesheet
-  (mixin_statement (name)
+  (mixin_statement
+    (name)
     (block
-      (declaration (property_name) (plain_value)))))
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 =================================
 Mixins with arguments
@@ -427,9 +581,16 @@ Mixins with arguments
   (mixin_statement
     (name)
     (parameters
-      (parameter (variable_name))
-      (parameter (variable_name) (default_value (plain_value))))
-    (block (declaration (property_name) (plain_value)))))
+      (parameter
+        (variable_name))
+      (parameter
+        (variable_name)
+        (default_value
+          (plain_value))))
+    (block
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 =================================
 Mixins with interpolations and content
@@ -446,8 +607,17 @@ Mixins with interpolations and content
 (stylesheet
   (mixin_statement
     (name)
-    (parameters (parameter (variable_name)))
-    (block (media_statement (keyword_query (interpolation (variable_value))) (block (at_rule (at_keyword)))))))
+    (parameters
+      (parameter
+        (variable_name)))
+    (block
+      (media_statement
+        (keyword_query
+          (interpolation
+            (variable_value)))
+        (block
+          (at_rule
+            (at_keyword)))))))
 
 =================================
 Mixins with at-root
@@ -464,7 +634,9 @@ Mixins with at-root
 (stylesheet
   (mixin_statement
     (name)
-    (parameters (parameter (variable_name)))
+    (parameters
+      (parameter
+        (variable_name)))
     (block
       (at_root_statement
         (selectors
@@ -472,8 +644,12 @@ Mixins with at-root
             (call_expression
               (module)
               (function_name)
-              (arguments (nesting_value) (variable_value)))))
-        (block (at_rule (at_keyword)))))))
+              (arguments
+                (nesting_value)
+                (variable_value)))))
+        (block
+          (at_rule
+            (at_keyword)))))))
 
 =================================
 Placeholders
@@ -491,14 +667,23 @@ Placeholders
 
 (stylesheet
   (placeholder
-    (placeholder_selector (placeholder_name))
+    (placeholder_selector
+      (placeholder_name))
     (block
-      (declaration (property_name) (integer_value (unit)))))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit)))))
   (placeholder
-    (placeholder_selector (placeholder_name (interpolation (variable_value))))
+    (placeholder_selector
+      (placeholder_name
+        (interpolation
+          (variable_value))))
     (block
-      (declaration (property_name) (integer_value (unit)))))
-)
+      (declaration
+        (property_name)
+        (integer_value
+          (unit))))))
 
 =============================================
 Spaces after colons in property declarations
@@ -548,17 +733,13 @@ $map: (
     (map_value
       (map_pair
         key: (plain_value)
-        value: (string_value))
-    )
-  )
+        value: (string_value))))
   (declaration
     (variable_name)
     (map_value
       (map_pair
         key: (string_value)
-        value: (string_value))
-    )
-  )
+        value: (string_value))))
   (declaration
     (variable_name)
     (map_value
@@ -570,9 +751,9 @@ $map: (
         value: (variable_value))
       (map_pair
         key: (string_value)
-        value: (variable_module module: (module) value: (variable_value)))
-    )
-  )
+        value: (variable_module
+          module: (module)
+          value: (variable_value)))))
   (declaration
     (variable_name)
     (map_value
@@ -581,8 +762,7 @@ $map: (
         value: (integer_value))
       (map_pair
         key: (integer_value)
-        value: (integer_value))
-    ))
+        value: (integer_value))))
   (declaration
     (variable_name)
     (map_value
@@ -594,8 +774,7 @@ $map: (
         value: (float_value))
       (map_pair
         key: (string_value)
-        value: (integer_value))
-    )))
+        value: (integer_value)))))
 
 ===========================
 Custom properties
@@ -609,20 +788,27 @@ Custom properties
 
 (stylesheet
   (rule_set
-    (selectors (pseudo_class_selector (class_name)))
+    (selectors
+      (pseudo_class_selector
+        (class_name)))
     (block
       (declaration
         (property_name
-          (interpolation (variable_value))
-          (interpolation (variable_value)))
+          (interpolation
+            (variable_value))
+          (interpolation
+            (variable_value)))
         (call_expression
           name: (function_name)
           arguments: (arguments
             (plain_value)
             (binary_expression
-              left: (plain_value (interpolation (variable_value)))
-              right: (plain_value (interpolation (variable_value))))))))))
-
+              left: (plain_value
+                (interpolation
+                  (variable_value)))
+              right: (plain_value
+                (interpolation
+                  (variable_value))))))))))
 
 ==============
 Grid values
@@ -636,7 +822,8 @@ div {
 
 (stylesheet
   (rule_set
-    (selectors (tag_name))
+    (selectors
+      (tag_name))
     (block
       (declaration
         (property_name)
@@ -672,7 +859,9 @@ PostCSS
 
 (stylesheet
   (rule_set
-    (selectors (class_selector (class_name)))
+    (selectors
+      (class_selector
+        (class_name)))
     (block
       (postcss_statement
         (at_keyword)
@@ -684,7 +873,9 @@ PostCSS
     (name)
     (block
       (rule_set
-        (selectors (class_selector (class_name)))
+        (selectors
+          (class_selector
+            (class_name)))
         (block
           (postcss_statement
             (at_keyword)
@@ -693,3 +884,296 @@ PostCSS
             (plain_value)
             (plain_value)
             (important)))))))
+
+==================================================
+CSS if() with style condition
+==================================================
+
+a {
+  color: if(style(--scheme: dark): #eeeeee;);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_style_condition
+                (style_condition
+                  (property_name)
+                  (plain_value))))
+            value: (color_value)))))))
+
+==================================================
+CSS if() with style condition and else
+==================================================
+
+a {
+  color: if(style(--size: "2xl"): 1em; else: 0.25em;);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_style_condition
+                (style_condition
+                  (property_name)
+                  (string_value))))
+            value: (integer_value
+              (unit)))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (float_value
+              (unit))))))))
+
+==================================================
+CSS if() with multiple style branches
+==================================================
+
+div {
+  background-image: if(
+    style(--scheme: ice): linear-gradient(#caf0f8, white, #caf0f8);
+    style(--scheme: fire): linear-gradient(#ffc971, white, #ffc971);
+    else: none;
+  );
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_style_condition
+                (style_condition
+                  (property_name)
+                  (plain_value))))
+            value: (call_expression
+              name: (function_name)
+              arguments: (arguments
+                (color_value)
+                (plain_value)
+                (color_value))))
+          (if_branch
+            condition: (if_condition
+              (if_style_condition
+                (style_condition
+                  (property_name)
+                  (plain_value))))
+            value: (call_expression
+              name: (function_name)
+              arguments: (arguments
+                (color_value)
+                (plain_value)
+                (color_value))))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (plain_value)))))))
+
+==================================================
+CSS if() with media condition
+==================================================
+
+a {
+  color: if(media(print): white; else: black;);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_media_condition
+                (keyword_query)))
+            value: (plain_value))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (plain_value)))))))
+
+==================================================
+CSS if() with media range condition
+==================================================
+
+a {
+  margin: if(
+    media(width < 700px): 0 auto;
+    else: 20px auto;
+  );
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_media_condition
+                (range_query
+                  (feature_name)
+                  (range_operator)
+                  (integer_value
+                    (unit)))))
+            value: (integer_value)
+            value: (plain_value))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (integer_value
+              (unit))
+            value: (plain_value)))))))
+
+==================================================
+CSS if() with supports condition
+==================================================
+
+a {
+  color: if(
+    supports(color: lch(75% 0 0)): lch(75% 0 0);
+    else: #03045e;
+  );
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_supports_condition
+                (feature_name)
+                (call_expression
+                  name: (function_name)
+                  arguments: (arguments
+                    (integer_value
+                      (unit))
+                    (integer_value)
+                    (integer_value)))))
+            value: (call_expression
+              name: (function_name)
+              arguments: (arguments
+                (integer_value
+                  (unit))
+                (integer_value)
+                (integer_value))))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (color_value)))))))
+
+==================================================
+Sass if() with sass() condition
+==================================================
+
+$x: if(sass(true): 10px; else: 15px);
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (if_expression
+      (function_name)
+      (if_branch
+        condition: (if_condition
+          (if_sass_condition
+            (boolean_value)))
+        value: (integer_value
+          (unit)))
+      (if_branch
+        condition: (if_condition
+          (if_else_condition))
+        value: (integer_value
+          (unit))))))
+
+==================================================
+Sass if() with sass() condition and module call
+==================================================
+
+$x: if(sass(meta.variable-defined($var)): $var);
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (if_expression
+      (function_name)
+      (if_branch
+        condition: (if_condition
+          (if_sass_condition
+            (call_expression
+              module: (module)
+              name: (function_name)
+              arguments: (arguments
+                (variable_value)))))
+        value: (variable_value)))))
+
+==================================================
+Legacy Sass if() function
+==================================================
+
+$x: if($cond, 10px, 20px);
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (call_expression
+      name: (function_name)
+      arguments: (arguments
+        (variable_value)
+        (integer_value
+          (unit))
+        (integer_value
+          (unit))))))
