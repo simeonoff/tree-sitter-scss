@@ -24,6 +24,13 @@
     (block)
 ) @item
 
+(container_statement
+    "@container" @context
+    (container_name)? @name
+    (_) @context.extra
+    (block)
+) @item
+
 (mixin_statement
     "@mixin" @context
     (name) @name

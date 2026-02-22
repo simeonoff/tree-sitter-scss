@@ -9,6 +9,7 @@ This is an actively maintained fork of [savetheclocktower/tree-sitter-scss](http
 The upstream parser is excellent but development has slowed. This fork adds:
 
 ### New CSS/SCSS Features
+- **`@container` queries** - Container Queries with size, style, and scroll-state conditions
 - **`@scope` at-rule** - CSS Cascading and Inheritance Level 6
 - **`@layer` at-rule** - CSS Cascade Layers
 - **`@property` at-rule** - CSS Custom Property registration
@@ -98,6 +99,7 @@ The injection is automatic via `injections.scm`:
 | `@error`, `@warn`, `@debug` | ✅ |
 | `@media`, `@supports` | ✅ |
 | `@keyframes` | ✅ |
+| `@container` | ✅ Container Queries (size, style, scroll-state) |
 | `@scope` | ✅ CSS Cascading Level 6 |
 | `@layer` | ✅ CSS Cascade Layers |
 | `@utility` | ✅ Tailwind CSS v4 |

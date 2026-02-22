@@ -896,3 +896,181 @@ Logging statements
       (debug_statement (string_value))
       (warn_statement (string_value))
       (error_statement (string_value)))))
+
+=================================
+Container queries (basic)
+=================================
+
+@container (min-width: 700px) {
+  .card {
+    display: grid;
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (feature_query (feature_name) (integer_value (unit)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (plain_value)))))))
+
+=================================
+Container queries (named container)
+=================================
+
+@container sidebar (min-width: 400px) {
+  .card {
+    font-size: 2em;
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (container_name)
+    (feature_query (feature_name) (integer_value (unit)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (integer_value (unit))))))))
+
+=================================
+Container queries (logical operators)
+=================================
+
+@container card (min-width: 400px) and (min-height: 200px) {
+  .content { padding: 1rem; }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (container_name)
+    (binary_query
+      (feature_query (feature_name) (integer_value (unit)))
+      (feature_query (feature_name) (integer_value (unit))))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (integer_value (unit))))))))
+
+=================================
+Container queries (style query)
+=================================
+
+@container style(--responsive: true) {
+  .card {
+    flex-direction: column;
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (style_query
+      (style_condition (property_name) (boolean_value)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (plain_value)))))))
+
+=================================
+Container queries (scroll-state query)
+=================================
+
+@container scroll-state(stuck: top) {
+  .header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (scroll_state_query
+      (scroll_state_condition (state_name) (state_value)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block
+          (declaration
+            (property_name)
+            (integer_value)
+            (integer_value (unit))
+            (integer_value (unit))
+            (call_expression
+              (function_name)
+              (arguments
+                (integer_value)
+                (integer_value)
+                (integer_value)
+                (float_value)))))))))
+
+=================================
+Container queries (range query)
+=================================
+
+@container sidebar (width > 400px) {
+  .card {
+    font-size: 2em;
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (container_name)
+    (range_query (feature_name) (range_operator) (integer_value (unit)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (integer_value (unit))))))))
+
+=================================
+Container queries (range query with two bounds)
+=================================
+
+@container (400px <= width <= 800px) {
+  .card {
+    display: flex;
+  }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (range_query (integer_value (unit)) (range_operator) (feature_name) (range_operator) (integer_value (unit)))
+    (block
+      (rule_set
+        (selectors (class_selector (class_name)))
+        (block (declaration (property_name) (plain_value)))))))
+
+=================================
+Container queries (condition list)
+=================================
+
+@container card (width > 400px), style(--responsive: true), scroll-state(stuck: top) {
+  h2 { font-size: 1.5em; }
+}
+
+---
+
+(stylesheet
+  (container_statement
+    (container_name)
+    (range_query (feature_name) (range_operator) (integer_value (unit)))
+    (style_query (style_condition (property_name) (boolean_value)))
+    (scroll_state_query (scroll_state_condition (state_name) (state_value)))
+    (block
+      (rule_set
+        (selectors (tag_name))
+        (block (declaration (property_name) (float_value (unit))))))))

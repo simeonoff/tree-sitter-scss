@@ -53,6 +53,7 @@ module.exports = grammar({
 
   conflicts: ($) => [
     [$._selector, $._identifier_with_interpolation],
+    [$.container_statement, $._identifier_with_interpolation],
   ],
 
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
@@ -71,6 +72,7 @@ module.exports = grammar({
         $.keyframes_statement,
         $.supports_statement,
         $.property_statement,
+        $.container_statement,
         $.use_statement,
         $.forward_statement,
         $.mixin_statement,
@@ -409,6 +411,13 @@ module.exports = grammar({
       ")"
     ),
 
+    container_statement: ($) => seq(
+      "@container",
+      optional(alias($._identifier, $.container_name)),
+      sep1(",", $._query),
+      $.block
+    ),
+
     at_root_statement: ($) =>
       seq(
         "@at-root",
@@ -455,6 +464,7 @@ module.exports = grammar({
         $.keyframes_statement,
         $.supports_statement,
         $.property_statement,
+        $.container_statement,
         $.postcss_statement,
         $.mixin_statement,
         $.include_statement,
@@ -735,9 +745,12 @@ module.exports = grammar({
       choice(
         alias($._identifier_with_interpolation, $.keyword_query),
         $.feature_query,
+        $.range_query,
         $.binary_query,
         $.unary_query,
         $.selector_query,
+        $.style_query,
+        $.scroll_state_query,
         $.parenthesized_query
       ),
 
@@ -750,6 +763,39 @@ module.exports = grammar({
         repeat1($._value),
         ")"
       )
+    ),
+
+    // Range query syntax: (width > 400px), (400px < width < 800px)
+    range_query: ($) => prec.dynamic(
+      1,
+      seq(
+        "(",
+        choice(
+          // Feature on left: (width > 400px), (width >= 400px)
+          seq(
+            alias($._identifier, $.feature_name),
+            alias($._range_operator, $.range_operator),
+            $._range_value
+          ),
+          // Value on left: (400px < width), (400px <= width < 800px)
+          seq(
+            $._range_value,
+            alias($._range_operator, $.range_operator),
+            alias($._identifier, $.feature_name),
+            optional(seq(alias($._range_operator, $.range_operator), $._range_value))
+          )
+        ),
+        ")"
+      )
+    ),
+
+    _range_operator: (_) => choice("<", ">", "<=", ">="),
+
+    // Values allowed in range queries (no binary expressions to avoid operator conflicts)
+    _range_value: ($) => choice(
+      $.integer_value,
+      $.float_value,
+      alias($._variable_identifier, $.variable_value)
     ),
 
     parenthesized_query: ($) => seq("(", $._query, ")"),
@@ -775,6 +821,51 @@ module.exports = grammar({
         "(",
         $._selector,
         ")"
+      ),
+
+    // Container style query: style(--custom-prop: value) or style(color: red)
+    style_query: ($) =>
+      seq(
+        "style",
+        "(",
+        sep1(
+          choice("and", "or"),
+          choice(
+            $.style_condition,
+            seq("not", $.style_condition),
+            seq("(", $.style_condition, ")")
+          )
+        ),
+        ")"
+      ),
+
+    style_condition: ($) =>
+      seq(
+        alias($._identifier, $.property_name),
+        optional(seq(":", repeat1($._value)))
+      ),
+
+    // Container scroll-state query: scroll-state(stuck: top)
+    scroll_state_query: ($) =>
+      seq(
+        "scroll-state",
+        "(",
+        sep1(
+          choice("and", "or"),
+          choice(
+            $.scroll_state_condition,
+            seq("not", $.scroll_state_condition),
+            seq("(", $.scroll_state_condition, ")")
+          )
+        ),
+        ")"
+      ),
+
+    scroll_state_condition: ($) =>
+      seq(
+        alias($._identifier, $.state_name),
+        ":",
+        alias($._identifier, $.state_value)
       ),
 
     // Property Values

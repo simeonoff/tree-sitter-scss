@@ -29,6 +29,7 @@
   "*="
   ">="
   "<="
+  (range_operator)
 ] @operator
 
 [
@@ -82,6 +83,7 @@
   "@namespace"
   "@supports"
   "@keyframes"
+  "@container"
   "@utility"
   "@layer"
   "@scope"
@@ -97,6 +99,20 @@
   (from)
   (important)
 ] @keyword
+
+; Container queries
+(container_statement
+  (container_name) @variable.other.member)
+
+(style_query "style" @function.builtin)
+(scroll_state_query "scroll-state" @function.builtin)
+
+(style_condition
+  (property_name) @property)
+
+(scroll_state_condition
+  (state_name) @property
+  (state_value) @constant.builtin)
 
 "@function" @keyword.function
 
