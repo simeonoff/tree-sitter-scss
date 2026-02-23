@@ -102,6 +102,38 @@
         },
         {
           "type": "SYMBOL",
+          "name": "starting_style_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "view_transition_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_face_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "counter_style_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "position_try_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_palette_values_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "page_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_feature_values_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "error_statement"
         },
         {
@@ -1910,6 +1942,491 @@
         }
       ]
     },
+    "starting_style_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@starting-style"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "view_transition_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@view-transition"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "font_face_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@font-face"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "counter_style_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@counter-style"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "position_try_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@position-try"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "font_palette_values_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@font-palette-values"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "name"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "page_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "@page"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "page_selector_list"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "page_body"
+        }
+      ]
+    },
+    "page_selector_list": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "page_selector"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "STRING",
+                "value": ","
+              },
+              {
+                "type": "SYMBOL",
+                "name": "page_selector"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "page_selector": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_identifier"
+              },
+              "named": true,
+              "value": "page_name"
+            },
+            {
+              "type": "REPEAT",
+              "content": {
+                "type": "SYMBOL",
+                "name": "page_pseudo_class"
+              }
+            }
+          ]
+        },
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "page_pseudo_class"
+          }
+        }
+      ]
+    },
+    "page_pseudo_class": {
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": ":"
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "first"
+              },
+              {
+                "type": "STRING",
+                "value": "last"
+              },
+              {
+                "type": "STRING",
+                "value": "left"
+              },
+              {
+                "type": "STRING",
+                "value": "right"
+              },
+              {
+                "type": "STRING",
+                "value": "blank"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "page_body": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "declaration"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "margin_at_rule"
+              }
+            ]
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "last_declaration"
+              },
+              "named": true,
+              "value": "declaration"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "margin_at_rule": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "margin_at_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "margin_at_keyword": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@top-left-corner"
+          },
+          {
+            "type": "STRING",
+            "value": "@top-left"
+          },
+          {
+            "type": "STRING",
+            "value": "@top-center"
+          },
+          {
+            "type": "STRING",
+            "value": "@top-right"
+          },
+          {
+            "type": "STRING",
+            "value": "@top-right-corner"
+          },
+          {
+            "type": "STRING",
+            "value": "@bottom-left-corner"
+          },
+          {
+            "type": "STRING",
+            "value": "@bottom-left"
+          },
+          {
+            "type": "STRING",
+            "value": "@bottom-center"
+          },
+          {
+            "type": "STRING",
+            "value": "@bottom-right"
+          },
+          {
+            "type": "STRING",
+            "value": "@bottom-right-corner"
+          },
+          {
+            "type": "STRING",
+            "value": "@left-top"
+          },
+          {
+            "type": "STRING",
+            "value": "@left-middle"
+          },
+          {
+            "type": "STRING",
+            "value": "@left-bottom"
+          },
+          {
+            "type": "STRING",
+            "value": "@right-top"
+          },
+          {
+            "type": "STRING",
+            "value": "@right-middle"
+          },
+          {
+            "type": "STRING",
+            "value": "@right-bottom"
+          }
+        ]
+      }
+    },
+    "font_feature_values_statement": {
+      "type": "PREC_RIGHT",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@font-feature-values"
+          },
+          {
+            "type": "FIELD",
+            "name": "name",
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_font_feature_values_name"
+              },
+              "named": true,
+              "value": "font_family"
+            }
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "font_feature_values_body"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "_font_feature_values_name": {
+      "type": "PREC_RIGHT",
+      "value": 0,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "string_value"
+          },
+          {
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_plain_value_with_interpolation"
+            },
+            "named": true,
+            "value": "family_name"
+          }
+        ]
+      }
+    },
+    "font_feature_values_body": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "font_feature_value_block"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "font_feature_value_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "font_feature_value_keyword"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
+    "font_feature_value_keyword": {
+      "type": "TOKEN",
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "@stylistic"
+          },
+          {
+            "type": "STRING",
+            "value": "@historical-forms"
+          },
+          {
+            "type": "STRING",
+            "value": "@styleset"
+          },
+          {
+            "type": "STRING",
+            "value": "@character-variant"
+          },
+          {
+            "type": "STRING",
+            "value": "@swash"
+          },
+          {
+            "type": "STRING",
+            "value": "@ornaments"
+          },
+          {
+            "type": "STRING",
+            "value": "@annotation"
+          }
+        ]
+      }
+    },
     "container_statement": {
       "type": "SEQ",
       "members": [
@@ -2220,6 +2737,38 @@
         {
           "type": "SYMBOL",
           "name": "scope_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "starting_style_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "view_transition_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_face_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "counter_style_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "position_try_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_palette_values_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "page_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "font_feature_values_statement"
         },
         {
           "type": "SYMBOL",

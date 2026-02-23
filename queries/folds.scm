@@ -11,6 +11,14 @@
 (container_statement) @fold
 (layer_statement) @fold
 (scope_statement) @fold
+(starting_style_statement) @fold
+(view_transition_statement) @fold
+(font_face_statement) @fold
+(counter_style_statement) @fold
+(position_try_statement) @fold
+(font_palette_values_statement) @fold
+(page_statement) @fold
+(font_feature_values_statement) @fold
 
 ; Fold control flow statements
 (if_statement) @fold

@@ -36,6 +36,11 @@
     color: if(style(--scheme: ice): var(--accent) ; else: black;);
     padding: if(media(width < 768px): 0.5rem; else: 1.5rem);
   }
+
+  @custom-media {
+    --scheme: ice;
+    --accent: #caf0f8;
+  }
 }
 
 @scope (.theme) to (.theme-inner) {

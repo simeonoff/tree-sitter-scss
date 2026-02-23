@@ -115,4 +115,27 @@
     (block)
 ) @item
 
+(counter_style_statement
+    "@counter-style" @context
+    (name) @name
+    (block)
+) @item
+
+(position_try_statement
+    "@position-try" @context
+    (name) @name
+    (block)
+) @item
+
+(font_palette_values_statement
+    "@font-palette-values" @context
+    (name) @name
+    (block)
+) @item
+
+(font_feature_values_statement
+    "@font-feature-values" @context
+    (font_family) @name
+) @item
+
 (comment) @annotation

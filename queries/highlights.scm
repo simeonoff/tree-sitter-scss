@@ -88,6 +88,14 @@
   "@layer"
   "@scope"
   "@property"
+  "@starting-style"
+  "@view-transition"
+  "@font-face"
+  "@counter-style"
+  "@position-try"
+  "@font-palette-values"
+  "@page"
+  "@font-feature-values"
   "@at-root"
   "@debug"
   "@error"
@@ -102,6 +110,9 @@
 
 (container_statement
   (container_name) @variable.other.member)
+
+(margin_at_keyword) @keyword
+(font_feature_value_keyword) @keyword
 
 (style_query "style" @function.builtin)
 (scroll_state_query "scroll-state" @function.builtin)
