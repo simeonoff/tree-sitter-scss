@@ -36,11 +36,25 @@
   (range_operator)
 ] @operator
 
+; Scope keyword operators to their parent nodes to avoid
+; false matches inside identifiers (e.g. "not" in "annotation")
 [
-  "and"
-  "or"
-  "not"
-  "only"
+  (binary_query "and")
+  (binary_query "or")
+  (unary_query "not")
+  (unary_query "only")
+  (style_query "and")
+  (style_query "or")
+  (style_query "not")
+  (scroll_state_query "and")
+  (scroll_state_query "or")
+  (scroll_state_query "not")
+  (if_style_condition "and")
+  (if_style_condition "or")
+  (if_style_condition "not")
+  (binary_expression "and")
+  (binary_expression "or")
+  (unary_expression "not")
 ] @keyword.operator
 
 (pseudo_element_selector "::" (tag_name) @selector.pseudo)
@@ -111,10 +125,6 @@
   "@extend"
   "@mixin"
   "@warn"
-  "as"
-  "with"
-  "hide"
-  "show"
   (at_keyword)
   (to)
   (from)
@@ -123,6 +133,15 @@
   (global)
   (margin_at_keyword)
   (font_feature_value_keyword)
+] @keyword
+
+; Scope bare keyword strings to their parent nodes to avoid
+; false matches inside identifiers (e.g. "as" in "ease-out")
+[
+  (as_clause "as")
+  (with_clause "with")
+  (visibility_clause "hide")
+  (visibility_clause "show")
 ] @keyword
 
 [
@@ -158,17 +177,18 @@
 [
   "@else"
   "@if"
-  "if"
 ] @keyword.control.conditional
+(else_if_clause "if" @keyword.control.conditional)
 
+; Scope loop keywords to their parent nodes
 [
   "@while"
   "@each"
   "@for"
-  "through"
-  "in"
-  "from"
 ] @keyword.repeat
+(for_statement "through" @keyword.repeat)
+(for_statement "from" @keyword.repeat)
+(each_statement "in" @keyword.repeat)
 
 [
   "@forward"
