@@ -1074,3 +1074,143 @@ Container queries (condition list)
       (rule_set
         (selectors (tag_name))
         (block (declaration (property_name) (float_value (unit))))))))
+
+=============================================
+@layer - named block
+=============================================
+
+@layer utilities {
+  .padding-sm {
+    padding: 0.5rem;
+  }
+}
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)
+    (block
+      (rule_set
+        (selectors
+          (class_selector
+            (class_name)))
+        (block
+          (declaration
+            (property_name)
+            (float_value (unit))))))))
+
+=============================================
+@layer - anonymous block
+=============================================
+
+@layer {
+  p {
+    margin-block: 1rem;
+  }
+}
+
+---
+
+(stylesheet
+  (layer_statement
+    (block
+      (rule_set
+        (selectors
+          (tag_name))
+        (block
+          (declaration
+            (property_name)
+            (integer_value (unit))))))))
+
+=============================================
+@layer - single declaration
+=============================================
+
+@layer utilities;
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)))
+
+=============================================
+@layer - multiple declarations
+=============================================
+
+@layer theme, layout, utilities;
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)
+    (layer_name)
+    (layer_name)))
+
+=============================================
+@layer - dotted layer name block
+=============================================
+
+@layer framework.layout {
+  p {
+    margin-block: 1rem;
+  }
+}
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)
+    (block
+      (rule_set
+        (selectors
+          (tag_name))
+        (block
+          (declaration
+            (property_name)
+            (integer_value (unit))))))))
+
+=============================================
+@layer - dotted layer name declaration
+=============================================
+
+@layer framework.base, framework.theme;
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)
+    (layer_name)))
+
+=============================================
+@layer - nested layers
+=============================================
+
+@layer framework {
+  @layer layout {
+    p {
+      margin-block: 1rem;
+    }
+  }
+}
+
+---
+
+(stylesheet
+  (layer_statement
+    (layer_name)
+    (block
+      (layer_statement
+        (layer_name)
+        (block
+          (rule_set
+            (selectors
+              (tag_name))
+            (block
+              (declaration
+                (property_name)
+                (integer_value (unit))))))))))
