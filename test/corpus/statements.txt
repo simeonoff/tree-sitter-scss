@@ -17,6 +17,87 @@ Import statements
   (import_statement (call_expression (function_name) (arguments (string_value))))
   (import_statement (string_value) (keyword_query)))
 
+=============================================
+Import statements with layer
+=============================================
+
+@import "theme.css" layer;
+@import "theme.css" layer();
+@import "theme.css" layer(utilities);
+@import "theme.css" layer(framework.base);
+
+---
+
+(stylesheet
+  (import_statement (string_value) (import_layer))
+  (import_statement (string_value) (import_layer))
+  (import_statement (string_value) (import_layer (layer_name)))
+  (import_statement (string_value) (import_layer (layer_name))))
+
+=============================================
+Import statements with supports
+=============================================
+
+@import "grid.css" supports(display: grid);
+@import "flex.css" supports(not (display: grid));
+
+---
+
+(stylesheet
+  (import_statement
+    (string_value)
+    (import_supports
+      (feature_name)
+      (plain_value)))
+  (import_statement
+    (string_value)
+    (import_supports
+      (unary_query
+        (feature_query
+          (feature_name)
+          (plain_value))))))
+
+=============================================
+Import statements with layer, supports, and media queries
+=============================================
+
+@import "theme.css" layer(utilities) supports(display: grid) print;
+@import "theme.css" layer supports(display: flex) screen and (width <= 400px);
+@import "grid.css" supports(display: grid) screen and (width <= 400px);
+@import "theme.css" layer(utilities) print;
+
+---
+
+(stylesheet
+  (import_statement
+    (string_value)
+    (import_layer (layer_name))
+    (import_supports (feature_name) (plain_value))
+    (keyword_query))
+  (import_statement
+    (string_value)
+    (import_layer)
+    (import_supports (feature_name) (plain_value))
+    (binary_query
+      (keyword_query)
+      (range_query
+        (feature_name)
+        (range_operator)
+        (integer_value (unit)))))
+  (import_statement
+    (string_value)
+    (import_supports (feature_name) (plain_value))
+    (binary_query
+      (keyword_query)
+      (range_query
+        (feature_name)
+        (range_operator)
+        (integer_value (unit)))))
+  (import_statement
+    (string_value)
+    (import_layer (layer_name))
+    (keyword_query)))
+
 ==============================
 Namespace statements
 ==============================

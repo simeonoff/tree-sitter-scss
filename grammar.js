@@ -96,7 +96,29 @@ module.exports = grammar({
 
     // Statements
 
-    import_statement: ($) => seq("@import", $._value, sep(",", $._query), ";"),
+    import_statement: ($) => seq(
+      "@import",
+      $._value,
+      optional($.import_layer),
+      optional($.import_supports),
+      sep(",", $._query),
+      ";"
+    ),
+
+    import_layer: ($) => prec.right(seq(
+      "layer",
+      optional(seq("(", optional($.layer_name), ")"))
+    )),
+
+    import_supports: ($) => seq(
+      "supports",
+      "(",
+      choice(
+        $._query,
+        seq(alias($._identifier, $.feature_name), ":", repeat1($._value))
+      ),
+      ")"
+    ),
 
     media_statement: ($) =>
       seq(
