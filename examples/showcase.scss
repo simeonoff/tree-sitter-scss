@@ -1,4 +1,7 @@
 @use "sass:meta";
+@import "components.css" layer(components) supports(display: grid);
+
+@layer base, reset, components, utilities, utilities.extra;
 
 :root {
   @property --scheme {

@@ -105,6 +105,8 @@
 
 (style_query "style" @function.builtin)
 (scroll_state_query "scroll-state" @function.builtin)
+(import_layer "layer" @function.builtin)
+(import_supports "supports" @function.builtin)
 
 (if_expression (function_name) @function.builtin)
 (if_style_condition "style" @function.builtin)
