@@ -18,7 +18,8 @@ The upstream parser is excellent but development has slowed. This fork adds:
 - **`@scope` at-rule** - CSS Cascading and Inheritance Level 6
 - **`@layer` at-rule** - CSS Cascade Layers
 - **`@property` at-rule** - CSS Custom Property registration
-- **`@utility` at-rule** - Tailwind CSS v4 utility definitions
+- **`@font-face`**, **`@page`**, **`@counter-style`**, **`@font-feature-values`**, **`@font-palette-values`** - First-class support
+- **`@starting-style`**, **`@view-transition`**, **`@position-try`** - Modern CSS at-rules
 
 ### Improved SCSS Support
 - **SassDoc integration** - `sassdoc_block` node groups consecutive `///` comments for proper injection
@@ -107,8 +108,16 @@ The injection is automatic via `injections.scm`:
 | `@container` | ✅ Container Queries (size, style, scroll-state) |
 | `@scope` | ✅ CSS Cascading Level 6 |
 | `@layer` | ✅ CSS Cascade Layers |
-| `@utility` | ✅ Tailwind CSS v4 |
 | `@property` | ✅ CSS Custom Properties |
+| `@font-face` | ✅ Font declarations |
+| `@page` | ✅ Print layout with pseudo-classes and margin at-rules |
+| `@counter-style` | ✅ Custom counter styles |
+| `@font-feature-values` | ✅ Named font feature sets with sub-blocks |
+| `@font-palette-values` | ✅ Custom font palettes |
+| `@starting-style` | ✅ Entry animations |
+| `@view-transition` | ✅ View transition configuration |
+| `@position-try` | ✅ Anchor positioning fallbacks |
+| Unknown at-rules | ✅ Generic fallback (both `@rule;` and `@rule { }`) |
 
 ### Values
 

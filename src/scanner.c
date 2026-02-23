@@ -98,7 +98,7 @@ static bool scan_for_apply_value(TSLexer *lexer) {
   while (iswspace(lexer->lookahead)) {
     lexer->advance(lexer, true);
   }
-  if (lexer->lookahead == ';' || lexer->lookahead == '!') {
+  if (lexer->lookahead == ';' || lexer->lookahead == '!' || lexer->lookahead == '{') {
     return false;
   }
   while (!iswspace(lexer->lookahead) && lexer->lookahead != ';') {
@@ -106,6 +106,9 @@ static bool scan_for_apply_value(TSLexer *lexer) {
       return false;
     }
     if (lexer->lookahead == '!') {
+      return false;
+    }
+    if (lexer->lookahead == '{' || lexer->lookahead == '}') {
       return false;
     }
     lexer->advance(lexer, false);

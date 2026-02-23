@@ -981,6 +981,10 @@
           "named": true
         },
         {
+          "type": "counter_style_statement",
+          "named": true
+        },
+        {
           "type": "debug_statement",
           "named": true
         },
@@ -998,6 +1002,18 @@
         },
         {
           "type": "extend_statement",
+          "named": true
+        },
+        {
+          "type": "font_face_statement",
+          "named": true
+        },
+        {
+          "type": "font_feature_values_statement",
+          "named": true
+        },
+        {
+          "type": "font_palette_values_statement",
           "named": true
         },
         {
@@ -1041,6 +1057,14 @@
           "named": true
         },
         {
+          "type": "page_statement",
+          "named": true
+        },
+        {
+          "type": "position_try_statement",
+          "named": true
+        },
+        {
           "type": "postcss_statement",
           "named": true
         },
@@ -1061,11 +1085,15 @@
           "named": true
         },
         {
+          "type": "starting_style_statement",
+          "named": true
+        },
+        {
           "type": "supports_statement",
           "named": true
         },
         {
-          "type": "utility_statement",
+          "type": "view_transition_statement",
           "named": true
         },
         {
@@ -1569,6 +1597,25 @@
         },
         {
           "type": "unary_query",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "counter_style_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "name",
           "named": true
         }
       ]
@@ -2285,6 +2332,21 @@
     }
   },
   {
+    "type": "family_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "interpolation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "feature_query",
     "named": true,
     "fields": {},
@@ -2381,6 +2443,119 @@
       "types": [
         {
           "type": "unit",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_face_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_family",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "family_name",
+          "named": true
+        },
+        {
+          "type": "string_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_feature_value_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "font_feature_value_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_feature_values_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "font_feature_value_block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_feature_values_statement",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "font_family",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "font_feature_values_body",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_palette_values_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "name",
           "named": true
         }
       ]
@@ -4089,6 +4264,25 @@
     }
   },
   {
+    "type": "margin_at_rule",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "margin_at_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "media_statement",
     "named": true,
     "fields": {},
@@ -4359,6 +4553,78 @@
     }
   },
   {
+    "type": "page_body",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "declaration",
+          "named": true
+        },
+        {
+          "type": "margin_at_rule",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "page_selector",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "page_name",
+          "named": true
+        },
+        {
+          "type": "page_pseudo_class",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "page_selector_list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "page_selector",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "page_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "page_body",
+          "named": true
+        },
+        {
+          "type": "page_selector_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "parameter",
     "named": true,
     "fields": {},
@@ -4585,6 +4851,25 @@
       "types": [
         {
           "type": "interpolation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "position_try_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "name",
           "named": true
         }
       ]
@@ -5449,6 +5734,21 @@
     }
   },
   {
+    "type": "starting_style_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "string_value",
     "named": true,
     "fields": {},
@@ -5587,6 +5887,10 @@
           "named": true
         },
         {
+          "type": "counter_style_statement",
+          "named": true
+        },
+        {
           "type": "debug_statement",
           "named": true
         },
@@ -5600,6 +5904,18 @@
         },
         {
           "type": "error_statement",
+          "named": true
+        },
+        {
+          "type": "font_face_statement",
+          "named": true
+        },
+        {
+          "type": "font_feature_values_statement",
+          "named": true
+        },
+        {
+          "type": "font_palette_values_statement",
           "named": true
         },
         {
@@ -5647,7 +5963,15 @@
           "named": true
         },
         {
+          "type": "page_statement",
+          "named": true
+        },
+        {
           "type": "placeholder",
+          "named": true
+        },
+        {
+          "type": "position_try_statement",
           "named": true
         },
         {
@@ -5663,6 +5987,10 @@
           "named": true
         },
         {
+          "type": "starting_style_statement",
+          "named": true
+        },
+        {
           "type": "supports_statement",
           "named": true
         },
@@ -5671,7 +5999,7 @@
           "named": true
         },
         {
-          "type": "utility_statement",
+          "type": "view_transition_statement",
           "named": true
         },
         {
@@ -6094,25 +6422,6 @@
     }
   },
   {
-    "type": "utility_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "block",
-          "named": true
-        },
-        {
-          "type": "name",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
     "type": "variable_module",
     "named": true,
     "fields": {
@@ -6136,6 +6445,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "view_transition_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -6580,6 +6904,10 @@
     "named": false
   },
   {
+    "type": "@counter-style",
+    "named": false
+  },
+  {
     "type": "@debug",
     "named": false
   },
@@ -6597,6 +6925,18 @@
   },
   {
     "type": "@extend",
+    "named": false
+  },
+  {
+    "type": "@font-face",
+    "named": false
+  },
+  {
+    "type": "@font-feature-values",
+    "named": false
+  },
+  {
+    "type": "@font-palette-values",
     "named": false
   },
   {
@@ -6644,6 +6984,14 @@
     "named": false
   },
   {
+    "type": "@page",
+    "named": false
+  },
+  {
+    "type": "@position-try",
+    "named": false
+  },
+  {
     "type": "@property",
     "named": false
   },
@@ -6656,6 +7004,10 @@
     "named": false
   },
   {
+    "type": "@starting-style",
+    "named": false
+  },
+  {
     "type": "@supports",
     "named": false
   },
@@ -6664,7 +7016,7 @@
     "named": false
   },
   {
-    "type": "@utility",
+    "type": "@view-transition",
     "named": false
   },
   {
@@ -6725,6 +7077,10 @@
     "named": true
   },
   {
+    "type": "font_feature_value_keyword",
+    "named": true
+  },
+  {
     "type": "from",
     "named": false
   },
@@ -6769,6 +7125,10 @@
     "named": false
   },
   {
+    "type": "margin_at_keyword",
+    "named": true
+  },
+  {
     "type": "media",
     "named": false
   },
@@ -6807,6 +7167,14 @@
   {
     "type": "or",
     "named": false
+  },
+  {
+    "type": "page_name",
+    "named": true
+  },
+  {
+    "type": "page_pseudo_class",
+    "named": true
   },
   {
     "type": "sass",

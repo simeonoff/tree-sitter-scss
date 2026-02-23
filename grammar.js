@@ -84,9 +84,16 @@ module.exports = grammar({
         $.for_statement,
         $.while_statement,
         $.function_statement,
-        $.utility_statement,
         $.layer_statement,
         $.scope_statement,
+        $.starting_style_statement,
+        $.view_transition_statement,
+        $.font_face_statement,
+        $.counter_style_statement,
+        $.position_try_statement,
+        $.font_palette_values_statement,
+        $.page_statement,
+        $.font_feature_values_statement,
         $.error_statement,
         $.warn_statement,
         $.debug_statement,
@@ -403,12 +410,6 @@ module.exports = grammar({
 
     return_statement: ($) => seq("@return", $._value, ";"),
 
-    utility_statement: ($) => seq(
-      "@utility",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
-    ),
-
     layer_statement: ($) => choice(
       seq(
         "@layer",
@@ -445,6 +446,125 @@ module.exports = grammar({
       "(",
       sep1(",", $._selector),
       ")"
+    ),
+
+    starting_style_statement: ($) => seq(
+      "@starting-style",
+      $.block
+    ),
+
+    view_transition_statement: ($) => seq(
+      "@view-transition",
+      $.block
+    ),
+
+    font_face_statement: ($) => seq(
+      "@font-face",
+      $.block
+    ),
+
+    counter_style_statement: ($) => seq(
+      "@counter-style",
+      alias($._identifier_with_interpolation, $.name),
+      $.block
+    ),
+
+    position_try_statement: ($) => seq(
+      "@position-try",
+      alias($._identifier_with_interpolation, $.name),
+      $.block
+    ),
+
+    font_palette_values_statement: ($) => seq(
+      "@font-palette-values",
+      alias($._identifier_with_interpolation, $.name),
+      $.block
+    ),
+
+    page_statement: ($) => seq(
+      "@page",
+      optional($.page_selector_list),
+      $.page_body
+    ),
+
+    page_selector_list: ($) => sep1(",", $.page_selector),
+
+    page_selector: ($) => choice(
+      seq(alias($._identifier, $.page_name), repeat($.page_pseudo_class)),
+      repeat1($.page_pseudo_class)
+    ),
+
+    page_pseudo_class: (_) => token(seq(":",
+      choice(
+        "first",
+        "last",
+        "left",
+        "right",
+        "blank"
+      )
+    )),
+
+    page_body: ($) => seq(
+      "{",
+      repeat(choice(
+        $.declaration,
+        $.margin_at_rule
+      )),
+      optional(alias($.last_declaration, $.declaration)),
+      "}"
+    ),
+
+    margin_at_rule: ($) => seq(
+      $.margin_at_keyword,
+      $.block
+    ),
+
+    margin_at_keyword: (_) => token(
+      choice(
+        "@top-left-corner",
+        "@top-left",
+        "@top-center",
+        "@top-right",
+        "@top-right-corner",
+        "@bottom-left-corner",
+        "@bottom-left",
+        "@bottom-center",
+        "@bottom-right",
+        "@bottom-right-corner",
+        "@left-top",
+        "@left-middle",
+        "@left-bottom",
+        "@right-top",
+        "@right-middle",
+        "@right-bottom"
+      )
+    ),
+
+    font_feature_values_statement: ($) => prec.right(1, seq(
+      "@font-feature-values",
+      field('name', alias($._font_feature_values_name, $.font_family)),
+      optional($.font_feature_values_body)
+    )),
+
+    _font_feature_values_name: ($) => prec.right(choice(
+      $.string_value,
+      alias($._plain_value_with_interpolation, $.family_name)
+    )),
+
+    font_feature_values_body: ($) => seq("{", repeat($.font_feature_value_block), "}"),
+
+    font_feature_value_block: ($) => seq($.font_feature_value_keyword, $.block),
+
+    font_feature_value_keyword: (_) => token(
+      choice(
+        "@stylistic",
+        "@historical-forms",
+        "@styleset",
+        "@character-variant",
+        "@swash",
+        "@ornaments",
+        "@annotation"
+      )
     ),
 
     container_statement: ($) => seq(
@@ -511,9 +631,16 @@ module.exports = grammar({
         $.while_statement,
         $.function_statement,
         $.return_statement,
-        $.utility_statement,
         $.layer_statement,
         $.scope_statement,
+        $.starting_style_statement,
+        $.view_transition_statement,
+        $.font_face_statement,
+        $.counter_style_statement,
+        $.position_try_statement,
+        $.font_palette_values_statement,
+        $.page_statement,
+        $.font_feature_values_statement,
         $.at_root_statement,
         $.error_statement,
         $.warn_statement,
