@@ -9,6 +9,7 @@
   (universal_selector)
   (nesting_selector)
 ] @tag
+
 (attribute_selector (plain_value) @string)
 (parenthesized_query
   (keyword_query) @property)
@@ -16,11 +17,14 @@
 [
   "~"
   ">"
+  "<"
   "+"
   "-"
   "*"
   "/"
   "="
+  "=="
+  "!="
   "^="
   "|"
   "|="
@@ -39,30 +43,37 @@
   "only"
 ] @keyword.operator
 
-(attribute_selector (plain_value) @string)
 (pseudo_element_selector "::" (tag_name) @selector.pseudo)
 (pseudo_class_selector ":" (class_name) @selector.pseudo)
+(page_pseudo_class) @selector.pseudo
 
-(variable_name) @variable.other.member
-(variable_value) @variable.other.member
+[
+  (variable_name)
+  (variable_value)
+  (container_statement (container_name))
+] @variable.other.member
+
 (argument_name) @variable.parameter
 
 [
   (feature_name)
   (identifier)
+  (property_name)
 ] @property
-
-((property_name) @property)
 
 (id_name) @selector.id
 (class_name) @selector.class
+(placeholder_name) @selector.class
 (namespace_name) @namespace
 (namespace_selector (tag_name) @namespace "|")
+(variable_module (module) @namespace)
 
 (attribute_name) @attribute
 
-(function_name) @function
-(mixin_name) @function
+[
+  (function_name)
+  (mixin_name)
+] @function
 
 (function_statement (name) @function)
 (mixin_statement (name) @function)
@@ -71,14 +82,13 @@
   (plain_value)
   (keyframes_name)
   (keyword_query)
+  (feature_value)
 ] @constant.builtin
 
 (interpolation "#{" @punctuation.special "}" @punctuation.special)
-(property_name (interpolation (variable_value) @variable.other.member))
 
 [
   "@media"
-  "@import"
   "@charset"
   "@namespace"
   "@supports"
@@ -101,28 +111,37 @@
   "@extend"
   "@mixin"
   "@warn"
+  "as"
+  "with"
+  "hide"
+  "show"
   (at_keyword)
   (to)
   (from)
   (important)
+  (default)
+  (global)
+  (margin_at_keyword)
+  (font_feature_value_keyword)
 ] @keyword
 
-(container_statement
-  (container_name) @variable.other.member)
-
-(margin_at_keyword) @keyword
-(font_feature_value_keyword) @keyword
-
-(style_query "style" @function.builtin)
-(scroll_state_query "scroll-state" @function.builtin)
-(import_layer "layer" @function.builtin)
-(import_supports "supports" @function.builtin)
+[
+  (selector_query "selector")
+  (style_query "style")
+  (scroll_state_query "scroll-state")
+  (font_tech_query "font-tech")
+  (font_format_query "font-format")
+  (at_rule_query "at-rule")
+  (named_feature_query "named-feature")
+  (import_layer "layer")
+  (import_supports "supports")
+  (if_style_condition "style")
+  (if_media_condition "media")
+  (if_supports_condition "supports")
+  (if_sass_condition "sass")
+] @function.builtin
 
 (if_expression (function_name) @function.builtin)
-(if_style_condition "style" @function.builtin)
-(if_media_condition "media" @function.builtin)
-(if_supports_condition "supports" @function.builtin)
-(if_sass_condition "sass" @function.builtin)
 (if_else_condition) @keyword.control.conditional
 
 (style_condition
@@ -137,8 +156,9 @@
 "@return" @keyword.control.return
 
 [
-    "@else"
-    "@if"
+  "@else"
+  "@if"
+  "if"
 ] @keyword.control.conditional
 
 [
@@ -148,14 +168,13 @@
   "through"
   "in"
   "from"
-  "if"
 ] @keyword.repeat
 
 [
-    "@forward"
-    "@import"
-    "@include"
-    "@use"
+  "@forward"
+  "@import"
+  "@include"
+  "@use"
 ] @keyword.control.import
 
 (string_value) @string

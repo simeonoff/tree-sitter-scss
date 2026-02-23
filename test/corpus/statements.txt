@@ -98,6 +98,35 @@ Import statements with layer, supports, and media queries
     (import_layer (layer_name))
     (keyword_query)))
 
+=============================================
+Import statements with supports feature functions
+=============================================
+
+@import "icons.css" supports(font-tech(color-COLRv1));
+@import "fonts.css" supports(font-format(woff2));
+@import "modern.css" supports(at-rule(@layer));
+@import "new.css" supports(named-feature(container-queries));
+
+---
+
+(stylesheet
+  (import_statement
+    (string_value)
+    (import_supports
+      (font_tech_query (feature_value))))
+  (import_statement
+    (string_value)
+    (import_supports
+      (font_format_query (feature_value))))
+  (import_statement
+    (string_value)
+    (import_supports
+      (at_rule_query (at_keyword))))
+  (import_statement
+    (string_value)
+    (import_supports
+      (named_feature_query (feature_value)))))
+
 ==============================
 Namespace statements
 ==============================
@@ -204,6 +233,42 @@ Supports statements
     (unary_query (selector_query (pseudo_class_selector
       (class_name)
       (arguments (tag_name) (tag_name)))))
+    (block)))
+
+=============================================
+Supports feature functions
+=============================================
+
+@supports font-tech(color-COLRv1) {}
+@supports font-format(woff2) {}
+@supports at-rule(@layer) {}
+@supports named-feature(container-queries) {}
+@supports font-tech(color-COLRv1) and font-tech(variations) {}
+@supports not font-format(opentype) {}
+
+---
+
+(stylesheet
+  (supports_statement
+    (font_tech_query (feature_value))
+    (block))
+  (supports_statement
+    (font_format_query (feature_value))
+    (block))
+  (supports_statement
+    (at_rule_query (at_keyword))
+    (block))
+  (supports_statement
+    (named_feature_query (feature_value))
+    (block))
+  (supports_statement
+    (binary_query
+      (font_tech_query (feature_value))
+      (font_tech_query (feature_value)))
+    (block))
+  (supports_statement
+    (unary_query
+      (font_format_query (feature_value)))
     (block)))
 
 ==============================

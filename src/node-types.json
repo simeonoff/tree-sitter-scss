@@ -437,6 +437,10 @@
           "named": true
         },
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -449,7 +453,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -474,6 +490,21 @@
         },
         {
           "type": "unary_query",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "at_rule_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "at_keyword",
           "named": true
         }
       ]
@@ -918,6 +949,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -926,7 +961,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -1556,6 +1603,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -1572,7 +1623,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -2543,6 +2606,21 @@
     }
   },
   {
+    "type": "font_format_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "feature_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "font_palette_values_statement",
     "named": true,
     "fields": {},
@@ -2556,6 +2634,21 @@
         },
         {
           "type": "name",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "font_tech_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "feature_value",
           "named": true
         }
       ]
@@ -3290,6 +3383,10 @@
           "named": true
         },
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "attribute_selector",
           "named": true
         },
@@ -3338,6 +3435,14 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "grid_value",
           "named": true
         },
@@ -3367,6 +3472,10 @@
         },
         {
           "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -3480,6 +3589,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_expression",
           "named": true
         },
@@ -3505,6 +3618,14 @@
         },
         {
           "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
           "named": true
         },
         {
@@ -3537,6 +3658,10 @@
         },
         {
           "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -3607,6 +3732,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_expression",
           "named": true
         },
@@ -3639,6 +3768,14 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "grid_value",
           "named": true
         },
@@ -3660,6 +3797,10 @@
         },
         {
           "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -4291,6 +4432,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -4303,7 +4448,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -4453,6 +4610,21 @@
         },
         {
           "type": "variable_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "named_feature_query",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "feature_value",
           "named": true
         }
       ]
@@ -4671,6 +4843,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -4679,7 +4855,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -6022,6 +6210,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -6034,7 +6226,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -6282,6 +6486,10 @@
       "required": true,
       "types": [
         {
+          "type": "at_rule_query",
+          "named": true
+        },
+        {
           "type": "binary_query",
           "named": true
         },
@@ -6290,7 +6498,19 @@
           "named": true
         },
         {
+          "type": "font_format_query",
+          "named": true
+        },
+        {
+          "type": "font_tech_query",
+          "named": true
+        },
+        {
           "type": "keyword_query",
+          "named": true
+        },
+        {
+          "type": "named_feature_query",
           "named": true
         },
         {
@@ -7052,6 +7272,10 @@
     "named": false
   },
   {
+    "type": "at-rule",
+    "named": false
+  },
+  {
     "type": "at_keyword",
     "named": true
   },
@@ -7075,6 +7299,18 @@
   {
     "type": "feature_name",
     "named": true
+  },
+  {
+    "type": "feature_value",
+    "named": true
+  },
+  {
+    "type": "font-format",
+    "named": false
+  },
+  {
+    "type": "font-tech",
+    "named": false
   },
   {
     "type": "font_feature_value_keyword",
@@ -7139,6 +7375,10 @@
   {
     "type": "module",
     "named": true
+  },
+  {
+    "type": "named-feature",
+    "named": false
   },
   {
     "type": "namespace_name",

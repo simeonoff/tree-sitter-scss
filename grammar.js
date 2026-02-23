@@ -912,6 +912,10 @@ module.exports = grammar({
         $.binary_query,
         $.unary_query,
         $.selector_query,
+        $.font_tech_query,
+        $.font_format_query,
+        $.at_rule_query,
+        $.named_feature_query,
         $.style_query,
         $.scroll_state_query,
         $.parenthesized_query
@@ -983,6 +987,39 @@ module.exports = grammar({
         "selector",
         "(",
         $._selector,
+        ")"
+      ),
+
+    // Supports feature functions (CSS Conditional Level 5 / CSS Fonts Level 5)
+    font_tech_query: ($) =>
+      seq(
+        "font-tech",
+        "(",
+        alias($._identifier, $.feature_value),
+        ")"
+      ),
+
+    font_format_query: ($) =>
+      seq(
+        "font-format",
+        "(",
+        alias($._identifier, $.feature_value),
+        ")"
+      ),
+
+    at_rule_query: ($) =>
+      seq(
+        "at-rule",
+        "(",
+        alias(token(seq("@", /[a-zA-Z_\-][a-zA-Z0-9_\-]*/)), $.at_keyword),
+        ")"
+      ),
+
+    named_feature_query: ($) =>
+      seq(
+        "named-feature",
+        "(",
+        alias($._identifier, $.feature_value),
         ")"
       ),
 
