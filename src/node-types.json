@@ -3639,6 +3639,21 @@
     }
   },
   {
+    "type": "layer_name",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "interpolation",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "layer_statement",
     "named": true,
     "fields": {},
@@ -3651,7 +3666,7 @@
           "named": true
         },
         {
-          "type": "name",
+          "type": "layer_name",
           "named": true
         }
       ]

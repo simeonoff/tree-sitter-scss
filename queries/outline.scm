@@ -31,6 +31,12 @@
     (block)
 ) @item
 
+(layer_statement
+    "@layer" @context
+    (layer_name)? @name
+    (block)
+) @item
+
 (mixin_statement
     "@mixin" @context
     (name) @name

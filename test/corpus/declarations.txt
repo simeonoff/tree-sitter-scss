@@ -870,7 +870,7 @@ PostCSS
         (plain_value)
         (important))))
   (layer_statement
-    (name)
+    (layer_name)
     (block
       (rule_set
         (selectors

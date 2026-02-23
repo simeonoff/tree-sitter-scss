@@ -387,10 +387,22 @@ module.exports = grammar({
       $.block
     ),
 
-    layer_statement: ($) => seq(
-      "@layer",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
+    layer_statement: ($) => choice(
+      seq(
+        "@layer",
+        optional($.layer_name),
+        $.block
+      ),
+      seq(
+        "@layer",
+        sep1(",", $.layer_name),
+        ";"
+      ),
+    ),
+
+    layer_name: ($) => seq(
+      $._identifier_with_interpolation,
+      repeat(seq(".", $._identifier_with_interpolation))
     ),
 
     scope_statement: ($) => seq(
