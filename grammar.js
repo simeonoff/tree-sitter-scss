@@ -84,7 +84,6 @@ module.exports = grammar({
         $.for_statement,
         $.while_statement,
         $.function_statement,
-        $.utility_statement,
         $.layer_statement,
         $.scope_statement,
         $.starting_style_statement,
@@ -411,12 +410,6 @@ module.exports = grammar({
 
     return_statement: ($) => seq("@return", $._value, ";"),
 
-    utility_statement: ($) => seq(
-      "@utility",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
-    ),
-
     layer_statement: ($) => choice(
       seq(
         "@layer",
@@ -638,7 +631,6 @@ module.exports = grammar({
         $.while_statement,
         $.function_statement,
         $.return_statement,
-        $.utility_statement,
         $.layer_statement,
         $.scope_statement,
         $.starting_style_statement,

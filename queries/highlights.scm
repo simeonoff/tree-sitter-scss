@@ -84,7 +84,6 @@
   "@supports"
   "@keyframes"
   "@container"
-  "@utility"
   "@layer"
   "@scope"
   "@property"

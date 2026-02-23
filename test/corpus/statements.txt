@@ -265,6 +265,35 @@ Other at-statements
         (call_expression (function_name) (arguments (string_value)))))))
 
 ==============================
+Generic at-rule with block (nested)
+==============================
+
+.foo {
+  @custom-media {
+    --scheme: ice;
+    --accent: #caf0f8;
+  }
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (at_rule
+        (at_keyword)
+        (block
+          (declaration
+            (property_name)
+            (plain_value))
+          (declaration
+            (property_name)
+            (color_value)))))))
+
+==============================
 Single-line comments
 ==============================
 

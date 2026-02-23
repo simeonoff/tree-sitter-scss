@@ -1093,10 +1093,6 @@
           "named": true
         },
         {
-          "type": "utility_statement",
-          "named": true
-        },
-        {
           "type": "view_transition_statement",
           "named": true
         },
@@ -6003,10 +5999,6 @@
           "named": true
         },
         {
-          "type": "utility_statement",
-          "named": true
-        },
-        {
           "type": "view_transition_statement",
           "named": true
         },
@@ -6424,25 +6416,6 @@
         },
         {
           "type": "with_clause",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "utility_statement",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "block",
-          "named": true
-        },
-        {
-          "type": "name",
           "named": true
         }
       ]
@@ -7040,10 +7013,6 @@
   },
   {
     "type": "@use",
-    "named": false
-  },
-  {
-    "type": "@utility",
     "named": false
   },
   {
