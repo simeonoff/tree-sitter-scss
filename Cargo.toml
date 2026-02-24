@@ -1,12 +1,15 @@
 [package]
 name = "tree-sitter-scss"
 description = "scss grammar for the tree-sitter parsing library"
-version = "0.0.1"
-keywords = ["incremental", "parsing", "scss"]
-categories = ["parsing", "text-editors"]
-repository = "https://github.com/tree-sitter/tree-sitter-javascript"
-edition = "2018"
+version = "0.1.0"
+authors = ["Simeon Simeonoff <simeon@simeonoff.ninja>"]
 license = "MIT"
+readme = "README.md"
+keywords = ["incremental", "parsing", "tree-sitter", "scss"]
+categories = ["parser-implementation", "parsing", "text-editors"]
+repository = "https://github.com/simeonoff/tree-sitter-scss"
+edition = "2021"
+autoexamples = false
 
 build = "bindings/rust/build.rs"
 include = [
@@ -14,13 +17,18 @@ include = [
   "grammar.js",
   "queries/*",
   "src/*",
+  "tree-sitter.json",
+  "/LICENSE",
 ]
 
 [lib]
 path = "bindings/rust/lib.rs"
 
 [dependencies]
-tree-sitter = "0.20"
+tree-sitter-language = "0.1"
 
 [build-dependencies]
 cc = "1.0"
+
+[dev-dependencies]
+tree-sitter = "0.25.10"
