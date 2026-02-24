@@ -2,7 +2,7 @@
   "name": "tree-sitter-scss",
   "version": "0.1.0",
   "description": "SCSS grammar for tree-sitter",
-  "repository": "https://github.com/simeonoff/tree-sitter-sassdoc",
+  "repository": "https://github.com/simeonoff/tree-sitter-scss",
   "license": "MIT",
   "author": {
     "name": "Simeon Simeonoff",

@@ -24,7 +24,12 @@ jobs:
       - name: Run tests
         run: npx tree-sitter test
 
-      - name: Test Node.js binding
+      - name: Parse examples
+        run: npx tree-sitter parse examples/*.scss --quiet --time
+
+      - name: Validate queries
         run: |
-          node-gyp rebuild
-          npm run test:node
+          for f in queries/*.scm; do
+            echo "Validating $f..."
+            npx tree-sitter query "$f" examples/scotch.scss --quiet
+          done
