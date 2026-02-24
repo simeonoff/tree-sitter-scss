@@ -1,4 +1,4 @@
-module github.com/savetheclocktower/tree-sitter-scss/
+module github.com/simeonoff/tree-sitter-scss/
 
 go 1.22
 

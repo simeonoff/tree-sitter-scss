@@ -3,7 +3,7 @@ $(error Windows is not supported)
 endif
 
 LANGUAGE_NAME := tree-sitter-scss
-HOMEPAGE_URL := https://github.com/savetheclocktower/tree-sitter-scss/
+HOMEPAGE_URL := https://github.com/simeonoff/tree-sitter-scss/
 VERSION := 0.1.0
 
 # repository

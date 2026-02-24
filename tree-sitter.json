@@ -19,13 +19,13 @@
     "description": "SCSS, the CSS extension language",
     "authors": [
       {
-        "name": "Andrew Dupont",
-        "email": "github@andrewdupont.net",
-        "url": "https://andrewdupont.net/"
+        "name": "Simeon Simeonoff",
+        "email": "hello@simeonoff.ninja",
+        "url": "https://simeonoff.ninja/"
       }
     ],
     "links": {
-      "repository": "https://github.com/savetheclocktower/tree-sitter-scss/"
+      "repository": "https://github.com/simeonoff/tree-sitter-scss/"
     }
   },
   "bindings": {
