@@ -1111,6 +1111,38 @@ a {
             value: (color_value)))))))
 
 ==================================================
+CSS if() with supports feature functions
+==================================================
+
+a {
+  font-family: if(
+    supports(font-tech(color-COLRv1)): icons-color;
+    else: icons-fallback;
+  );
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (if_expression
+          (function_name)
+          (if_branch
+            condition: (if_condition
+              (if_supports_condition
+                (font_tech_query (feature_value))))
+            value: (plain_value))
+          (if_branch
+            condition: (if_condition
+              (if_else_condition))
+            value: (plain_value)))))))
+
+==================================================
 Sass if() with sass() condition
 ==================================================
 
