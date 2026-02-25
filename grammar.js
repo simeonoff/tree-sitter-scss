@@ -1232,7 +1232,10 @@ module.exports = grammar({
         optional($.unit)
       ),
 
-    unit: (_) => token.immediate(/[a-zA-Z%]+/),
+    unit: (_) => choice(
+      token.immediate(/[a-zA-Z]+/),
+      token.immediate("%")
+    ),
 
     grid_value: ($) => seq(
       '[',
@@ -1454,7 +1457,7 @@ module.exports = grammar({
         3,
         // TODO: Operator precedence will be painful if it ever has to be implemented:
         // https://sass-lang.com/documentation/operators/#order-of-operations
-        choice("+", "-", "*", "/", "==", "<", ">", "!=", "<=", ">=", "and", "or")
+        choice("+", "-", "*", "/", "%", "==", "<", ">", "!=", "<=", ">=", "and", "or")
       ),
 
     _unary_operator: (_) =>

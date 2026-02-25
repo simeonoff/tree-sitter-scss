@@ -5296,11 +5296,23 @@
       ]
     },
     "unit": {
-      "type": "IMMEDIATE_TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "[a-zA-Z%]+"
-      }
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "PATTERN",
+            "value": "[a-zA-Z]+"
+          }
+        },
+        {
+          "type": "IMMEDIATE_TOKEN",
+          "content": {
+            "type": "STRING",
+            "value": "%"
+          }
+        }
+      ]
     },
     "grid_value": {
       "type": "SEQ",
@@ -6322,6 +6334,10 @@
           {
             "type": "STRING",
             "value": "/"
+          },
+          {
+            "type": "STRING",
+            "value": "%"
           },
           {
             "type": "STRING",
