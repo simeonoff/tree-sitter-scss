@@ -160,7 +160,14 @@
   (if_sass_condition "sass")
 ] @function.builtin
 
-(if_expression (function_name) @function.builtin)
+[
+  (if_expression (function_name))
+  (attr_expression (function_name))
+  (attr_type_function (function_name))
+] @function.builtin
+
+(attr_type (keyword) @keyword)
+(syntax_type) @type
 (if_else_condition) @keyword.control.conditional
 
 (style_condition

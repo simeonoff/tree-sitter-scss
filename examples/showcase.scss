@@ -35,6 +35,10 @@
   .card {
     color: if(style(--scheme: ice): var(--accent) ; else: black;);
     padding: if(media(width < 768px): 0.5rem; else: 1.5rem);
+
+    ::after {
+      content: attr(data-card-type type(<string>), "default");
+    }
   }
 
   @custom-media {
