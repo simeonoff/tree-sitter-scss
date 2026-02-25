@@ -553,6 +553,52 @@ Include statements
   )
 )
 
+=============================================
+Include statements (space-separated arguments)
+=============================================
+
+.foo {
+  @include transition(all 3s ease-out);
+  @include print-list(3s ease-out ease-in);
+  @include bar($param: 1px solid red);
+  @include multi(1px solid red, 2em auto);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors (class_selector (class_name)))
+    (block
+      (include_statement (mixin_name)
+        (arguments
+          (argument
+            (argument_value (plain_value))
+            (argument_value (integer_value (unit)))
+            (argument_value (plain_value)))))
+      (include_statement (mixin_name)
+        (arguments
+          (argument
+            (argument_value (integer_value (unit)))
+            (argument_value (plain_value))
+            (argument_value (plain_value)))))
+      (include_statement (mixin_name)
+        (arguments
+          (argument
+            (argument_name)
+            (argument_value (integer_value (unit)))
+            (argument_value (plain_value))
+            (argument_value (plain_value)))))
+      (include_statement (mixin_name)
+        (arguments
+          (argument
+            (argument_value (integer_value (unit)))
+            (argument_value (plain_value))
+            (argument_value (plain_value)))
+          (argument
+            (argument_value (integer_value (unit)))
+            (argument_value (plain_value))))))))
+
 ==============================
 Extend statements
 ==============================

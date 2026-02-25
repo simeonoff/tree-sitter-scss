@@ -345,7 +345,7 @@ module.exports = grammar({
     include_argument: ($) =>
       seq(
         optional(seq(alias($._variable_identifier, $.argument_name), ":")),
-        alias($._value, $.argument_value)
+        repeat1(alias($._value, $.argument_value))
       ),
 
     placeholder_declaration_selector: ($) => (
@@ -1535,7 +1535,7 @@ module.exports = grammar({
       seq(
         alias($._variable_identifier, $.argument_name),
         ":",
-        $._value
+        repeat1($._value)
       ),
 
     rest_argument: ($) =>
