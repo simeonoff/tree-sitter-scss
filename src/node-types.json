@@ -1006,6 +1006,10 @@
             "named": false
           },
           {
+            "type": "%",
+            "named": false
+          },
+          {
             "type": "*",
             "named": false
           },
@@ -6849,6 +6853,11 @@
     }
   },
   {
+    "type": "unit",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "universal_selector",
     "named": true,
     "fields": {}
@@ -7797,10 +7806,6 @@
   {
     "type": "true",
     "named": false
-  },
-  {
-    "type": "unit",
-    "named": true
   },
   {
     "type": "value",

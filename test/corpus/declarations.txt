@@ -223,6 +223,50 @@ a {
                       (integer_value))))))))))))
 
 ============================
+Modulo operator
+============================
+
+$x: 10 % 3;
+$y: $q % $radix;
+
+a {
+  width: calc(100% - 80px);
+  flex-basis: 50%;
+}
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (binary_expression
+      (integer_value)
+      (integer_value)))
+  (declaration
+    (variable_name)
+    (binary_expression
+      (variable_value)
+      (variable_value)))
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (call_expression
+          (function_name)
+          (arguments
+            (binary_expression
+              (integer_value
+                (unit))
+              (integer_value
+                (unit))))))
+      (declaration
+        (property_name)
+        (integer_value
+          (unit))))))
+
+============================
 Binary and unary expressions
 ============================
 
