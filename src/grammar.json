@@ -1369,13 +1369,16 @@
           ]
         },
         {
-          "type": "ALIAS",
+          "type": "REPEAT1",
           "content": {
-            "type": "SYMBOL",
-            "name": "_value"
-          },
-          "named": true,
-          "value": "argument_value"
+            "type": "ALIAS",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_value"
+            },
+            "named": true,
+            "value": "argument_value"
+          }
         }
       ]
     },
@@ -6635,8 +6638,11 @@
           "value": ":"
         },
         {
-          "type": "SYMBOL",
-          "name": "_value"
+          "type": "REPEAT1",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_value"
+          }
         }
       ]
     },
