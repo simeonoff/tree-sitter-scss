@@ -1091,6 +1091,7 @@ module.exports = grammar({
           $.map_value,
           $.parenthesized_value,
           $.call_expression,
+          $.attr_expression,
           $.if_expression,
           alias($.nesting_selector, $.nesting_value)
         )
@@ -1268,6 +1269,49 @@ module.exports = grammar({
         )
       )
     ),
+
+    // CSS attr() function
+    attr_expression: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          alias("attr", $.function_name),
+          token.immediate("("),
+          field('name', alias($._identifier, $.attribute_name)),
+          optional(field('type', $.attr_type)),
+          optional(
+            seq(
+              ",",
+              field('fallback', $.attr_fallback)
+            )
+          ),
+          ")"
+        )
+      ),
+
+    // <attr-type> = type( <syntax> ) | raw-string | number | <attr-unit>
+    attr_type: ($) =>
+      choice(
+        $.attr_type_function,
+        alias("raw-string", $.keyword),
+        alias("number", $.keyword),
+        alias($._plain_value, $.unit),
+        alias("%", $.unit)
+      ),
+
+    // type( <syntax> ) where <syntax> is a pipe-separated list of type names
+    attr_type_function: ($) =>
+      seq(
+        alias("type", $.function_name),
+        token.immediate("("),
+        sep1("|", $.syntax_type),
+        ")"
+      ),
+
+    // A CSS syntax type: < identifier > (e.g. <number>, <string>, <color>)
+    syntax_type: (_) => seq("<", /[a-zA-Z][-a-zA-Z]*/, ">"),
+
+    attr_fallback: ($) => repeat1($._value),
 
     if_expression: ($) =>
       prec.dynamic(

@@ -1209,3 +1209,220 @@ $x: if($cond, 10px, 20px);
           (unit))
         (integer_value
           (unit))))))
+
+==================================================
+CSS attr() basic form
+==================================================
+
+a {
+  content: attr(data-label);
+  content: attr(href);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name))))))
+
+==================================================
+CSS attr() with type() function
+==================================================
+
+a {
+  width: attr(data-count type(<number>));
+  content: attr(id type(<custom-ident>));
+  width: attr(data-size type(<length> | <percentage>));
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name)
+              (syntax_type)))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name)
+              (syntax_type)))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name)
+              (syntax_type)
+              (syntax_type))))))))
+
+==================================================
+CSS attr() with type() and fallback
+==================================================
+
+a {
+  content: attr(data-background type(<string>), "stranger");
+  color: attr(data-color type(<color>), red);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name)
+              (syntax_type)))
+          fallback: (attr_fallback
+            (string_value))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name)
+              (syntax_type)))
+          fallback: (attr_fallback
+            (plain_value)))))))
+
+==================================================
+CSS attr() with raw-string keyword
+==================================================
+
+a {
+  content: attr(data-name raw-string, "stranger");
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (keyword))
+          fallback: (attr_fallback
+            (string_value)))))))
+
+==================================================
+CSS attr() with dimension unit
+==================================================
+
+a {
+  width: attr(data-width px);
+  font-size: attr(data-size rem);
+  transform: rotate(attr(data-rotation deg, 1.5deg));
+  width: attr(data-width px, inherit);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (unit))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (unit))))
+      (declaration
+        (property_name)
+        (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (attr_expression
+              (function_name)
+              name: (attribute_name)
+              type: (attr_type
+                (unit))
+              fallback: (attr_fallback
+                (float_value
+                  (unit)))))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (unit))
+          fallback: (attr_fallback
+            (plain_value)))))))
+
+==================================================
+CSS attr() with number keyword
+==================================================
+
+a {
+  counter-reset: attr(data-count number, 0);
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (tag_name))
+    (block
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (keyword))
+          fallback: (attr_fallback
+            (integer_value)))))))
