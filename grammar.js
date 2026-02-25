@@ -1299,12 +1299,16 @@ module.exports = grammar({
         alias("%", $.unit)
       ),
 
-    // type( <syntax> ) where <syntax> is a pipe-separated list of type names
+    // type( <syntax> ) where <syntax> is a pipe-separated list of type names,
+    // or `*` for the universal syntax (accepts any value)
     attr_type_function: ($) =>
       seq(
         alias("type", $.function_name),
         token.immediate("("),
-        sep1("|", $.syntax_type),
+        choice(
+          "*",
+          sep1("|", $.syntax_type)
+        ),
         ")"
       ),
 

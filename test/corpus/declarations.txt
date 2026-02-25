@@ -1245,6 +1245,7 @@ a {
   width: attr(data-count type(<number>));
   content: attr(id type(<custom-ident>));
   width: attr(data-size type(<length> | <percentage>));
+  content: attr(data-any type(*));
 }
 
 ---
@@ -1281,7 +1282,15 @@ a {
             (attr_type_function
               (function_name)
               (syntax_type)
-              (syntax_type))))))))
+              (syntax_type)))))
+      (declaration
+        (property_name)
+        (attr_expression
+          (function_name)
+          name: (attribute_name)
+          type: (attr_type
+            (attr_type_function
+              (function_name))))))))
 
 ==================================================
 CSS attr() with type() and fallback
