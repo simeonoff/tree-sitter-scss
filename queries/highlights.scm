@@ -131,7 +131,6 @@
   "@debug"
   "@error"
   "@extend"
-  "@mixin"
   "@warn"
   (at_keyword)
   (margin_at_keyword)
@@ -193,7 +192,10 @@
   (state_name) @property
   (state_value) @constant.builtin)
 
-"@function" @keyword.function
+[
+  "@function"
+  "@mixin"
+] @keyword.function
 
 "@return" @keyword.return
 
