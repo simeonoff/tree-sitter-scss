@@ -1307,6 +1307,10 @@
           "named": true
         },
         {
+          "type": "placeholder",
+          "named": true
+        },
+        {
           "type": "position_try_statement",
           "named": true
         },

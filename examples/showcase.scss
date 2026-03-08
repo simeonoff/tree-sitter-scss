@@ -17,6 +17,11 @@
   }
 }
 
+%card {
+  display: flex;
+  border-radius: 0.5rem;
+}
+
 /// Resolves a color scheme variable to its value, with an optional fallback.
 /// @since 1.0.0
 /// @access public
@@ -33,6 +38,8 @@
 
 @container sidebar (width > 300px) {
   .card {
+    @extend %card;
+
     color: if(style(--scheme: ice): var(--accent) ; else: black;);
     padding: if(media(width < 768px): 0.5rem; else: 1.5rem);
 
