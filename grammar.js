@@ -646,7 +646,8 @@ module.exports = grammar({
         $.warn_statement,
         $.debug_statement,
         $.at_rule,
-        alias($.content_at_rule, $.at_rule)
+        alias($.content_at_rule, $.at_rule),
+        $.placeholder
       ),
 
     _block_direct_selector: ($) =>

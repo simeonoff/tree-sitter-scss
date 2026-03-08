@@ -2771,6 +2771,10 @@
           },
           "named": true,
           "value": "at_rule"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "placeholder"
         }
       ]
     },
