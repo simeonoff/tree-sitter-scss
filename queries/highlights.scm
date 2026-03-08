@@ -3,7 +3,8 @@
   (single_line_comment)
 ] @comment @spell
 
-(sassdoc_block) @comment.documentation @spell
+(sassdoc_line) @comment.documentation
+(sassdoc_delimiter) @comment.documentation
 
 (tag_name) @tag
 

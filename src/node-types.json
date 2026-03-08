@@ -5742,6 +5742,36 @@
     }
   },
   {
+    "type": "sassdoc_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "sassdoc_line",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sassdoc_line",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "sassdoc_content",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "scope_end",
     "named": true,
     "fields": {},
@@ -6471,6 +6501,14 @@
         },
         {
           "type": "rule_set",
+          "named": true
+        },
+        {
+          "type": "sassdoc_block",
+          "named": true
+        },
+        {
+          "type": "sassdoc_delimiter",
           "named": true
         },
         {
@@ -7762,9 +7800,12 @@
     "named": false
   },
   {
-    "type": "sassdoc_block",
-    "named": true,
-    "extra": true
+    "type": "sassdoc_content",
+    "named": true
+  },
+  {
+    "type": "sassdoc_delimiter",
+    "named": true
   },
   {
     "type": "scroll-state",

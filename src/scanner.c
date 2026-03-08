@@ -1,3 +1,4 @@
+#include "tree_sitter/alloc.h"
 #include "tree_sitter/parser.h"
 #include <wctype.h>
 #include <stdio.h>
@@ -19,18 +20,41 @@ typedef enum TokenType {
   APPLY_VALUE,
   VARIABLE_WITHOUT_REST,
   VARIABLE_WITH_REST,
-  ERROR_SENTINEL
+  ERROR_SENTINEL,
+  SASSDOC_MARKER,
+  SASSDOC_CONTENT
 } TokenType;
 
 static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
-void *tree_sitter_scss_external_scanner_create() { return NULL; }
-void tree_sitter_scss_external_scanner_destroy(void *p) {}
-void tree_sitter_scss_external_scanner_reset(void *p) {}
-unsigned tree_sitter_scss_external_scanner_serialize(void *p, char *buffer) { return 0; }
-void tree_sitter_scss_external_scanner_deserialize(void *p, const char *b, unsigned n) {}
+typedef struct {
+  bool in_sassdoc_block;
+} Scanner;
+
+void *tree_sitter_scss_external_scanner_create() {
+  Scanner *s = ts_calloc(1, sizeof(Scanner));
+  return s;
+}
+
+void tree_sitter_scss_external_scanner_destroy(void *p) { ts_free(p); }
+
+void tree_sitter_scss_external_scanner_reset(void *p) {
+  Scanner *s = (Scanner *)p;
+  s->in_sassdoc_block = false;
+}
+
+unsigned tree_sitter_scss_external_scanner_serialize(void *p, char *buffer) {
+  Scanner *s = (Scanner *)p;
+  buffer[0] = s->in_sassdoc_block ? 1 : 0;
+  return 1;
+}
+
+void tree_sitter_scss_external_scanner_deserialize(void *p, const char *b, unsigned n) {
+  Scanner *s = (Scanner *)p;
+  s->in_sassdoc_block = (n > 0 && b[0] == 1);
+}
 
 static bool scan_for_string_segment(TSLexer *lexer, char delimiter, TokenType stringTokenType) {
   char c = lexer->lookahead;
@@ -176,10 +200,79 @@ static bool scan_for_variable(TSLexer *lexer, const bool *valid_symbols) {
   }
 }
 
+// Scan for the /// marker that starts a sassdoc line.
+// Matches exactly /// (not //// or more).
+// Skips leading whitespace (including newlines) so that repeat1(sassdoc_line)
+// can match consecutive lines across newline boundaries.
+//
+// Block-breaking: when already inside a sassdoc_block (in_block is true),
+// refuses to match if a blank line (2+ newlines) was encountered while
+// skipping whitespace. This causes repeat1(sassdoc_line) to end, splitting
+// separate documentation sections into distinct sassdoc_block nodes.
+// When starting a new block (in_block is false), blank lines are allowed.
+static bool scan_for_sassdoc_marker(TSLexer *lexer, bool in_block) {
+  int newline_count = 0;
+
+  // Skip whitespace, counting newlines to detect blank lines.
+  while (iswspace(lexer->lookahead)) {
+    if (lexer->eof(lexer)) return false;
+    if (lexer->lookahead == '\n') newline_count++;
+    lexer->advance(lexer, true);
+  }
+
+  // A blank line (2+ newlines) breaks the sassdoc block,
+  // but only when continuing an existing block.
+  if (in_block && newline_count >= 2) return false;
+
+  if (lexer->lookahead != '/') return false;
+
+  // Mark the start of our token.
+  lexer->mark_end(lexer);
+
+  lexer->advance(lexer, false);
+  if (lexer->lookahead != '/') return false;
+  lexer->advance(lexer, false);
+  if (lexer->lookahead != '/') return false;
+  lexer->advance(lexer, false);
+
+  // If the next char is '/', this is //// or more — not a sassdoc marker.
+  if (lexer->lookahead == '/') return false;
+
+  lexer->mark_end(lexer);
+  lexer->result_symbol = SASSDOC_MARKER;
+  return true;
+}
+
+// Scan for sassdoc content: everything after /// up to end of line.
+// This is the content portion that gets injected into the sassdoc parser.
+// Called immediately after _sassdoc_marker has been consumed.
+// Must start at column >= 3 (right after ///) to prevent matching on a new line
+// after the parser skips whitespace.
+static bool scan_for_sassdoc_content(TSLexer *lexer) {
+  // Must not be at start of line — sassdoc_content only appears after ///.
+  // If column is 0, the parser skipped a newline and we're on a new line.
+  if (lexer->get_column(lexer) < 3) return false;
+
+  // Must have at least some content (not just newline/EOF).
+  if (lexer->eof(lexer) || lexer->lookahead == '\n') return false;
+
+  lexer->mark_end(lexer);
+
+  // Consume everything up to newline or EOF.
+  while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
+    lexer->advance(lexer, false);
+  }
+
+  lexer->mark_end(lexer);
+  lexer->result_symbol = SASSDOC_CONTENT;
+  return true;
+}
+
 bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
   PRINTF(
-    "SCAN character: [%c] validity: %i, %i, %i, %i, %i, %i, %i, %i, %i\n",
+    "SCAN character: [%c] col:%i validity: %i, %i, %i, %i, %i, %i, %i, %i, %i, sdm:%i, sdc:%i\n",
     lexer->lookahead,
+    lexer->get_column(lexer),
     valid_symbols[DESCENDANT_OP],
     valid_symbols[PSEUDO_CLASS_SELECTOR_COLON],
     valid_symbols[NO_WHITESPACE],
@@ -188,8 +281,40 @@ bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const
     valid_symbols[APPLY_VALUE],
     valid_symbols[VARIABLE_WITH_REST],
     valid_symbols[VARIABLE_WITHOUT_REST],
-    valid_symbols[ERROR_SENTINEL]
+    valid_symbols[ERROR_SENTINEL],
+    valid_symbols[SASSDOC_MARKER],
+    valid_symbols[SASSDOC_CONTENT]
   );
+
+  // Check for sassdoc marker (///) FIRST, even during error recovery.
+  // The scanner skips leading whitespace so that repeat1(sassdoc_line)
+  // can consume consecutive lines across newline boundaries.
+  if (valid_symbols[SASSDOC_MARKER] &&
+      (lexer->lookahead == '/' || iswspace(lexer->lookahead))) {
+    Scanner *s = (Scanner *)payload;
+    PRINTF("SASSDOC_MARKER is valid, trying scan at col %i, in_block: %i\n",
+           lexer->get_column(lexer), s->in_sassdoc_block);
+    bool result = scan_for_sassdoc_marker(lexer, s->in_sassdoc_block);
+    PRINTF("SASSDOC_MARKER scan result: %i\n", result);
+    if (result) {
+      // After matching, we're inside a block. Reset happens when
+      // the scanner fails to match (block ends) or on deserialize.
+      s->in_sassdoc_block = true;
+      return true;
+    }
+    // Match failed — if we were in a block, the block just ended.
+    s->in_sassdoc_block = false;
+  }
+
+  // Check for sassdoc content (rest of line after ///).
+  // IMPORTANT: Only match content immediately after ///, never after whitespace.
+  // This prevents the parser from skipping newlines and consuming the next line.
+  if (valid_symbols[SASSDOC_CONTENT]) {
+    PRINTF("SASSDOC_CONTENT is valid, trying scan, lookahead: [%c]\n", lexer->lookahead);
+    bool result = scan_for_sassdoc_content(lexer);
+    PRINTF("SASSDOC_CONTENT scan result: %i\n", result);
+    if (result) return true;
+  }
 
   // We might want more nuanced behavior here in the future, but for now we'll
   // simply decline to use the external scanner during error recovery.
