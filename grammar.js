@@ -1,7 +1,7 @@
 module.exports = grammar({
   name: "scss",
 
-  extras: ($) => [/\s/, $.comment, $.single_line_comment, $.sassdoc_block],
+  extras: ($) => [/\s/, $.comment, $.single_line_comment],
 
   externals: ($) => [
     $._descendant_operator,
@@ -48,7 +48,9 @@ module.exports = grammar({
     // user that the usage is wrong unless you target it in `highlights.scm`
     // and mark it as such.
     $._variable_identifier_with_following_rest,
-    $._error_sentinel
+    $._error_sentinel,
+    $._sassdoc_marker,
+    $.sassdoc_content,
   ],
 
   conflicts: ($) => [
@@ -98,41 +100,38 @@ module.exports = grammar({
         $.warn_statement,
         $.debug_statement,
         $.at_rule,
-        $.placeholder
+        $.placeholder,
+        $.sassdoc_block,
+        $.sassdoc_delimiter,
       ),
 
     // Statements
 
-    import_statement: ($) => seq(
-      "@import",
-      $._value,
-      optional($.import_layer),
-      optional($.import_supports),
-      sep(",", $._query),
-      ";"
-    ),
-
-    import_layer: ($) => prec.right(seq(
-      "layer",
-      optional(seq("(", optional($.layer_name), ")"))
-    )),
-
-    import_supports: ($) => seq(
-      "supports",
-      "(",
-      choice(
-        $._query,
-        seq(alias($._identifier, $.feature_name), ":", repeat1($._value))
-      ),
-      ")"
-    ),
-
-    media_statement: ($) =>
+    import_statement: ($) =>
       seq(
-        "@media",
-        sep1(",", $._query),
-        $.block
+        "@import",
+        $._value,
+        optional($.import_layer),
+        optional($.import_supports),
+        sep(",", $._query),
+        ";",
       ),
+
+    import_layer: ($) =>
+      prec.right(seq("layer", optional(seq("(", optional($.layer_name), ")")))),
+
+    import_supports: ($) =>
+      seq(
+        "supports",
+        "(",
+        choice(
+          $._query,
+          seq(alias($._identifier, $.feature_name), ":", repeat1($._value)),
+        ),
+        ")",
+      ),
+
+    media_statement: ($) => seq("@media", sep1(",", $._query), $.block),
 
     charset_statement: ($) => seq("@charset", $._value, ";"),
 
@@ -141,44 +140,31 @@ module.exports = grammar({
         "@namespace",
         optional(alias($._identifier, $.namespace_name)),
         choice($.string_value, $.call_expression),
-        ";"
+        ";",
       ),
 
-    keyframes_statement: ($) => prec.right(1,
-      seq(
-        choice(
-          "@keyframes",
-          alias(/@[-a-z]+keyframes/, $.at_keyword)
-        ),
+    keyframes_statement: ($) =>
+      prec.right(
+        1,
+        seq(
+          choice("@keyframes", alias(/@[-a-z]+keyframes/, $.at_keyword)),
 
-        field(
-          'name',
-          alias(
-            $._plain_value_with_interpolation,
-            $.keyframes_name
-          )
+          field(
+            "name",
+            alias($._plain_value_with_interpolation, $.keyframes_name),
+          ),
+          optional($.keyframe_block_list),
         ),
-        optional($.keyframe_block_list)
-      )
-    ),
+      ),
 
     keyframe_block_list: ($) =>
       seq(
         "{",
-        repeat(
-          choice(
-            $.keyframe_block,
-            alias($.content_at_rule, $.at_rule)
-          )
-        ),
-        "}"
+        repeat(choice($.keyframe_block, alias($.content_at_rule, $.at_rule))),
+        "}",
       ),
 
-    keyframe_block: ($) =>
-      seq(
-        choice($.from, $.to, $.integer_value),
-        $.block
-      ),
+    keyframe_block: ($) => seq(choice($.from, $.to, $.integer_value), $.block),
 
     from: (_) => "from",
     to: (_) => "to",
@@ -189,32 +175,23 @@ module.exports = grammar({
       seq(
         "@property",
         alias($._identifier_with_interpolation, $.property_name),
-        $.block
+        $.block,
       ),
 
-    postcss_statement: ($) => prec(
-      -1,
-      seq(
-        $.at_keyword,
-        repeat(
-          alias($._apply_value, $.plain_value)
+    postcss_statement: ($) =>
+      prec(
+        -1,
+        seq(
+          $.at_keyword,
+          repeat(alias($._apply_value, $.plain_value)),
+          optional($.important),
+          ";",
         ),
-        optional($.important),
-        ';'
-      )
-    ),
-
-    at_rule: ($) => seq(
-      $.at_keyword,
-      sep(",", $._query),
-      choice(";", $.block)
-    ),
-
-    content_at_rule: ($) =>
-      seq(
-        alias("@content", $.at_keyword),
-        ";"
       ),
+
+    at_rule: ($) => seq($.at_keyword, sep(",", $._query), choice(";", $.block)),
+
+    content_at_rule: ($) => seq(alias("@content", $.at_keyword), ";"),
 
     use_statement: ($) =>
       seq(
@@ -222,11 +199,12 @@ module.exports = grammar({
         $._value,
         optional($.as_clause),
         optional($.with_clause),
-        ";"
+        ";",
       ),
 
     use_alias: (_) =>
-      choice("*",
+      choice(
+        "*",
         // TODO: By experimentation, a `@use` alias can contain any word
         // character, even if it's not ASCII. But expressing Unicode ranges in
         // the regex seems to hang Tree-sitter.
@@ -247,133 +225,129 @@ module.exports = grammar({
         optional($.visibility_clause),
         // The `with` clause comes with a map and must be last.
         optional($.with_clause),
-        ";"
+        ";",
       ),
 
-    as_clause: ($) =>
-      seq('as', $.use_alias),
+    as_clause: ($) => seq("as", $.use_alias),
 
-    with_clause: ($) => seq('with', $.with_parameters),
+    with_clause: ($) => seq("with", $.with_parameters),
 
     visibility_clause: ($) =>
       seq(
         // You can have _either_ `hide` _or_ `show`, but not both.
-        choice('hide', 'show'),
-        $.visibility_parameters
+        choice("hide", "show"),
+        $.visibility_parameters,
       ),
-
 
     visibility_parameters: ($) =>
       sep1(
         ",",
         choice(
           alias(/[a-zA-Z-_][a-zA-Z_0-9-]*/, $.identifier),
-          alias($._variable_identifier, $.variable_value)
-        )
-      ),
-
-    parameters: ($) => seq(
-      "(",
-      choice(
-        // Only regular parameters, or…
-        sep(",", $.parameter),
-        // …one or more parameters followed by a rest parameter, or…
-        seq(
-          sep1(",", $.parameter),
-          ",",
-          $.rest_parameter
+          alias($._variable_identifier, $.variable_value),
         ),
-        // …a lone rest parameter.
-        $.rest_parameter
       ),
-      ")"
-    ),
 
-    rest_parameter: ($) => seq(
-      alias($._variable_identifier_with_following_rest, $.variable_name),
-      $._spread
-    ),
+    parameters: ($) =>
+      seq(
+        "(",
+        choice(
+          // Only regular parameters, or…
+          sep(",", $.parameter),
+          // …one or more parameters followed by a rest parameter, or…
+          seq(sep1(",", $.parameter), ",", $.rest_parameter),
+          // …a lone rest parameter.
+          $.rest_parameter,
+        ),
+        ")",
+      ),
 
-    _spread: (_) => alias(token.immediate('...'), "..."),
+    rest_parameter: ($) =>
+      seq(
+        alias($._variable_identifier_with_following_rest, $.variable_name),
+        $._spread,
+      ),
+
+    _spread: (_) => alias(token.immediate("..."), "..."),
 
     parameter: ($) =>
       seq(
         alias($._variable_identifier, $.variable_name),
-        optional(seq(":", alias($._value, $.default_value)))
+        optional(seq(":", alias($._value, $.default_value))),
       ),
 
-    with_parameters: ($) => seq("(", sep1(",", $.with_parameter), optional(","), ")"),
+    with_parameters: ($) =>
+      seq("(", sep1(",", $.with_parameter), optional(","), ")"),
 
     // A `@use` at-rule can take a configuration block. It's like an ordinary
     // parameter, but it must specify a value after a colon.
-    with_parameter: ($) => (
+    with_parameter: ($) =>
       seq(
         alias($._variable_identifier, $.variable_name),
-        ':',
+        ":",
         $._value,
-        optional(
-          $.default
-        )
-      )
-    ),
+        optional($.default),
+      ),
 
     mixin_statement: ($) =>
-      seq("@mixin", alias($._identifier, $.name), optional($.parameters), $.block),
+      seq(
+        "@mixin",
+        alias($._identifier, $.name),
+        optional($.parameters),
+        $.block,
+      ),
 
     include_statement: ($) =>
       seq(
         "@include",
         optional(
           seq(
-            field('module', alias($._identifier, $.module)),
-            token.immediate('.'),
-            $._no_whitespace
-          )
+            field("module", alias($._identifier, $.module)),
+            token.immediate("."),
+            $._no_whitespace,
+          ),
         ),
         alias($._identifier, $.mixin_name),
         optional(alias($.include_arguments, $.arguments)),
-        choice($.block, ";")
+        choice($.block, ";"),
       ),
 
     include_arguments: ($) =>
       seq(
         token.immediate("("),
         sep(",", alias($.include_argument, $.argument)),
-        ")"
+        ")",
       ),
 
     include_argument: ($) =>
       seq(
         optional(seq(alias($._variable_identifier, $.argument_name), ":")),
-        repeat1(alias($._value, $.argument_value))
+        repeat1(alias($._value, $.argument_value)),
       ),
 
-    placeholder_declaration_selector: ($) => (
-      seq(
-        "%",
-        alias($._identifier_with_interpolation, $.placeholder_name)
-      )
-    ),
+    placeholder_declaration_selector: ($) =>
+      seq("%", alias($._identifier_with_interpolation, $.placeholder_name)),
 
-    placeholder: ($) => (
+    placeholder: ($) =>
       seq(
         alias($.placeholder_declaration_selector, $.placeholder_selector),
-        $.block
-      )
-    ),
+        $.block,
+      ),
 
     extend_statement: ($) =>
       seq(
         "@extend",
         choice($._value, $.class_selector, $.placeholder_selector),
-        ";"
+        ";",
       ),
 
-    if_statement: ($) => seq($.if_clause, repeat($.else_if_clause), optional($.else_clause)),
+    if_statement: ($) =>
+      seq($.if_clause, repeat($.else_if_clause), optional($.else_clause)),
 
     if_clause: ($) => seq("@if", alias($._value, $.condition), $.block),
 
-    else_if_clause: ($) => seq("@else", "if", alias($._value, $.condition), $.block),
+    else_if_clause: ($) =>
+      seq("@else", "if", alias($._value, $.condition), $.block),
 
     else_clause: ($) => seq("@else", $.block),
 
@@ -384,7 +358,7 @@ module.exports = grammar({
         alias($._variable_identifier, $.value),
         "in",
         $._value,
-        $.block
+        $.block,
       ),
 
     for_statement: ($) =>
@@ -395,7 +369,7 @@ module.exports = grammar({
         alias($._value, $.from),
         "through",
         alias($._value, $.through),
-        $.block
+        $.block,
       ),
 
     while_statement: ($) => seq("@while", $._value, $.block),
@@ -405,181 +379,148 @@ module.exports = grammar({
         "@function",
         alias($._identifier, $.name),
         optional($.parameters),
-        $.block
+        $.block,
       ),
 
     return_statement: ($) => seq("@return", $._value, ";"),
 
-    layer_statement: ($) => choice(
-      seq(
-        "@layer",
-        optional($.layer_name),
-        $.block
+    layer_statement: ($) =>
+      choice(
+        seq("@layer", optional($.layer_name), $.block),
+        seq("@layer", sep1(",", $.layer_name), ";"),
       ),
+
+    layer_name: ($) =>
       seq(
-        "@layer",
-        sep1(",", $.layer_name),
-        ";"
+        $._identifier_with_interpolation,
+        repeat(seq(".", $._identifier_with_interpolation)),
       ),
-    ),
 
-    layer_name: ($) => seq(
-      $._identifier_with_interpolation,
-      repeat(seq(".", $._identifier_with_interpolation))
-    ),
+    scope_statement: ($) =>
+      seq("@scope", optional($.scope_start), optional($.scope_end), $.block),
 
-    scope_statement: ($) => seq(
-      "@scope",
-      optional($.scope_start),
-      optional($.scope_end),
-      $.block
-    ),
+    scope_start: ($) => seq("(", sep1(",", $._selector), ")"),
 
-    scope_start: ($) => seq(
-      "(",
-      sep1(",", $._selector),
-      ")"
-    ),
+    scope_end: ($) => seq("to", "(", sep1(",", $._selector), ")"),
 
-    scope_end: ($) => seq(
-      "to",
-      "(",
-      sep1(",", $._selector),
-      ")"
-    ),
+    starting_style_statement: ($) => seq("@starting-style", $.block),
 
-    starting_style_statement: ($) => seq(
-      "@starting-style",
-      $.block
-    ),
+    view_transition_statement: ($) => seq("@view-transition", $.block),
 
-    view_transition_statement: ($) => seq(
-      "@view-transition",
-      $.block
-    ),
+    font_face_statement: ($) => seq("@font-face", $.block),
 
-    font_face_statement: ($) => seq(
-      "@font-face",
-      $.block
-    ),
+    counter_style_statement: ($) =>
+      seq(
+        "@counter-style",
+        alias($._identifier_with_interpolation, $.name),
+        $.block,
+      ),
 
-    counter_style_statement: ($) => seq(
-      "@counter-style",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
-    ),
+    position_try_statement: ($) =>
+      seq(
+        "@position-try",
+        alias($._identifier_with_interpolation, $.name),
+        $.block,
+      ),
 
-    position_try_statement: ($) => seq(
-      "@position-try",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
-    ),
+    font_palette_values_statement: ($) =>
+      seq(
+        "@font-palette-values",
+        alias($._identifier_with_interpolation, $.name),
+        $.block,
+      ),
 
-    font_palette_values_statement: ($) => seq(
-      "@font-palette-values",
-      alias($._identifier_with_interpolation, $.name),
-      $.block
-    ),
-
-    page_statement: ($) => seq(
-      "@page",
-      optional($.page_selector_list),
-      $.page_body
-    ),
+    page_statement: ($) =>
+      seq("@page", optional($.page_selector_list), $.page_body),
 
     page_selector_list: ($) => sep1(",", $.page_selector),
 
-    page_selector: ($) => choice(
-      seq(alias($._identifier, $.page_name), repeat($.page_pseudo_class)),
-      repeat1($.page_pseudo_class)
-    ),
-
-    page_pseudo_class: (_) => token(seq(":",
+    page_selector: ($) =>
       choice(
-        "first",
-        "last",
-        "left",
-        "right",
-        "blank"
-      )
-    )),
+        seq(alias($._identifier, $.page_name), repeat($.page_pseudo_class)),
+        repeat1($.page_pseudo_class),
+      ),
 
-    page_body: ($) => seq(
-      "{",
-      repeat(choice(
-        $.declaration,
-        $.margin_at_rule
-      )),
-      optional(alias($.last_declaration, $.declaration)),
-      "}"
-    ),
+    page_pseudo_class: (_) =>
+      token(seq(":", choice("first", "last", "left", "right", "blank"))),
 
-    margin_at_rule: ($) => seq(
-      $.margin_at_keyword,
-      $.block
-    ),
+    page_body: ($) =>
+      seq(
+        "{",
+        repeat(choice($.declaration, $.margin_at_rule)),
+        optional(alias($.last_declaration, $.declaration)),
+        "}",
+      ),
 
-    margin_at_keyword: (_) => token(
-      choice(
-        "@top-left-corner",
-        "@top-left",
-        "@top-center",
-        "@top-right",
-        "@top-right-corner",
-        "@bottom-left-corner",
-        "@bottom-left",
-        "@bottom-center",
-        "@bottom-right",
-        "@bottom-right-corner",
-        "@left-top",
-        "@left-middle",
-        "@left-bottom",
-        "@right-top",
-        "@right-middle",
-        "@right-bottom"
-      )
-    ),
+    margin_at_rule: ($) => seq($.margin_at_keyword, $.block),
 
-    font_feature_values_statement: ($) => prec.right(1, seq(
-      "@font-feature-values",
-      field('name', alias($._font_feature_values_name, $.font_family)),
-      optional($.font_feature_values_body)
-    )),
+    margin_at_keyword: (_) =>
+      token(
+        choice(
+          "@top-left-corner",
+          "@top-left",
+          "@top-center",
+          "@top-right",
+          "@top-right-corner",
+          "@bottom-left-corner",
+          "@bottom-left",
+          "@bottom-center",
+          "@bottom-right",
+          "@bottom-right-corner",
+          "@left-top",
+          "@left-middle",
+          "@left-bottom",
+          "@right-top",
+          "@right-middle",
+          "@right-bottom",
+        ),
+      ),
 
-    _font_feature_values_name: ($) => prec.right(choice(
-      $.string_value,
-      alias($._plain_value_with_interpolation, $.family_name)
-    )),
+    font_feature_values_statement: ($) =>
+      prec.right(
+        1,
+        seq(
+          "@font-feature-values",
+          field("name", alias($._font_feature_values_name, $.font_family)),
+          optional($.font_feature_values_body),
+        ),
+      ),
 
-    font_feature_values_body: ($) => seq("{", repeat($.font_feature_value_block), "}"),
+    _font_feature_values_name: ($) =>
+      prec.right(
+        choice(
+          $.string_value,
+          alias($._plain_value_with_interpolation, $.family_name),
+        ),
+      ),
+
+    font_feature_values_body: ($) =>
+      seq("{", repeat($.font_feature_value_block), "}"),
 
     font_feature_value_block: ($) => seq($.font_feature_value_keyword, $.block),
 
-    font_feature_value_keyword: (_) => token(
-      choice(
-        "@stylistic",
-        "@historical-forms",
-        "@styleset",
-        "@character-variant",
-        "@swash",
-        "@ornaments",
-        "@annotation"
-      )
-    ),
-
-    container_statement: ($) => seq(
-      "@container",
-      optional(alias($._identifier, $.container_name)),
-      sep1(",", $._query),
-      $.block
-    ),
-
-    at_root_statement: ($) =>
-      seq(
-        "@at-root",
-        $.selectors,
-        $.block
+    font_feature_value_keyword: (_) =>
+      token(
+        choice(
+          "@stylistic",
+          "@historical-forms",
+          "@styleset",
+          "@character-variant",
+          "@swash",
+          "@ornaments",
+          "@annotation",
+        ),
       ),
+
+    container_statement: ($) =>
+      seq(
+        "@container",
+        optional(alias($._identifier, $.container_name)),
+        sep1(",", $._query),
+        $.block,
+      ),
+
+    at_root_statement: ($) => seq("@at-root", $.selectors, $.block),
 
     error_statement: ($) => seq("@error", $._value, ";"),
 
@@ -591,22 +532,14 @@ module.exports = grammar({
 
     rule_set: ($) => seq($.selectors, $.block),
 
-    selectors: ($) => sep1(
-      ",",
-      choice(
-        $._selector,
-        $._block_direct_selector
-      )
-    ),
+    selectors: ($) => sep1(",", choice($._selector, $._block_direct_selector)),
 
     block: ($) =>
       seq(
         "{",
         repeat($._block_item),
-        optional(
-          alias($.last_declaration, $.declaration)
-        ),
-        "}"
+        optional(alias($.last_declaration, $.declaration)),
+        "}",
       ),
 
     _block_item: ($) =>
@@ -647,54 +580,39 @@ module.exports = grammar({
         $.debug_statement,
         $.at_rule,
         alias($.content_at_rule, $.at_rule),
-        $.placeholder
+        $.placeholder,
       ),
 
     _block_direct_selector: ($) =>
       choice(
         alias($._block_direct_child_selector, $.child_selector),
         alias($._block_direct_sibling_selector, $.sibling_selector),
-        alias($._block_direct_adjacent_sibling_selector, $.adjacent_sibling_selector),
+        alias(
+          $._block_direct_adjacent_sibling_selector,
+          $.adjacent_sibling_selector,
+        ),
         alias($._child_selector_block_direct, $.child_selector),
         alias($._sibling_selector_block_direct, $.sibling_selector),
-        alias($._adjacent_sibling_selector_block_direct, $.adjacent_sibling_selector)
+        alias(
+          $._adjacent_sibling_selector_block_direct,
+          $.adjacent_sibling_selector,
+        ),
       ),
 
-    _block_direct_child_selector: ($) =>
-      seq(
-        '>',
-        field('right', $._selector)
-      ),
+    _block_direct_child_selector: ($) => seq(">", field("right", $._selector)),
 
     _block_direct_sibling_selector: ($) =>
-      seq(
-        '~',
-        field('right', $._selector)
-      ),
+      seq("~", field("right", $._selector)),
 
     _block_direct_adjacent_sibling_selector: ($) =>
-      seq(
-        '+',
-        field('right', $._selector)
-      ),
+      seq("+", field("right", $._selector)),
 
-    _child_selector_block_direct: ($) =>
-      seq(
-        field('left', $._selector),
-        '>'
-      ),
+    _child_selector_block_direct: ($) => seq(field("left", $._selector), ">"),
 
-    _sibling_selector_block_direct: ($) =>
-      seq(
-        field('left', $._selector),
-        '~'
-      ),
+    _sibling_selector_block_direct: ($) => seq(field("left", $._selector), "~"),
 
     _adjacent_sibling_selector_block_direct: ($) =>
-      seq(
-        field('left', $._selector),
-        '+'
-      ),
+      seq(field("left", $._selector), "+"),
 
     // Selectors
 
@@ -714,7 +632,7 @@ module.exports = grammar({
         $.sibling_selector,
         $.adjacent_sibling_selector,
         $.namespace_selector,
-        $.interpolation
+        $.interpolation,
       ),
 
     nesting_selector: (_) => "&",
@@ -725,10 +643,10 @@ module.exports = grammar({
       prec(
         1,
         seq(
-          '%',
+          "%",
           $._no_whitespace,
-          alias($._identifier_with_interpolation, $.placeholder_name)
-        )
+          alias($._identifier_with_interpolation, $.placeholder_name),
+        ),
       ),
 
     class_selector: ($) =>
@@ -736,21 +654,18 @@ module.exports = grammar({
         1,
         seq(
           optional($._selector),
-          choice(
-            seq(".", $._no_whitespace),
-            $.nesting_selector
-          ),
-          alias($._identifier_with_interpolation, $.class_name)
-        )
+          choice(seq(".", $._no_whitespace), $.nesting_selector),
+          alias($._identifier_with_interpolation, $.class_name),
+        ),
       ),
 
     pseudo_class_selector: ($) =>
       seq(
         optional($._selector),
-        alias($._pseudo_class_selector_colon, ':'),
+        alias($._pseudo_class_selector_colon, ":"),
         $._no_whitespace,
         alias($._identifier_with_interpolation, $.class_name),
-        optional(alias($.pseudo_class_arguments, $.arguments))
+        optional(alias($.pseudo_class_arguments, $.arguments)),
       ),
 
     pseudo_element_selector: ($) =>
@@ -759,16 +674,14 @@ module.exports = grammar({
         "::",
         $._no_whitespace,
         alias($._identifier_with_interpolation, $.tag_name),
-        optional(
-          alias($.pseudo_element_arguments, $.arguments)
-        )
+        optional(alias($.pseudo_element_arguments, $.arguments)),
       ),
 
     pseudo_element_arguments: ($) =>
       seq(
-        token.immediate('('),
-        sep(',', choice($._selector, repeat1($._value))),
-        ')'
+        token.immediate("("),
+        sep(",", choice($._selector, repeat1($._value))),
+        ")",
       ),
 
     id_selector: ($) =>
@@ -776,7 +689,7 @@ module.exports = grammar({
         optional($._selector),
         "#",
         $._no_whitespace,
-        alias($._identifier_with_interpolation, $.id_name)
+        alias($._identifier_with_interpolation, $.id_name),
       ),
 
     attribute_selector: ($) =>
@@ -785,73 +698,45 @@ module.exports = grammar({
         "[",
         seq(
           alias(
-            choice(
-              $._identifier_with_interpolation,
-              $.namespace_selector
-            ),
-            $.attribute_name
+            choice($._identifier_with_interpolation, $.namespace_selector),
+            $.attribute_name,
           ),
-          optional(
-            seq(
-              choice("=", "~=", "^=", "|=", "*=", "$="),
-              $._value
-            )
-          ),
+          optional(seq(choice("=", "~=", "^=", "|=", "*=", "$="), $._value)),
         ),
-        "]"
+        "]",
       ),
 
-    child_selector: ($) => prec.left(
-      seq(
-        field('left', $._selector),
-        ">",
-        field('right', $._selector)
-      )
-    ),
+    child_selector: ($) =>
+      prec.left(
+        seq(field("left", $._selector), ">", field("right", $._selector)),
+      ),
 
-    descendant_selector: ($) => prec.left(
-      seq(
-        field('left', $._selector),
-        $._descendant_operator,
-        field('right', $._selector)
-      )
-    ),
+    descendant_selector: ($) =>
+      prec.left(
+        seq(
+          field("left", $._selector),
+          $._descendant_operator,
+          field("right", $._selector),
+        ),
+      ),
 
-    sibling_selector: ($) => prec.left(
-      seq(
-        field('left', $._selector),
-        "~",
-        field('right', $._selector)
-      )
-    ),
+    sibling_selector: ($) =>
+      prec.left(
+        seq(field("left", $._selector), "~", field("right", $._selector)),
+      ),
 
-    adjacent_sibling_selector: ($) => prec.left(
-      seq(
-        field('left', $._selector),
-        "+",
-        field('right', $._selector)
-      )
-    ),
+    adjacent_sibling_selector: ($) =>
+      prec.left(
+        seq(field("left", $._selector), "+", field("right", $._selector)),
+      ),
 
-    namespace_selector: ($) => prec.left(
-      seq(
-        $._selector,
-        '|',
-        $._selector
-      )
-    ),
+    namespace_selector: ($) => prec.left(seq($._selector, "|", $._selector)),
 
     pseudo_class_arguments: ($) =>
       seq(
         token.immediate("("),
-        sep(
-          ",",
-          choice(
-            prec.dynamic(1, $._selector),
-            repeat1($._value)
-          )
-        ),
-        ")"
+        sep(",", choice(prec.dynamic(1, $._selector), repeat1($._value))),
+        ")",
       ),
 
     // Declarations
@@ -861,28 +746,21 @@ module.exports = grammar({
         // Variable
         seq(
           alias($._variable_identifier, $.variable_name),
-          ':',
+          ":",
           $._value,
           repeat(seq(optional(","), $._value)),
-          optional(
-            choice(
-              $.default,
-              $.global
-            )
-          ),
-          ';'
+          optional(choice($.default, $.global)),
+          ";",
         ),
 
         // Property
         seq(
           alias($._identifier_with_interpolation, $.property_name),
-          ':',
+          ":",
           $._value,
-          repeat(
-            seq(optional(","), $._value)
-          ),
+          repeat(seq(optional(","), $._value)),
           optional($.important),
-          ';'
+          ";",
         ),
       ),
 
@@ -895,8 +773,8 @@ module.exports = grammar({
           ":",
           $._value,
           repeat(seq(optional(","), $._value)),
-          optional($.important)
-        )
+          optional($.important),
+        ),
       ),
 
     important: (_) => "!important",
@@ -919,110 +797,84 @@ module.exports = grammar({
         $.named_feature_query,
         $.style_query,
         $.scroll_state_query,
-        $.parenthesized_query
+        $.parenthesized_query,
       ),
 
-    feature_query: ($) => prec(
-      -1,
-      seq(
-        "(",
-        alias($._identifier, $.feature_name),
-        ":",
-        repeat1($._value),
-        ")"
-      )
-    ),
+    feature_query: ($) =>
+      prec(
+        -1,
+        seq(
+          "(",
+          alias($._identifier, $.feature_name),
+          ":",
+          repeat1($._value),
+          ")",
+        ),
+      ),
 
     // Range query syntax: (width > 400px), (400px < width < 800px)
-    range_query: ($) => prec.dynamic(
-      1,
-      seq(
-        "(",
-        choice(
-          // Feature on left: (width > 400px), (width >= 400px)
-          seq(
-            alias($._identifier, $.feature_name),
-            alias($._range_operator, $.range_operator),
-            $._range_value
+    range_query: ($) =>
+      prec.dynamic(
+        1,
+        seq(
+          "(",
+          choice(
+            // Feature on left: (width > 400px), (width >= 400px)
+            seq(
+              alias($._identifier, $.feature_name),
+              alias($._range_operator, $.range_operator),
+              $._range_value,
+            ),
+            // Value on left: (400px < width), (400px <= width < 800px)
+            seq(
+              $._range_value,
+              alias($._range_operator, $.range_operator),
+              alias($._identifier, $.feature_name),
+              optional(
+                seq(alias($._range_operator, $.range_operator), $._range_value),
+              ),
+            ),
           ),
-          // Value on left: (400px < width), (400px <= width < 800px)
-          seq(
-            $._range_value,
-            alias($._range_operator, $.range_operator),
-            alias($._identifier, $.feature_name),
-            optional(seq(alias($._range_operator, $.range_operator), $._range_value))
-          )
+          ")",
         ),
-        ")"
-      )
-    ),
+      ),
 
     _range_operator: (_) => choice("<", ">", "<=", ">="),
 
     // Values allowed in range queries (no binary expressions to avoid operator conflicts)
-    _range_value: ($) => choice(
-      $.integer_value,
-      $.float_value,
-      alias($._variable_identifier, $.variable_value)
-    ),
+    _range_value: ($) =>
+      choice(
+        $.integer_value,
+        $.float_value,
+        alias($._variable_identifier, $.variable_value),
+      ),
 
     parenthesized_query: ($) => seq("(", $._query, ")"),
 
-    binary_query: ($) => prec.left(
-      seq(
-        $._query,
-        choice("and", "or"),
-        $._query
-      )
-    ),
+    binary_query: ($) =>
+      prec.left(seq($._query, choice("and", "or"), $._query)),
 
-    unary_query: ($) => prec(1,
-      seq(
-        choice("not", "only"),
-        $._query
-      )
-    ),
+    unary_query: ($) => prec(1, seq(choice("not", "only"), $._query)),
 
-    selector_query: ($) =>
-      seq(
-        "selector",
-        "(",
-        $._selector,
-        ")"
-      ),
+    selector_query: ($) => seq("selector", "(", $._selector, ")"),
 
     // Supports feature functions (CSS Conditional Level 5 / CSS Fonts Level 5)
     font_tech_query: ($) =>
-      seq(
-        "font-tech",
-        "(",
-        alias($._identifier, $.feature_value),
-        ")"
-      ),
+      seq("font-tech", "(", alias($._identifier, $.feature_value), ")"),
 
     font_format_query: ($) =>
-      seq(
-        "font-format",
-        "(",
-        alias($._identifier, $.feature_value),
-        ")"
-      ),
+      seq("font-format", "(", alias($._identifier, $.feature_value), ")"),
 
     at_rule_query: ($) =>
       seq(
         "at-rule",
         "(",
         alias(token(seq("@", /[a-zA-Z_\-][a-zA-Z0-9_\-]*/)), $.at_keyword),
-        ")"
+        ")",
       ),
 
     named_feature_query: ($) =>
-      seq(
-        "named-feature",
-        "(",
-        alias($._identifier, $.feature_value),
-        ")"
-      ),
+      seq("named-feature", "(", alias($._identifier, $.feature_value), ")"),
 
     // Container style query: style(--custom-prop: value) or style(color: red)
     style_query: ($) =>
@@ -1034,16 +886,16 @@ module.exports = grammar({
           choice(
             $.style_condition,
             seq("not", $.style_condition),
-            seq("(", $.style_condition, ")")
-          )
+            seq("(", $.style_condition, ")"),
+          ),
         ),
-        ")"
+        ")",
       ),
 
     style_condition: ($) =>
       seq(
         alias($._identifier, $.property_name),
-        optional(seq(":", repeat1($._value)))
+        optional(seq(":", repeat1($._value))),
       ),
 
     // Container scroll-state query: scroll-state(stuck: top)
@@ -1056,17 +908,17 @@ module.exports = grammar({
           choice(
             $.scroll_state_condition,
             seq("not", $.scroll_state_condition),
-            seq("(", $.scroll_state_condition, ")")
-          )
+            seq("(", $.scroll_state_condition, ")"),
+          ),
         ),
-        ")"
+        ")",
       ),
 
     scroll_state_condition: ($) =>
       seq(
         alias($._identifier, $.state_name),
         ":",
-        alias($._identifier, $.state_value)
+        alias($._identifier, $.state_value),
       ),
 
     // Property Values
@@ -1094,8 +946,8 @@ module.exports = grammar({
           $.call_expression,
           $.attr_expression,
           $.if_expression,
-          alias($.nesting_selector, $.nesting_value)
-        )
+          alias($.nesting_selector, $.nesting_value),
+        ),
       ),
 
     // Since a `url` function allows a greater breadth of unquoted characters
@@ -1113,18 +965,12 @@ module.exports = grammar({
         $.integer_value,
         $.float_value,
         $.string_value,
-        alias(
-          $.binary_expression_allowed_in_url_function,
-          $.binary_expression
-        ),
-        alias(
-          $.unary_expression_allowed_in_url_function,
-          $.unary_expression
-        ),
+        alias($.binary_expression_allowed_in_url_function, $.binary_expression),
+        alias($.unary_expression_allowed_in_url_function, $.unary_expression),
         $.map_value,
         $.parenthesized_value,
         $.call_expression,
-        $.if_expression
+        $.if_expression,
       ),
 
     boolean_value: (_) => choice("true", "false"),
@@ -1132,90 +978,64 @@ module.exports = grammar({
 
     parenthesized_value: ($) => seq("(", $._value, ")"),
 
-    list_value: ($) => seq(
-      "(",
-      $._value,
-      ",",
-      sep(",", $._value),
-      optional(","),
-      ")"
-    ),
+    list_value: ($) =>
+      seq("(", $._value, ",", sep(",", $._value), optional(","), ")"),
 
-    map_value: ($) => seq("(", sep(',', $.map_pair), optional(","), ")"),
+    map_value: ($) => seq("(", sep(",", $.map_pair), optional(","), ")"),
 
-    map_pair: ($) => prec(2,
-      seq(
-        field('key', $._value),
-        ':',
-        field('value', $._value),
-        optional($.default)
-      )
-    ),
+    map_pair: ($) =>
+      prec(
+        2,
+        seq(
+          field("key", $._value),
+          ":",
+          field("value", $._value),
+          optional($.default),
+        ),
+      ),
 
     color_value: (_) => seq("#", token.immediate(/[0-9a-fA-F]{3,8}/)),
 
     string_value: ($) =>
-      choice(
-        $._single_quoted_string_value,
-        $._double_quoted_string_value
-      ),
+      choice($._single_quoted_string_value, $._double_quoted_string_value),
 
     _single_quoted_string_value: ($) =>
       seq(
         "'",
-        repeat(
-          choice(
-            $._single_quoted_string_segment,
-            $.interpolation
-          )
-        ),
-        "'"
+        repeat(choice($._single_quoted_string_segment, $.interpolation)),
+        "'",
       ),
 
     _double_quoted_string_value: ($) =>
       seq(
         '"',
-        repeat(
-          choice(
-            $._double_quoted_string_segment,
-            $.interpolation
-          )
-        ),
-        '"'
+        repeat(choice($._double_quoted_string_segment, $.interpolation)),
+        '"',
       ),
 
     // Only used in certain places where SCSS will tolerate an unquoted string
     // that would normally be ambiguous, like a URL.
-    unquoted_string_value: (_) => (
+    unquoted_string_value: (_) =>
       token(
         seq(
           repeat(
             choice(
               /[-_]/,
-              /\/[^\*\s,;!{}()\[\]]/ // Slash not followed by a '*' (which would be a comment)
-            )
+              /\/[^\*\s,;!{}()\[\]]/, // Slash not followed by a '*' (which would be a comment)
+            ),
           ),
           /[a-zA-Z]/,
           repeat(
             choice(
               /[^/\s,;!{}()\[\]]/, // Not a slash, not a delimiter character
-              /\/[^\*\s,;!{}()\[\]]/ // Slash not followed by a '*' (which would be a comment)
-            )
-          )
-        )
-      )
-    ),
+              /\/[^\*\s,;!{}()\[\]]/, // Slash not followed by a '*' (which would be a comment)
+            ),
+          ),
+        ),
+      ),
 
     integer_value: ($) =>
-      seq(
-        token(
-          seq(
-            optional(choice("+", "-")),
-            /\d+/
-          )
-        ),
-        optional($.unit)
-      ),
+      seq(token(seq(optional(choice("+", "-")), /\d+/)), optional($.unit)),
 
     float_value: ($) =>
       seq(
@@ -1226,53 +1046,41 @@ module.exports = grammar({
             choice(
               seq(".", /\d+/),
               seq(/[eE]/, optional("-"), /\d+/),
-              seq(".", /\d+/, /[eE]/, optional("-"), /\d+/)
-            )
-          )
+              seq(".", /\d+/, /[eE]/, optional("-"), /\d+/),
+            ),
+          ),
         ),
-        optional($.unit)
+        optional($.unit),
       ),
 
-    unit: (_) => choice(
-      token.immediate(/[a-zA-Z]+/),
-      token.immediate("%")
-    ),
+    unit: (_) => choice(token.immediate(/[a-zA-Z]+/), token.immediate("%")),
 
-    grid_value: ($) => seq(
-      '[',
-      sep1(',', $._value),
-      ']'
-    ),
+    grid_value: ($) => seq("[", sep1(",", $._value), "]"),
 
-    _expression: ($) =>
-      choice(
-        $.call_expression,
-        $.binary_expression
-      ),
+    _expression: ($) => choice($.call_expression, $.binary_expression),
 
-    call_expression: ($) => (
+    call_expression: ($) =>
       choice(
         seq(
-          field('name', alias('url', $.function_name)),
-          field('arguments', alias($.arguments_for_url, $.arguments)),
+          field("name", alias("url", $.function_name)),
+          field("arguments", alias($.arguments_for_url, $.arguments)),
         ),
         seq(
-          field('name', alias('if', $.function_name)),
-          field('arguments', $.arguments)
+          field("name", alias("if", $.function_name)),
+          field("arguments", $.arguments),
         ),
         seq(
           optional(
             seq(
-              field('module', alias($._identifier, $.module)),
-              token.immediate('.'),
-              $._no_whitespace
-            )
+              field("module", alias($._identifier, $.module)),
+              token.immediate("."),
+              $._no_whitespace,
+            ),
           ),
-          field('name', alias($._identifier, $.function_name)),
-          field('arguments', $.arguments)
-        )
-      )
-    ),
+          field("name", alias($._identifier, $.function_name)),
+          field("arguments", $.arguments),
+        ),
+      ),
 
     // CSS attr() function
     attr_expression: ($) =>
@@ -1281,16 +1089,11 @@ module.exports = grammar({
         seq(
           alias("attr", $.function_name),
           token.immediate("("),
-          field('name', alias($._identifier, $.attribute_name)),
-          optional(field('type', $.attr_type)),
-          optional(
-            seq(
-              ",",
-              field('fallback', $.attr_fallback)
-            )
-          ),
-          ")"
-        )
+          field("name", alias($._identifier, $.attribute_name)),
+          optional(field("type", $.attr_type)),
+          optional(seq(",", field("fallback", $.attr_fallback))),
+          ")",
+        ),
       ),
 
     // <attr-type> = type( <syntax> ) | raw-string | number | <attr-unit>
@@ -1300,7 +1103,7 @@ module.exports = grammar({
         alias("raw-string", $.keyword),
         alias("number", $.keyword),
         alias($._plain_value, $.unit),
-        alias("%", $.unit)
+        alias("%", $.unit),
       ),
 
     // type( <syntax> ) where <syntax> is a pipe-separated list of type names,
@@ -1309,11 +1112,8 @@ module.exports = grammar({
       seq(
         alias("type", $.function_name),
         token.immediate("("),
-        choice(
-          "*",
-          sep1("|", $.syntax_type)
-        ),
-        ")"
+        choice("*", sep1("|", $.syntax_type)),
+        ")",
       ),
 
     // A CSS syntax type: < identifier > (e.g. <number>, <string>, <color>)
@@ -1327,21 +1127,16 @@ module.exports = grammar({
         seq(
           alias("if", $.function_name),
           token.immediate("("),
-          optional(
-            seq(
-              sep1(";", $.if_branch),
-              optional(";")
-            )
-          ),
-          ")"
-        )
+          optional(seq(sep1(";", $.if_branch), optional(";"))),
+          ")",
+        ),
       ),
 
     if_branch: ($) =>
       seq(
-        field('condition', $.if_condition),
+        field("condition", $.if_condition),
         ":",
-        field('value', repeat1($._value))
+        field("value", repeat1($._value)),
       ),
 
     if_condition: ($) =>
@@ -1350,7 +1145,7 @@ module.exports = grammar({
         $.if_media_condition,
         $.if_supports_condition,
         $.if_sass_condition,
-        $.if_else_condition
+        $.if_else_condition,
       ),
 
     if_style_condition: ($) =>
@@ -1362,19 +1157,13 @@ module.exports = grammar({
           choice(
             $.style_condition,
             seq("not", $.style_condition),
-            seq("(", $.style_condition, ")")
-          )
+            seq("(", $.style_condition, ")"),
+          ),
         ),
-        ")"
+        ")",
       ),
 
-    if_media_condition: ($) =>
-      seq(
-        "media",
-        "(",
-        $._if_media_query,
-        ")"
-      ),
+    if_media_condition: ($) => seq("media", "(", $._if_media_query, ")"),
 
     _if_media_query: ($) =>
       choice(
@@ -1383,68 +1172,54 @@ module.exports = grammar({
         alias($._if_media_range_query, $.range_query),
         alias($._if_media_binary_query, $.binary_query),
         alias($._if_media_unary_query, $.unary_query),
-        seq("(", $._if_media_query, ")")
+        seq("(", $._if_media_query, ")"),
       ),
 
     _if_media_feature_query: ($) =>
-      prec(-1, seq(
-        alias($._identifier, $.feature_name),
-        ":",
-        repeat1($._value)
-      )),
-
-    _if_media_range_query: ($) => prec.dynamic(1, choice(
-      seq(
-        alias($._identifier, $.feature_name),
-        alias($._range_operator, $.range_operator),
-        $._range_value
+      prec(
+        -1,
+        seq(alias($._identifier, $.feature_name), ":", repeat1($._value)),
       ),
-      seq(
-        $._range_value,
-        alias($._range_operator, $.range_operator),
-        alias($._identifier, $.feature_name),
-        optional(seq(alias($._range_operator, $.range_operator), $._range_value))
-      )
-    )),
 
-    _if_media_binary_query: ($) => prec.left(
-      seq(
-        $._if_media_query,
-        choice("and", "or"),
-        $._if_media_query
-      )
-    ),
+    _if_media_range_query: ($) =>
+      prec.dynamic(
+        1,
+        choice(
+          seq(
+            alias($._identifier, $.feature_name),
+            alias($._range_operator, $.range_operator),
+            $._range_value,
+          ),
+          seq(
+            $._range_value,
+            alias($._range_operator, $.range_operator),
+            alias($._identifier, $.feature_name),
+            optional(
+              seq(alias($._range_operator, $.range_operator), $._range_value),
+            ),
+          ),
+        ),
+      ),
 
-    _if_media_unary_query: ($) => prec(1,
-      seq(
-        choice("not", "only"),
-        $._if_media_query
-      )
-    ),
+    _if_media_binary_query: ($) =>
+      prec.left(seq($._if_media_query, choice("and", "or"), $._if_media_query)),
+
+    _if_media_unary_query: ($) =>
+      prec(1, seq(choice("not", "only"), $._if_media_query)),
 
     if_supports_condition: ($) =>
       seq(
         "supports",
         "(",
         choice(
-          seq(
-            alias($._identifier, $.feature_name),
-            ":",
-            repeat1($._value)
-          ),
+          seq(alias($._identifier, $.feature_name), ":", repeat1($._value)),
           seq("selector", "(", $._selector, ")"),
-          $._query
+          $._query,
         ),
-        ")"
+        ")",
       ),
 
-    if_sass_condition: ($) =>
-      seq(
-        "sass",
-        "(",
-        $._value,
-        ")"
-      ),
+    if_sass_condition: ($) => seq("sass", "(", $._value, ")"),
 
     if_else_condition: (_) => "else",
 
@@ -1458,51 +1233,55 @@ module.exports = grammar({
         3,
         // TODO: Operator precedence will be painful if it ever has to be implemented:
         // https://sass-lang.com/documentation/operators/#order-of-operations
-        choice("+", "-", "*", "/", "%", "==", "<", ">", "!=", "<=", ">=", "and", "or")
+        choice(
+          "+",
+          "-",
+          "*",
+          "/",
+          "%",
+          "==",
+          "<",
+          ">",
+          "!=",
+          "<=",
+          ">=",
+          "and",
+          "or",
+        ),
       ),
 
-    _unary_operator: (_) =>
-      prec(
-        2,
-       choice("not", "+", "-", "/")
-      ),
+    _unary_operator: (_) => prec(2, choice("not", "+", "-", "/")),
 
     binary_expression: ($) =>
       prec.left(
         2,
         seq(
-          field('left', $._value),
-          field('operator', $._binary_operator),
-          field('right', $._value)
-        )
+          field("left", $._value),
+          field("operator", $._binary_operator),
+          field("right", $._value),
+        ),
       ),
 
     unary_expression: ($) =>
-      prec.left(
-        2,
-        seq(
-          field('operator', $._unary_operator),
-          $._value
-        )
-      ),
+      prec.left(2, seq(field("operator", $._unary_operator), $._value)),
 
     binary_expression_allowed_in_url_function: ($) =>
       prec.left(
         2,
         seq(
-          field('left', $._value_allowed_in_url_function),
-          field('operator', $._binary_operator),
-          field('right', $._value_allowed_in_url_function)
-        )
+          field("left", $._value_allowed_in_url_function),
+          field("operator", $._binary_operator),
+          field("right", $._value_allowed_in_url_function),
+        ),
       ),
 
     unary_expression_allowed_in_url_function: ($) =>
       prec.left(
         2,
         seq(
-          field('operator', $._unary_operator),
-          $._value_allowed_in_url_function
-        )
+          field("operator", $._unary_operator),
+          $._value_allowed_in_url_function,
+        ),
       ),
 
     arguments: ($) =>
@@ -1510,111 +1289,98 @@ module.exports = grammar({
         token.immediate("("),
         choice(
           // Only regular values, or…
-          sep(
-            choice(",", ";"),
-            $.argument
-          ),
+          sep(choice(",", ";"), $.argument),
           // one or more arguments followed by a rest argument, or…
-          seq(
-            sep1(
-              choice(",", ";"),
-              $.argument
-            ),
-            ",",
-            $.rest_argument
-          ),
+          seq(sep1(choice(",", ";"), $.argument), ",", $.rest_argument),
           // …a lone rest argument.
-          $.rest_argument
+          $.rest_argument,
         ),
-        ")"
+        ")",
       ),
 
-    argument: ($) =>
-      choice(
-        $.named_argument,
-        repeat1($._value)
-      ),
+    argument: ($) => choice($.named_argument, repeat1($._value)),
 
     named_argument: ($) =>
       seq(
         alias($._variable_identifier, $.argument_name),
         ":",
-        repeat1($._value)
+        repeat1($._value),
       ),
 
     rest_argument: ($) =>
       seq(
         alias($._variable_identifier_with_following_rest, $.variable_value),
-        $._spread
+        $._spread,
       ),
 
-    arguments_for_url: ($) => (
+    arguments_for_url: ($) =>
       seq(
         token.immediate("("),
-        sep(
-          choice(",", ";"),
-          repeat1($._value_allowed_in_url_function)
-        ),
-        ")"
-      )
-    ),
+        sep(choice(",", ";"), repeat1($._value_allowed_in_url_function)),
+        ")",
+      ),
 
     _identifier: (_) => /((--|-?[a-zA-Z_]))([a-zA-Z0-9-_])*/,
 
-    variable_module: ($) => (
+    variable_module: ($) =>
       seq(
-        field('module', alias($._identifier, $.module)),
-        token.immediate('.'),
+        field("module", alias($._identifier, $.module)),
+        token.immediate("."),
         $._no_whitespace,
-        field('value', alias($._variable_identifier, $.variable_value))
-      )
-    ),
+        field("value", alias($._variable_identifier, $.variable_value)),
+      ),
 
     at_keyword: (_) => /@[a-zA-Z-_]+/,
 
     comment: (_) => token(seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
 
-    single_line_comment: (_) => token(seq("//", /.*/)),
-
-    // SassDoc documentation block - consecutive /// comments
-    // Only matches exactly /// (not //// or more)
-    sassdoc_block: (_) => token(prec(1, seq(
-      "///", /[^\/].*/,
-      repeat(seq(/\n[ \t]*/, "///", /[^\/].*/))
-    ))),
-
-    interpolation: ($) =>
-      seq(
-        "#{",
+    // Single-line comment: matches // optionally followed by content.
+    // Does NOT match: /// (sassdoc marker), //// (sassdoc delimiter).
+    // The external scanner handles /// as sassdoc_line.
+    // //// is handled as sassdoc_delimiter (top-level item, not an extra).
+    single_line_comment: (_) =>
+      token(
         choice(
-          $._value,
-          $._expression,
+          seq("//", /[^\/\n]/, /[^\n]*/), // // followed by non-slash content
+          "//", // bare // (empty comment)
         ),
-        "}"
       ),
 
-    _identifier_with_interpolation: ($) => prec.left(1,
-        repeat1(
-          choice(
-            $._identifier,
-            $.interpolation,
-            token(/-+/)
-          )
-        )
+    // //// delimiter: a visual separator used in sassdoc sections.
+    // Parsed as a top-level item so it breaks sassdoc_block boundaries
+    // (not an extra, which would be consumed inside repeat1(sassdoc_line)).
+    // Also matches ///// and beyond.
+    // Visible node (no underscore prefix) so it can be targeted by highlight queries.
+    sassdoc_delimiter: (_) => token(seq("////", /[^\n]*/)),
+
+    // A sassdoc block is one or more consecutive /// lines. It is a top-level
+    // item that wraps individual sassdoc_line nodes. Neovim injects the entire
+    // block (contiguous range) into the sassdoc parser, while ast-grep matches
+    // individual sassdoc_line children for its injection mechanism.
+    sassdoc_block: ($) => prec.right(repeat1($.sassdoc_line)),
+
+    // Individual /// comment line. Composed of:
+    // - _sassdoc_marker: the /// prefix (external scanner, hidden)
+    // - sassdoc_content: the rest of the line after /// (external scanner)
+    // The sassdoc_content child is what ast-grep's $CONTENT binds to for injection.
+    sassdoc_line: ($) => seq($._sassdoc_marker, optional($.sassdoc_content)),
+
+    // sassdoc_content is the text after /// up to end of line.
+    // Handled by external scanner.
+
+    interpolation: ($) => seq("#{", choice($._value, $._expression), "}"),
+
+    _identifier_with_interpolation: ($) =>
+      prec.left(
+        1,
+        repeat1(choice($._identifier, $.interpolation, token(/-+/))),
       ),
 
     _plain_value_with_interpolation: ($) =>
-      repeat1(
-        choice(
-          $._plain_value,
-          $.interpolation
-        )
-      ),
+      repeat1(choice($._plain_value, $.interpolation)),
 
     _plain_value: (_) =>
-      token(
-        seq(repeat(/[-_]/), /[a-zA-Z]/, repeat(/[a-zA-Z0-9_-]/))
-      )
+      token(seq(repeat(/[-_]/), /[a-zA-Z]/, repeat(/[a-zA-Z0-9_-]/))),
   },
 });
 
