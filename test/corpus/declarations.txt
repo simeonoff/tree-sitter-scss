@@ -310,6 +310,8 @@ Strings
 a {
   b: '';
   c: '\'hi\'';
+  d: "$#{$item}";
+  e: 'x#{$v}';
 }
 
 ---
@@ -324,7 +326,17 @@ a {
         (string_value))
       (declaration
         (property_name)
-        (string_value)))))
+        (string_value))
+      (declaration
+        (property_name)
+        (string_value
+          (interpolation
+            (variable_value))))
+      (declaration
+        (property_name)
+        (string_value
+          (interpolation
+            (variable_value)))))))
 
 ============================
 URLs

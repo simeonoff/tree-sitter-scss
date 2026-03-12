@@ -94,7 +94,7 @@ static bool scan_for_string_segment(TSLexer *lexer, char delimiter, TokenType st
       lexer->result_symbol = stringTokenType;
       lexer->advance(lexer, false);
       if (lexer->lookahead == '{') {
-        if ((col - initialColumn) > 2) {
+        if (col > initialColumn) {
           return true;
         } else {
           // This token _started_ with `#{`, so there's no preceding string.
@@ -306,19 +306,21 @@ bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const
     s->in_sassdoc_block = false;
   }
 
+  // We might want more nuanced behavior here in the future, but for now we'll
+  // simply decline to use the external scanner during error recovery.
+  if (valid_symbols[ERROR_SENTINEL]) return false;
+
   // Check for sassdoc content (rest of line after ///).
   // IMPORTANT: Only match content immediately after ///, never after whitespace.
   // This prevents the parser from skipping newlines and consuming the next line.
+  // NOTE: This check must come AFTER the ERROR_SENTINEL bail-out to prevent
+  // error recovery from greedily swallowing code lines as sassdoc_content.
   if (valid_symbols[SASSDOC_CONTENT]) {
     PRINTF("SASSDOC_CONTENT is valid, trying scan, lookahead: [%c]\n", lexer->lookahead);
     bool result = scan_for_sassdoc_content(lexer);
     PRINTF("SASSDOC_CONTENT scan result: %i\n", result);
     if (result) return true;
   }
-
-  // We might want more nuanced behavior here in the future, but for now we'll
-  // simply decline to use the external scanner during error recovery.
-  if (valid_symbols[ERROR_SENTINEL]) return false;
 
   // First, consider the tokens for which whitespace is significant.
   if (!iswspace(lexer->lookahead) && valid_symbols[NO_WHITESPACE]) {
