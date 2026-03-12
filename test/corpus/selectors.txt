@@ -301,6 +301,7 @@ a {
   > f {}
   ~ g {}
   + h {}
+  &%placeholder {}
 }
 
 ---
@@ -317,6 +318,7 @@ a {
       (rule_set (selectors (child_selector right: (tag_name))) (block))
       (rule_set (selectors (sibling_selector right: (tag_name))) (block))
       (rule_set (selectors (adjacent_sibling_selector right: (tag_name))) (block))
+      (rule_set (selectors (placeholder_selector (nesting_selector) (placeholder_name))) (block))
 )))
 
 ===========================

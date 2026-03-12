@@ -114,10 +114,12 @@ a {
     (block
       (declaration
         (property_name)
-        (color_value))
+        (color_value
+          (hex_color)))
       (declaration
         (property_name)
-        (color_value)))))
+        (color_value
+          (hex_color))))))
 
 ============================
 Numbers
@@ -308,6 +310,8 @@ Strings
 a {
   b: '';
   c: '\'hi\'';
+  d: "$#{$item}";
+  e: 'x#{$v}';
 }
 
 ---
@@ -322,7 +326,17 @@ a {
         (string_value))
       (declaration
         (property_name)
-        (string_value)))))
+        (string_value))
+      (declaration
+        (property_name)
+        (string_value
+          (interpolation
+            (variable_value))))
+      (declaration
+        (property_name)
+        (string_value
+          (interpolation
+            (variable_value)))))))
 
 ============================
 URLs
@@ -707,27 +721,44 @@ Placeholders
   width: 100%;
 }
 
+%cbx-label-pos--before,
+%cbx-label-pos--after {
+  color: red;
+}
+
 ---
 
 (stylesheet
-  (placeholder
-    (placeholder_selector
-      (placeholder_name))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name)))
     (block
       (declaration
         (property_name)
         (integer_value
           (unit)))))
-  (placeholder
-    (placeholder_selector
-      (placeholder_name
-        (interpolation
-          (variable_value))))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name
+          (interpolation
+            (variable_value)))))
     (block
       (declaration
         (property_name)
         (integer_value
-          (unit))))))
+          (unit)))))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name))
+      (placeholder_selector
+        (placeholder_name)))
+    (block
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 =============================================
 Spaces after colons in property declarations
@@ -768,6 +799,10 @@ $map: (
   "a": 3,
   "aa": 4.5,
   "aaa": 7,
+);
+$map: (
+  style: print(x) print(y),
+  color: print(z)
 );
 ---
 
@@ -818,7 +853,26 @@ $map: (
         value: (float_value))
       (map_pair
         key: (string_value)
-        value: (integer_value)))))
+        value: (integer_value))))
+  (declaration
+    (variable_name)
+    (map_value
+      (map_pair
+        key: (plain_value)
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value)))
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value))))
+      (map_pair
+        key: (plain_value)
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value)))))))
 
 ===========================
 Custom properties
@@ -954,7 +1008,8 @@ a {
                 (style_condition
                   (property_name)
                   (plain_value))))
-            value: (color_value)))))))
+            value: (color_value
+                     (hex_color))))))))
 
 ==================================================
 CSS if() with style condition and else
@@ -1021,9 +1076,11 @@ div {
             value: (call_expression
               name: (function_name)
               arguments: (arguments
-                (color_value)
+                (color_value
+                  (hex_color))
                 (plain_value)
-                (color_value))))
+                (color_value
+                  (hex_color)))))
           (if_branch
             condition: (if_condition
               (if_style_condition
@@ -1033,9 +1090,11 @@ div {
             value: (call_expression
               name: (function_name)
               arguments: (arguments
-                (color_value)
+                (color_value
+                  (hex_color))
                 (plain_value)
-                (color_value))))
+                (color_value
+                  (hex_color)))))
           (if_branch
             condition: (if_condition
               (if_else_condition))
@@ -1152,7 +1211,8 @@ a {
           (if_branch
             condition: (if_condition
               (if_else_condition))
-            value: (color_value)))))))
+            value: (color_value
+              (hex_color))))))))
 
 ==================================================
 CSS if() with supports feature functions

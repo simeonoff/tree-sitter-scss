@@ -43,6 +43,7 @@
     "generate": "tree-sitter generate",
     "build": "tree-sitter generate && node-gyp build",
     "build:dynamic": "tree-sitter build --output scss.so",
+    "build:wasm": "tree-sitter build --wasm",
     "prestart": "tree-sitter build --wasm",
     "start": "tree-sitter playground",
     "test": "tree-sitter test && tree-sitter parse examples/*.scss --quiet --time",

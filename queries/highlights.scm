@@ -147,6 +147,7 @@
   (important)
   (default)
   (global)
+  (optional)
 ] @keyword.modifier
 
 ; Scope bare keyword strings to their parent nodes to avoid
@@ -225,13 +226,15 @@
 
 ; Custom properties (CSS variables) as @variable
 ((property_name) @variable
-  (#lua-match? @variable "^[-][-]"))
+  (#match? @variable "^[-][-]"))
 
 ((plain_value) @variable
-  (#lua-match? @variable "^[-][-]"))
+  (#match? @variable "^[-][-]"))
 
 (string_value) @string
-(color_value) @string.special
+
+(color_value "#" @punctuation.special)
+(color_value (hex_color) @number)
 
 (integer_value) @number
 (float_value) @number.float

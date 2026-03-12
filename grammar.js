@@ -100,7 +100,6 @@ module.exports = grammar({
         $.warn_statement,
         $.debug_statement,
         $.at_rule,
-        $.placeholder,
         $.sassdoc_block,
         $.sassdoc_delimiter,
       ),
@@ -325,19 +324,11 @@ module.exports = grammar({
         repeat1(alias($._value, $.argument_value)),
       ),
 
-    placeholder_declaration_selector: ($) =>
-      seq("%", alias($._identifier_with_interpolation, $.placeholder_name)),
-
-    placeholder: ($) =>
-      seq(
-        alias($.placeholder_declaration_selector, $.placeholder_selector),
-        $.block,
-      ),
-
     extend_statement: ($) =>
       seq(
         "@extend",
         choice($._value, $.class_selector, $.placeholder_selector),
+        optional(alias("!optional", $.optional)),
         ";",
       ),
 
@@ -580,7 +571,6 @@ module.exports = grammar({
         $.debug_statement,
         $.at_rule,
         alias($.content_at_rule, $.at_rule),
-        $.placeholder,
       ),
 
     _block_direct_selector: ($) =>
@@ -626,6 +616,7 @@ module.exports = grammar({
         $.pseudo_element_selector,
         $.id_selector,
         $.attribute_selector,
+        $.placeholder_selector,
         $.string_value,
         $.child_selector,
         $.descendant_selector,
@@ -643,6 +634,7 @@ module.exports = grammar({
       prec(
         1,
         seq(
+          optional($._selector),
           "%",
           $._no_whitespace,
           alias($._identifier_with_interpolation, $.placeholder_name),
@@ -990,11 +982,13 @@ module.exports = grammar({
           field("key", $._value),
           ":",
           field("value", $._value),
+          repeat(field("value", $._value)),
           optional($.default),
         ),
       ),
 
-    color_value: (_) => seq("#", token.immediate(/[0-9a-fA-F]{3,8}/)),
+    color_value: ($) =>
+      seq("#", alias(token.immediate(/[0-9a-fA-F]{3,8}/), $.hex_color)),
 
     string_value: ($) =>
       choice($._single_quoted_string_value, $._double_quoted_string_value),
@@ -1368,7 +1362,13 @@ module.exports = grammar({
     // sassdoc_content is the text after /// up to end of line.
     // Handled by external scanner.
 
-    interpolation: ($) => seq("#{", choice($._value, $._expression), "}"),
+    interpolation: ($) =>
+      seq(
+        "#{",
+        choice($._value, $._expression),
+        repeat(seq(",", choice($._value, $._expression))),
+        "}",
+      ),
 
     _identifier_with_interpolation: ($) =>
       prec.left(

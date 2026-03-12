@@ -22,5 +22,4 @@
   (for_statement)
   (while_statement)
   (include_statement)
-  (placeholder)
 ] @indent.begin
