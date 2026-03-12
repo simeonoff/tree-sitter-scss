@@ -4986,6 +4986,17 @@
             }
           },
           {
+            "type": "REPEAT",
+            "content": {
+              "type": "FIELD",
+              "name": "value",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_value"
+              }
+            }
+          },
+          {
             "type": "CHOICE",
             "members": [
               {

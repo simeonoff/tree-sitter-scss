@@ -990,6 +990,7 @@ module.exports = grammar({
           field("key", $._value),
           ":",
           field("value", $._value),
+          repeat(field("value", $._value)),
           optional($.default),
         ),
       ),

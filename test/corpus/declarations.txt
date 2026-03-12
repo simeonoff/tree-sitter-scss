@@ -771,6 +771,10 @@ $map: (
   "aa": 4.5,
   "aaa": 7,
 );
+$map: (
+  style: print(x) print(y),
+  color: print(z)
+);
 ---
 
 (stylesheet
@@ -820,7 +824,26 @@ $map: (
         value: (float_value))
       (map_pair
         key: (string_value)
-        value: (integer_value)))))
+        value: (integer_value))))
+  (declaration
+    (variable_name)
+    (map_value
+      (map_pair
+        key: (plain_value)
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value)))
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value))))
+      (map_pair
+        key: (plain_value)
+        value: (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value)))))))
 
 ===========================
 Custom properties
