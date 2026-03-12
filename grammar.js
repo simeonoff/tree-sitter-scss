@@ -633,6 +633,7 @@ module.exports = grammar({
       prec(
         1,
         seq(
+          optional($._selector),
           "%",
           $._no_whitespace,
           alias($._identifier_with_interpolation, $.placeholder_name),
