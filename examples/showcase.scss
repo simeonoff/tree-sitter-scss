@@ -3,6 +3,12 @@
 
 @layer base, reset, components, utilities, utilities.extra;
 
+#test {
+  @extend %card;
+
+  background-color: var(--accent);
+}
+
 :root {
   @property --scheme {
     syntax: "<custom-ident>";
