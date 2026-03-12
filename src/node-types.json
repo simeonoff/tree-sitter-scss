@@ -2585,7 +2585,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -2642,6 +2642,10 @@
         },
         {
           "type": "null_value",
+          "named": true
+        },
+        {
+          "type": "optional",
           "named": true
         },
         {
@@ -7917,6 +7921,10 @@
   {
     "type": "only",
     "named": false
+  },
+  {
+    "type": "optional",
+    "named": true
   },
   {
     "type": "or",

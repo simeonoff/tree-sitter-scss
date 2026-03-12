@@ -328,6 +328,7 @@ module.exports = grammar({
       seq(
         "@extend",
         choice($._value, $.class_selector, $.placeholder_selector),
+        optional(alias("!optional", $.optional)),
         ";",
       ),
 

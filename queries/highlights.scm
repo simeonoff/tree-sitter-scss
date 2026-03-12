@@ -147,6 +147,7 @@
   (important)
   (default)
   (global)
+  (optional)
 ] @keyword.modifier
 
 ; Scope bare keyword strings to their parent nodes to avoid

@@ -612,6 +612,7 @@ Extend statements
     @extend blue;
     @extend .green;
     @extend %purple;
+    @extend %card !optional;
   }
 }
 
@@ -629,7 +630,8 @@ Extend statements
         (block
           (extend_statement (plain_value))
           (extend_statement (class_selector (class_name)))
-          (extend_statement (placeholder_selector (placeholder_name))))))))
+          (extend_statement (placeholder_selector (placeholder_name)))
+          (extend_statement (placeholder_selector (placeholder_name)) (optional)))))))
 
 =================================
 Operators

@@ -1411,6 +1411,23 @@
           ]
         },
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "STRING",
+                "value": "!optional"
+              },
+              "named": true,
+              "value": "optional"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": ";"
         }
