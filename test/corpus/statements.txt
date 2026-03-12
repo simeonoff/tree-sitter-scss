@@ -295,7 +295,8 @@ Property statements
         (boolean_value))
       (declaration
         (property_name)
-        (color_value)))))
+        (color_value
+          (hex_color))))))
 
 ==============================
 Charset statements
@@ -356,7 +357,8 @@ Generic at-rule with block (nested)
             (plain_value))
           (declaration
             (property_name)
-            (color_value)))))))
+            (color_value
+          (hex_color))))))))
 
 ==============================
 Single-line comments
@@ -1645,9 +1647,11 @@ Container queries (condition list)
       (declaration
         (property_name)
         (integer_value)
-        (color_value)
+        (color_value
+          (hex_color))
         (integer_value)
-        (color_value)))))
+        (color_value
+          (hex_color))))))
 
 =============================================
 @page (basic)

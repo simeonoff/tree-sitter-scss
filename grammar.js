@@ -994,7 +994,8 @@ module.exports = grammar({
         ),
       ),
 
-    color_value: (_) => seq("#", token.immediate(/[0-9a-fA-F]{3,8}/)),
+    color_value: ($) =>
+      seq("#", alias(token.immediate(/[0-9a-fA-F]{3,8}/), $.hex_color)),
 
     string_value: ($) =>
       choice($._single_quoted_string_value, $._double_quoted_string_value),

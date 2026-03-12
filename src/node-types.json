@@ -1716,7 +1716,17 @@
   {
     "type": "color_value",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "hex_color",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "condition",
@@ -7701,6 +7711,10 @@
   },
   {
     "type": "global",
+    "named": true
+  },
+  {
+    "type": "hex_color",
     "named": true
   },
   {

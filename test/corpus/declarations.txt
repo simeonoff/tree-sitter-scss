@@ -114,10 +114,12 @@ a {
     (block
       (declaration
         (property_name)
-        (color_value))
+        (color_value
+          (hex_color)))
       (declaration
         (property_name)
-        (color_value)))))
+        (color_value
+          (hex_color))))))
 
 ============================
 Numbers
@@ -954,7 +956,8 @@ a {
                 (style_condition
                   (property_name)
                   (plain_value))))
-            value: (color_value)))))))
+            value: (color_value
+                     (hex_color))))))))
 
 ==================================================
 CSS if() with style condition and else
@@ -1021,9 +1024,11 @@ div {
             value: (call_expression
               name: (function_name)
               arguments: (arguments
-                (color_value)
+                (color_value
+                  (hex_color))
                 (plain_value)
-                (color_value))))
+                (color_value
+                  (hex_color)))))
           (if_branch
             condition: (if_condition
               (if_style_condition
@@ -1033,9 +1038,11 @@ div {
             value: (call_expression
               name: (function_name)
               arguments: (arguments
-                (color_value)
+                (color_value
+                  (hex_color))
                 (plain_value)
-                (color_value))))
+                (color_value
+                  (hex_color)))))
           (if_branch
             condition: (if_condition
               (if_else_condition))
@@ -1152,7 +1159,8 @@ a {
           (if_branch
             condition: (if_condition
               (if_else_condition))
-            value: (color_value)))))))
+            value: (color_value
+              (hex_color))))))))
 
 ==================================================
 CSS if() with supports feature functions

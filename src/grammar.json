@@ -5008,11 +5008,16 @@
           "value": "#"
         },
         {
-          "type": "IMMEDIATE_TOKEN",
+          "type": "ALIAS",
           "content": {
-            "type": "PATTERN",
-            "value": "[0-9a-fA-F]{3,8}"
-          }
+            "type": "IMMEDIATE_TOKEN",
+            "content": {
+              "type": "PATTERN",
+              "value": "[0-9a-fA-F]{3,8}"
+            }
+          },
+          "named": true,
+          "value": "hex_color"
         }
       ]
     },

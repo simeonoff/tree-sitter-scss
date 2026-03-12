@@ -505,7 +505,7 @@ static const char * const ts_symbol_names[] = {
   [anon_sym_true] = "true",
   [anon_sym_false] = "false",
   [sym_null_value] = "null_value",
-  [aux_sym_color_value_token1] = "color_value_token1",
+  [aux_sym_color_value_token1] = "hex_color",
   [anon_sym_SQUOTE] = "'",
   [anon_sym_DQUOTE] = "\"",
   [sym_unquoted_string_value] = "plain_value",
@@ -1565,8 +1565,8 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
     .named = true,
   },
   [aux_sym_color_value_token1] = {
-    .visible = false,
-    .named = false,
+    .visible = true,
+    .named = true,
   },
   [anon_sym_SQUOTE] = {
     .visible = true,
