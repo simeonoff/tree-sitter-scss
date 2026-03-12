@@ -658,6 +658,7 @@ Interpolation
 .icon-#{$name} {
   position: absolute;
   #{$top-or-bottom}: 0;
+  grid-template-rows: repeat(#{calc(var(--calendar-months) * 2), auto});
 }
 
 ---
@@ -667,7 +668,23 @@ Interpolation
     (selectors (class_selector (class_name (interpolation (variable_value)))))
     (block
       (declaration (property_name) (plain_value))
-      (declaration (property_name (interpolation (variable_value))) (integer_value)))))
+      (declaration (property_name (interpolation (variable_value))) (integer_value))
+      (declaration (property_name)
+        (call_expression
+          name: (function_name)
+          arguments: (arguments
+            (plain_value
+              (interpolation
+                (call_expression
+                  name: (function_name)
+                  arguments: (arguments
+                    (binary_expression
+                      left: (call_expression
+                        name: (function_name)
+                        arguments: (arguments
+                          (plain_value)))
+                      right: (integer_value))))
+                (plain_value)))))))))
 
 =================================
 If statements

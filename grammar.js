@@ -1362,7 +1362,13 @@ module.exports = grammar({
     // sassdoc_content is the text after /// up to end of line.
     // Handled by external scanner.
 
-    interpolation: ($) => seq("#{", choice($._value, $._expression), "}"),
+    interpolation: ($) =>
+      seq(
+        "#{",
+        choice($._value, $._expression),
+        repeat(seq(",", choice($._value, $._expression))),
+        "}",
+      ),
 
     _identifier_with_interpolation: ($) =>
       prec.left(
