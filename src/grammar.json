@@ -146,10 +146,6 @@
         },
         {
           "type": "SYMBOL",
-          "name": "placeholder"
-        },
-        {
-          "type": "SYMBOL",
           "name": "sassdoc_block"
         },
         {
@@ -1387,42 +1383,6 @@
             "named": true,
             "value": "argument_value"
           }
-        }
-      ]
-    },
-    "placeholder_declaration_selector": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "%"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_identifier_with_interpolation"
-          },
-          "named": true,
-          "value": "placeholder_name"
-        }
-      ]
-    },
-    "placeholder": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
-            "name": "placeholder_declaration_selector"
-          },
-          "named": true,
-          "value": "placeholder_selector"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "block"
         }
       ]
     },
@@ -2779,10 +2739,6 @@
           },
           "named": true,
           "value": "at_rule"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "placeholder"
         }
       ]
     },
@@ -2986,6 +2942,10 @@
         {
           "type": "SYMBOL",
           "name": "attribute_selector"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "placeholder_selector"
         },
         {
           "type": "SYMBOL",

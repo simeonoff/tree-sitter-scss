@@ -709,27 +709,44 @@ Placeholders
   width: 100%;
 }
 
+%cbx-label-pos--before,
+%cbx-label-pos--after {
+  color: red;
+}
+
 ---
 
 (stylesheet
-  (placeholder
-    (placeholder_selector
-      (placeholder_name))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name)))
     (block
       (declaration
         (property_name)
         (integer_value
           (unit)))))
-  (placeholder
-    (placeholder_selector
-      (placeholder_name
-        (interpolation
-          (variable_value))))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name
+          (interpolation
+            (variable_value)))))
     (block
       (declaration
         (property_name)
         (integer_value
-          (unit))))))
+          (unit)))))
+  (rule_set
+    (selectors
+      (placeholder_selector
+        (placeholder_name))
+      (placeholder_selector
+        (placeholder_name)))
+    (block
+      (declaration
+        (property_name)
+        (plain_value)))))
 
 =============================================
 Spaces after colons in property declarations
