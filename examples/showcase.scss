@@ -5,7 +5,7 @@
 @layer base, reset, components, utilities, utilities.extra;
 
 #test {
-  @extend %card;
+  @extend %card !optional;
 
   background-color: var(--accent);
 }
@@ -41,33 +41,6 @@
 /// @returns {Color} The resolved color value
 @function resolve-color($scheme, $fallback: black) {
   @return if(sass(meta.variable-defined($scheme)): $scheme; else: $fallback);
-}
-
-@use "sass:map";
-
-@function print($value) {
-  @return $value;
-}
-
-/// A mixin that demonstrates the use of maps and functions.
-/// @see {mixin} css-vars
-/// @param {Map} $theme - The theme used to style the component.
-/// @requires {mixin} excel-filtering
-@mixin test {
-  $grid-header-border: var-get($theme, "header-border-width")
-    var-get($theme, "header-border-style")
-    var-get($theme, "header-border-color");
-
-  $map: (
-    style: print(x) print(y),
-    color: print(z)
-  );
-
-  content: map.get($map, x);
-}
-
-.test {
-  @include test();
 }
 
 @container sidebar (width > 300px) {
