@@ -4,6 +4,8 @@
 
 @layer base, reset, components, utilities, utilities.extra;
 
+$string: "World";
+
 #test {
   @extend %card !optional;
 
@@ -24,9 +26,22 @@
   }
 }
 
+@mixin isolated() {
+  position: relative;
+  isolation: isolate;
+}
+
 %card {
+  @include isolated();
+
   display: flex;
   border-radius: 0.5rem;
+
+  &::after {
+    position: absolute;
+    content: "Hello, #{$string}!";
+    inset: 0;
+  }
 }
 
 /// Resolves a color scheme variable to its value, with an optional fallback.
