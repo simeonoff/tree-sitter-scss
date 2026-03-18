@@ -25,7 +25,6 @@
   "-"
   "*"
   "/"
-  "%"
   "="
   "=="
   "!="
@@ -39,6 +38,8 @@
   "<="
   (range_operator)
 ] @operator
+
+(binary_expression operator: "%" @operator)
 
 ; Scope keyword operators to their parent nodes to avoid
 ; false matches inside identifiers (e.g. "not" in "annotation").
@@ -85,6 +86,7 @@
 (id_name) @constant
 (class_name) @type
 (placeholder_name) @type
+(placeholder_selector "%" @punctuation.delimiter)
 (namespace_name) @module
 (namespace_selector (tag_name) @module "|")
 (variable_module (module) @module)
@@ -107,8 +109,6 @@
 ] @constant.builtin
 
 (keyframes_name) @variable
-
-(interpolation "#{" @punctuation.special "}" @punctuation.special)
 
 [
   "@media"
@@ -184,7 +184,7 @@
 ]
 
 (attr_type (keyword) @keyword)
-(syntax_type) @type
+(syntax_type "<" @punctuation.bracket ">" @punctuation.bracket) @type
 (if_else_condition) @keyword.conditional
 
 (style_condition
@@ -260,3 +260,5 @@
   "["
   "]"
 ] @punctuation.bracket
+
+(interpolation "#{" @punctuation.special "}" @punctuation.special) @embedded
