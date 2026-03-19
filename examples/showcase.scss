@@ -40,6 +40,9 @@ $string: "World";
 
   display: flex;
   border-radius: 0.5rem;
+  width: 10px;
+  height: 100%;
+  content: 12 % 3;
 
   &::after {
     position: absolute;
