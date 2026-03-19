@@ -44,15 +44,26 @@ jobs:
       - name: Build dynamic library
         run: npx tree-sitter build --output scss.${{ matrix.ext }}
 
+      - name: Build WASM module
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        run: npx tree-sitter build --wasm
+
       - name: Rename artifact
         run: mv scss.${{ matrix.ext }} scss-${{ matrix.target }}.${{ matrix.ext }}
         shell: bash
 
-      - name: Upload artifact
+      - name: Upload native artifact
         uses: actions/upload-artifact@v4
         with:
           name: scss-${{ matrix.target }}
           path: scss-${{ matrix.target }}.${{ matrix.ext }}
+
+      - name: Upload WASM artifact
+        if: matrix.target == 'x86_64-unknown-linux-gnu'
+        uses: actions/upload-artifact@v4
+        with:
+          name: scss-wasm
+          path: tree-sitter-scss.wasm
 
   release:
     name: Create Release
