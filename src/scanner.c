@@ -1,7 +1,7 @@
-#include "tree_sitter/alloc.h"
 #include "tree_sitter/parser.h"
 #include <wctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DEBUG 0
 
@@ -34,11 +34,11 @@ typedef struct {
 } Scanner;
 
 void *tree_sitter_scss_external_scanner_create() {
-  Scanner *s = ts_calloc(1, sizeof(Scanner));
+  Scanner *s = calloc(1, sizeof(Scanner));
   return s;
 }
 
-void tree_sitter_scss_external_scanner_destroy(void *p) { ts_free(p); }
+void tree_sitter_scss_external_scanner_destroy(void *p) { free(p); }
 
 void tree_sitter_scss_external_scanner_reset(void *p) {
   Scanner *s = (Scanner *)p;
