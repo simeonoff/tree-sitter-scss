@@ -1112,8 +1112,8 @@ module.exports = grammar({
         ")",
       ),
 
-    // A CSS syntax type: < identifier > (e.g. <number>, <string>, <color>)
-    syntax_type: (_) => seq("<", /[a-zA-Z][-a-zA-Z]*/, ">"),
+    // A CSS syntax type: <identifier> (e.g. <number>, <string>, <color>)
+    syntax_type: (_) => token(seq("<", /[a-zA-Z][-a-zA-Z]*/, ">")),
 
     attr_fallback: ($) => repeat1($._value),
 

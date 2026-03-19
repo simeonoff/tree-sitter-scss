@@ -184,7 +184,7 @@
 ]
 
 (attr_type (keyword) @keyword)
-(syntax_type "<" @punctuation.bracket ">" @punctuation.bracket) @type
+(syntax_type) @type
 (if_else_condition) @keyword.conditional
 
 (style_condition

@@ -6753,11 +6753,6 @@
     }
   },
   {
-    "type": "syntax_type",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "tag_name",
     "named": true,
     "fields": {},
@@ -7990,6 +7985,10 @@
   {
     "type": "supports",
     "named": false
+  },
+  {
+    "type": "syntax_type",
+    "named": true
   },
   {
     "type": "through",

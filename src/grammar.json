@@ -5721,21 +5721,24 @@
       ]
     },
     "syntax_type": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "<"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[a-zA-Z][-a-zA-Z]*"
-        },
-        {
-          "type": "STRING",
-          "value": ">"
-        }
-      ]
+      "type": "TOKEN",
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "<"
+          },
+          {
+            "type": "PATTERN",
+            "value": "[a-zA-Z][-a-zA-Z]*"
+          },
+          {
+            "type": "STRING",
+            "value": ">"
+          }
+        ]
+      }
     },
     "attr_fallback": {
       "type": "REPEAT1",
