@@ -63,7 +63,7 @@ module.exports = grammar({
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
 
   rules: {
-    stylesheet: ($) => repeat($._top_level_item),
+    stylesheet: ($) => repeat(choice($._top_level_item, ";")),
 
     _top_level_item: ($) =>
       choice(
@@ -528,7 +528,7 @@ module.exports = grammar({
     block: ($) =>
       seq(
         "{",
-        repeat($._block_item),
+        repeat(choice($._block_item, ";")),
         optional(alias($.last_declaration, $.declaration)),
         "}",
       ),
