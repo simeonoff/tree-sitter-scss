@@ -1884,3 +1884,138 @@ Container queries (condition list)
             (property_name)
             (integer_value)))))))
 
+=============================================
+Stray semicolons in blocks
+=============================================
+
+.card {
+  @extend %placeholder;;
+  color: red;;
+  background: blue;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (extend_statement
+        (placeholder_selector
+          (placeholder_name)))
+      (declaration
+        (property_name)
+        (plain_value))
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Stray semicolons at top level
+=============================================
+
+;
+.card {
+  color: red;
+};
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Triple-slash comments inside blocks
+=============================================
+
+.card {
+  /// A sassdoc comment
+  color: red;
+  /// Another comment
+  /// with continuation
+  background: blue;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_block
+        (sassdoc_line
+          (sassdoc_content)))
+      (declaration
+        (property_name)
+        (plain_value))
+      (sassdoc_block
+        (sassdoc_line
+          (sassdoc_content))
+        (sassdoc_line
+          (sassdoc_content)))
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Bare triple-slash comment inside blocks
+=============================================
+
+.card {
+  ///
+  color: red;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_block
+        (sassdoc_line))
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Sassdoc delimiters inside blocks
+=============================================
+
+.card {
+  //// Section delimiter
+  color: red;
+  ///// Five slashes
+  background: blue;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_delimiter)
+      (declaration
+        (property_name)
+        (plain_value))
+      (sassdoc_delimiter)
+      (declaration
+        (property_name)
+        (plain_value)))))
+
