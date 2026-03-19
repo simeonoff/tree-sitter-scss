@@ -2774,6 +2774,14 @@
           },
           "named": true,
           "value": "at_rule"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sassdoc_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "sassdoc_delimiter"
         }
       ]
     },
