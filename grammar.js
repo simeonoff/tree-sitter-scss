@@ -63,7 +63,7 @@ module.exports = grammar({
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
 
   rules: {
-    stylesheet: ($) => repeat($._top_level_item),
+    stylesheet: ($) => repeat(choice($._top_level_item, ";")),
 
     _top_level_item: ($) =>
       choice(
@@ -528,7 +528,7 @@ module.exports = grammar({
     block: ($) =>
       seq(
         "{",
-        repeat($._block_item),
+        repeat(choice($._block_item, ";")),
         optional(alias($.last_declaration, $.declaration)),
         "}",
       ),
@@ -571,6 +571,8 @@ module.exports = grammar({
         $.debug_statement,
         $.at_rule,
         alias($.content_at_rule, $.at_rule),
+        $.sassdoc_block,
+        $.sassdoc_delimiter,
       ),
 
     _block_direct_selector: ($) =>
@@ -1330,15 +1332,8 @@ module.exports = grammar({
 
     // Single-line comment: matches // optionally followed by content.
     // Does NOT match: /// (sassdoc marker), //// (sassdoc delimiter).
-    // The external scanner handles /// as sassdoc_line.
-    // //// is handled as sassdoc_delimiter (top-level item, not an extra).
     single_line_comment: (_) =>
-      token(
-        choice(
-          seq("//", /[^\/\n]/, /[^\n]*/), // // followed by non-slash content
-          "//", // bare // (empty comment)
-        ),
-      ),
+      token(choice(seq("//", /[^\/\n]/, /[^\n]*/), "//")),
 
     // //// delimiter: a visual separator used in sassdoc sections.
     // Parsed as a top-level item so it breaks sassdoc_block boundaries

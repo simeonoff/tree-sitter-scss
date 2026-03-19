@@ -1347,6 +1347,14 @@
           "named": true
         },
         {
+          "type": "sassdoc_block",
+          "named": true
+        },
+        {
+          "type": "sassdoc_delimiter",
+          "named": true
+        },
+        {
           "type": "scope_statement",
           "named": true
         },
