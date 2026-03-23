@@ -163,7 +163,8 @@ module.exports = grammar({
         "}",
       ),
 
-    keyframe_block: ($) => seq(choice($.from, $.to, $.integer_value), $.block),
+    keyframe_block: ($) =>
+      seq(choice($.from, $.to, $.integer_value, $.float_value), $.block),
 
     from: (_) => "from",
     to: (_) => "to",
@@ -288,12 +289,20 @@ module.exports = grammar({
         optional($.default),
       ),
 
+    mixin_block: ($) =>
+      seq(
+        "{",
+        repeat(choice($._block_item, $.keyframe_block, ";")),
+        optional(alias($.last_declaration, $.declaration)),
+        "}",
+      ),
+
     mixin_statement: ($) =>
       seq(
         "@mixin",
         alias($._identifier, $.name),
         optional($.parameters),
-        $.block,
+        $.mixin_block,
       ),
 
     include_statement: ($) =>
@@ -308,13 +317,21 @@ module.exports = grammar({
         ),
         alias($._identifier, $.mixin_name),
         optional(alias($.include_arguments, $.arguments)),
-        choice($.block, ";"),
+        choice($.mixin_block, ";"),
       ),
 
     include_arguments: ($) =>
       seq(
         token.immediate("("),
-        sep(",", alias($.include_argument, $.argument)),
+        choice(
+          sep(",", alias($.include_argument, $.argument)),
+          seq(
+            sep1(",", alias($.include_argument, $.argument)),
+            ",",
+            $.rest_argument,
+          ),
+          $.rest_argument,
+        ),
         ")",
       ),
 
@@ -358,8 +375,10 @@ module.exports = grammar({
         alias($._variable_identifier, $.variable_name),
         "from",
         alias($._value, $.from),
-        "through",
-        alias($._value, $.through),
+        choice(
+          seq("to", alias($._value, $.to)),
+          seq("through", alias($._value, $.through)),
+        ),
         $.block,
       ),
 
@@ -970,10 +989,17 @@ module.exports = grammar({
     boolean_value: (_) => choice("true", "false"),
     null_value: (_) => "null",
 
-    parenthesized_value: ($) => seq("(", $._value, ")"),
+    parenthesized_value: ($) => seq("(", repeat1($._value), ")"),
 
     list_value: ($) =>
-      seq("(", $._value, ",", sep(",", $._value), optional(","), ")"),
+      seq(
+        "(",
+        repeat1($._value),
+        ",",
+        sep(",", repeat1($._value)),
+        optional(","),
+        ")",
+      ),
 
     map_value: ($) => seq("(", sep(",", $.map_pair), optional(","), ")"),
 
@@ -1360,8 +1386,8 @@ module.exports = grammar({
     interpolation: ($) =>
       seq(
         "#{",
-        choice($._value, $._expression),
-        repeat(seq(",", choice($._value, $._expression))),
+        repeat1(choice($._value, $._expression)),
+        repeat(seq(",", repeat1(choice($._value, $._expression)))),
         "}",
       ),
 

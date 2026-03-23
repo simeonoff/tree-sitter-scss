@@ -96,6 +96,50 @@ div {
             (integer_value
               (unit))))))))
 
+=============================================
+Call with space-separated list as argument
+=============================================
+
+$x: fn((0 2px 4px black));
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (call_expression
+      (function_name)
+      (arguments
+        (parenthesized_value
+          (integer_value)
+          (integer_value (unit))
+          (integer_value (unit))
+          (plain_value))))))
+
+=======================================================
+Call with comma-separated list of space-separated items
+=======================================================
+
+$x: fn((0 1px 3px $a, 0 1px 1px $b));
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (call_expression
+      (function_name)
+      (arguments
+        (list_value
+          (integer_value)
+          (integer_value (unit))
+          (integer_value (unit))
+          (variable_value)
+          (integer_value)
+          (integer_value (unit))
+          (integer_value (unit))
+          (variable_value))))))
+
 ============================
 Color literals
 ============================
@@ -620,7 +664,7 @@ Mixins with no arguments
 (stylesheet
   (mixin_statement
     (name)
-    (block
+    (mixin_block
       (declaration
         (property_name)
         (plain_value)))))
@@ -645,7 +689,7 @@ Mixins with arguments
         (variable_name)
         (default_value
           (plain_value))))
-    (block
+    (mixin_block
       (declaration
         (property_name)
         (plain_value)))))
@@ -668,7 +712,7 @@ Mixins with interpolations and content
     (parameters
       (parameter
         (variable_name)))
-    (block
+    (mixin_block
       (media_statement
         (keyword_query
           (interpolation
@@ -695,7 +739,7 @@ Mixins with at-root
     (parameters
       (parameter
         (variable_name)))
-    (block
+    (mixin_block
       (at_root_statement
         (selectors
           (interpolation
