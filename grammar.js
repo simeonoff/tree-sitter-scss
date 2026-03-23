@@ -51,6 +51,8 @@ module.exports = grammar({
     $._error_sentinel,
     $._sassdoc_marker,
     $.sassdoc_content,
+    $.sassdoc_delimiter,
+    $.single_line_comment,
   ],
 
   conflicts: ($) => [
@@ -324,13 +326,14 @@ module.exports = grammar({
       seq(
         token.immediate("("),
         choice(
-          sep(",", alias($.include_argument, $.argument)),
           seq(
             sep1(",", alias($.include_argument, $.argument)),
             ",",
             $.rest_argument,
           ),
           $.rest_argument,
+          seq(sep1(",", alias($.include_argument, $.argument)), optional(",")),
+          seq(),
         ),
         ")",
       ),
@@ -530,7 +533,7 @@ module.exports = grammar({
         $.block,
       ),
 
-    at_root_statement: ($) => seq("@at-root", $.selectors, $.block),
+    at_root_statement: ($) => seq("@at-root", optional($.selectors), $.block),
 
     error_statement: ($) => seq("@error", $._value, ";"),
 
@@ -1310,12 +1313,14 @@ module.exports = grammar({
       seq(
         token.immediate("("),
         choice(
-          // Only regular values, or…
-          sep(choice(",", ";"), $.argument),
           // one or more arguments followed by a rest argument, or…
           seq(sep1(choice(",", ";"), $.argument), ",", $.rest_argument),
-          // …a lone rest argument.
+          // …a lone rest argument, or…
           $.rest_argument,
+          // …regular values with optional trailing separator.
+          seq(sep1(choice(",", ";"), $.argument), optional(choice(",", ";"))),
+          // …empty argument list.
+          seq(),
         ),
         ")",
       ),
@@ -1356,17 +1361,8 @@ module.exports = grammar({
 
     comment: (_) => token(seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
 
-    // Single-line comment: matches // optionally followed by content.
-    // Does NOT match: /// (sassdoc marker), //// (sassdoc delimiter).
-    single_line_comment: (_) =>
-      token(choice(seq("//", /[^\/\n]/, /[^\n]*/), "//")),
-
-    // //// delimiter: a visual separator used in sassdoc sections.
-    // Parsed as a top-level item so it breaks sassdoc_block boundaries
-    // (not an extra, which would be consumed inside repeat1(sassdoc_line)).
-    // Also matches ///// and beyond.
-    // Visible node (no underscore prefix) so it can be targeted by highlight queries.
-    sassdoc_delimiter: (_) => token(seq("////", /[^\n]*/)),
+    // sassdoc_delimiter (////) and single_line_comment (//) are handled by the
+    // external scanner to prevent the internal lexer from partially consuming //.
 
     // A sassdoc block is one or more consecutive /// lines. It is a top-level
     // item that wraps individual sassdoc_line nodes. Neovim injects the entire

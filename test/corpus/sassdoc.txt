@@ -1,0 +1,336 @@
+=============================================
+Single-line comments with special characters
+=============================================
+
+// $var
+//$var
+// $ var
+
+---
+
+(stylesheet
+  (single_line_comment)
+  (single_line_comment)
+  (single_line_comment))
+
+=============================================
+Single-line comments with SCSS keywords
+=============================================
+
+// comment with @mixin keyword
+// comment with #color
+// comment with $variable and more text
+
+---
+
+(stylesheet
+  (single_line_comment)
+  (single_line_comment)
+  (single_line_comment))
+
+=============================================
+Sassdoc delimiters with sassdoc block
+=============================================
+
+////
+/// @package test
+////
+
+---
+
+(stylesheet
+  (sassdoc_delimiter)
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content)))
+  (sassdoc_delimiter))
+
+=============================================
+Sassdoc block followed by declaration
+=============================================
+
+/// A simple description
+$string: "World";
+
+---
+
+(stylesheet
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content)))
+  (declaration
+    (variable_name)
+    (string_value)))
+
+=============================================
+Consecutive sassdoc blocks separated by declarations
+=============================================
+
+/// @type Function
+$in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+
+/// @type Function
+$in-cubic: cubic-bezier(0.55, 0.55, 0.675, 0.19);
+
+---
+
+(stylesheet
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content)))
+  (declaration
+    (variable_name)
+    (call_expression
+      name: (function_name)
+      arguments: (arguments
+        (float_value)
+        (float_value)
+        (float_value)
+        (float_value))))
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content)))
+  (declaration
+    (variable_name)
+    (call_expression
+      name: (function_name)
+      arguments: (arguments
+        (float_value)
+        (float_value)
+        (float_value)
+        (float_value)))))
+
+=============================================
+Multi-line sassdoc block before mixin
+=============================================
+
+/// Applies text-overflow ellipsis.
+/// @group utilities
+/// @access public
+@mixin ellipsis() {
+    white-space: nowrap;
+}
+
+---
+
+(stylesheet
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content)))
+  (mixin_statement
+    (name)
+    (parameters)
+    (mixin_block
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Consecutive sassdoc blocks separated by mixins
+=============================================
+
+/// Hides the element from the DOM.
+/// @group utilities
+@mixin hide-default {
+    position: absolute;
+}
+
+/// Another sassdoc block after a mixin.
+/// @access public
+@mixin another {
+    display: none;
+}
+
+---
+
+(stylesheet
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content)))
+  (mixin_statement
+    (name)
+    (mixin_block
+      (declaration
+        (property_name)
+        (plain_value))))
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content)))
+  (mixin_statement
+    (name)
+    (mixin_block
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Sassdoc block before function
+=============================================
+
+/// Doc before function
+/// @param {String} $scheme
+/// @returns {Color}
+@function resolve-color($scheme, $fallback: black) {
+    @return $fallback;
+}
+
+---
+
+(stylesheet
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content))
+    (sassdoc_line
+      (sassdoc_content)))
+  (function_statement
+    (name)
+    (parameters
+      (parameter
+        (variable_name))
+      (parameter
+        (variable_name)
+        (default_value
+          (plain_value))))
+    (block
+      (return_statement
+        (variable_value)))))
+
+=============================================
+Mixed comments and sassdoc with declarations
+=============================================
+
+// $string: "Hello, World!";
+// This works fine....
+
+/// A simple string variable
+$string: "World";
+
+// ... comment after sassdoc + declaration
+
+---
+
+(stylesheet
+  (single_line_comment)
+  (single_line_comment)
+  (sassdoc_block
+    (sassdoc_line
+      (sassdoc_content)))
+  (declaration
+    (variable_name)
+    (string_value))
+  (single_line_comment))
+
+==============================
+Single-line comments
+==============================
+
+// https://awardwinningfjords.com/2010/04/09/example-scss-sassy-css-file.html
+
+html {
+  background: url(https://google.com);
+}
+
+---
+
+(stylesheet
+  (single_line_comment)
+  (rule_set
+    (selectors (tag_name))
+    (block
+      (declaration (property_name) (call_expression (function_name) (arguments (plain_value)))))))
+
+=============================================
+Triple-slash comments inside blocks
+=============================================
+
+.card {
+  /// A sassdoc comment
+  color: red;
+  /// Another comment
+  /// with continuation
+  background: blue;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_block
+        (sassdoc_line
+          (sassdoc_content)))
+      (declaration
+        (property_name)
+        (plain_value))
+      (sassdoc_block
+        (sassdoc_line
+          (sassdoc_content))
+        (sassdoc_line
+          (sassdoc_content)))
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Bare triple-slash comment inside blocks
+=============================================
+
+.card {
+  ///
+  color: red;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_block
+        (sassdoc_line))
+      (declaration
+        (property_name)
+        (plain_value)))))
+
+=============================================
+Sassdoc delimiters inside blocks
+=============================================
+
+.card {
+  //// Section delimiter
+  color: red;
+  ///// Five slashes
+  background: blue;
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors
+      (class_selector
+        (class_name)))
+    (block
+      (sassdoc_delimiter)
+      (declaration
+        (property_name)
+        (plain_value))
+      (sassdoc_delimiter)
+      (declaration
+        (property_name)
+        (plain_value)))))

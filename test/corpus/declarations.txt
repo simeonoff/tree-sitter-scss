@@ -33,6 +33,23 @@ a {
               (unit))
             (integer_value)))))))
 
+==========================
+Function calls (trailing comma)
+==========================
+
+$x: fn(1px, 2px,);
+
+---
+
+(stylesheet
+  (declaration
+    (variable_name)
+    (call_expression
+      (function_name)
+      (arguments
+        (integer_value (unit))
+        (integer_value (unit))))))
+
 =============================================
 Calls where each argument has multiple values
 =============================================
