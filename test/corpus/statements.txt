@@ -191,6 +191,25 @@ Keyframes statements with fractional percentages
     (keyframe_block (float_value (unit)) (block (declaration (property_name) (integer_value)))))))
 
 ==============================
+Keyframes statements with comma-separated selectors
+==============================
+
+@keyframes blink {
+  0%, 100% {
+    transform: scale(0.9);
+  }
+}
+
+---
+
+(stylesheet
+  (keyframes_statement (keyframes_name) (keyframe_block_list
+    (keyframe_block
+      (integer_value (unit))
+      (integer_value (unit))
+      (block (declaration (property_name) (call_expression (function_name) (arguments (float_value)))))))))
+
+==============================
 Media statements
 ==============================
 

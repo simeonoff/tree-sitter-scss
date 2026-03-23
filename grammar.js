@@ -167,7 +167,10 @@ module.exports = grammar({
       ),
 
     keyframe_block: ($) =>
-      seq(choice($.from, $.to, $.integer_value, $.float_value), $.block),
+      seq(
+        sep1(",", choice($.from, $.to, $.integer_value, $.float_value)),
+        $.block,
+      ),
 
     from: (_) => "from",
     to: (_) => "to",
