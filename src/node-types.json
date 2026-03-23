@@ -376,6 +376,10 @@
           "named": true
         },
         {
+          "type": "relative_selector",
+          "named": true
+        },
+        {
           "type": "rest_argument",
           "named": true
         },
@@ -6000,6 +6004,82 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "relative_selector",
+    "named": true,
+    "fields": {
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "adjacent_sibling_selector",
+            "named": true
+          },
+          {
+            "type": "attribute_selector",
+            "named": true
+          },
+          {
+            "type": "child_selector",
+            "named": true
+          },
+          {
+            "type": "class_selector",
+            "named": true
+          },
+          {
+            "type": "descendant_selector",
+            "named": true
+          },
+          {
+            "type": "id_selector",
+            "named": true
+          },
+          {
+            "type": "interpolation",
+            "named": true
+          },
+          {
+            "type": "namespace_selector",
+            "named": true
+          },
+          {
+            "type": "nesting_selector",
+            "named": true
+          },
+          {
+            "type": "placeholder_selector",
+            "named": true
+          },
+          {
+            "type": "pseudo_class_selector",
+            "named": true
+          },
+          {
+            "type": "pseudo_element_selector",
+            "named": true
+          },
+          {
+            "type": "sibling_selector",
+            "named": true
+          },
+          {
+            "type": "string_value",
+            "named": true
+          },
+          {
+            "type": "tag_name",
+            "named": true
+          },
+          {
+            "type": "universal_selector",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {

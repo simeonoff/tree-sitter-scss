@@ -61,6 +61,7 @@ module.exports = grammar({
     [$.if_expression, $.arguments],
     [$.selector_query, $.if_supports_condition],
     [$.nested_declaration, $.declaration],
+    [$.relative_selector, $.unary_expression],
   ],
 
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
@@ -763,10 +764,20 @@ module.exports = grammar({
 
     namespace_selector: ($) => prec.left(seq($._selector, "|", $._selector)),
 
+    // A relative selector starts with a combinator (>, +, ~) and no left operand.
+    // Used in :has(), :is(), :not(), :where() per Selectors Level 4.
+    // prec(3) on the `+` alternative beats unary_expression (prec 2) when
+    // the argument is a selector rather than a plain value.
+    relative_selector: ($) =>
+      choice(
+        seq(choice(">", "~"), field("right", $._selector)),
+        prec(3, seq("+", field("right", $._selector))),
+      ),
+
     pseudo_class_arguments: ($) =>
       seq(
         token.immediate("("),
-        sep(",", choice(prec.dynamic(1, $._selector), repeat1($._value))),
+        sep(",", choice(prec.dynamic(3, $.relative_selector), prec.dynamic(1, $._selector), prec.dynamic(0, repeat1($._value)))),
         ")",
       ),
 
