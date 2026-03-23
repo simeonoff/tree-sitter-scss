@@ -31,6 +31,12 @@ static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
 
+static inline void consume_line(TSLexer *lexer) {
+  while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
+    lexer->advance(lexer, false);
+  }
+}
+
 typedef struct {
   bool in_sassdoc_block;
 } Scanner;
@@ -216,9 +222,7 @@ static bool scan_for_slash_token(TSLexer *lexer, const bool *valid_symbols, bool
     if (lexer->lookahead == '/') {
       // //// or more → SASSDOC_DELIMITER
       if (!valid_symbols[SASSDOC_DELIMITER]) return false;
-      while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
-        lexer->advance(lexer, false);
-      }
+      consume_line(lexer);
       lexer->mark_end(lexer);
       lexer->result_symbol = SASSDOC_DELIMITER;
       return true;
@@ -235,9 +239,7 @@ static bool scan_for_slash_token(TSLexer *lexer, const bool *valid_symbols, bool
 
   // Exactly // → SINGLE_LINE_COMMENT
   if (!valid_symbols[SINGLE_LINE_COMMENT]) return false;
-  while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
-    lexer->advance(lexer, false);
-  }
+  consume_line(lexer);
   lexer->mark_end(lexer);
   lexer->result_symbol = SINGLE_LINE_COMMENT;
   return true;
@@ -253,52 +255,40 @@ static bool scan_for_sassdoc_content(TSLexer *lexer) {
   // If column is 0, the parser skipped a newline and we're on a new line.
   if (lexer->get_column(lexer) < 3) return false;
 
-  // Must have at least some content (not just newline/EOF).
   if (lexer->eof(lexer) || lexer->lookahead == '\n') return false;
 
-  lexer->mark_end(lexer);
-
-  // Consume everything up to newline or EOF.
-  while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
-    lexer->advance(lexer, false);
-  }
-
+  consume_line(lexer);
   lexer->mark_end(lexer);
   lexer->result_symbol = SASSDOC_CONTENT;
   return true;
 }
 
 bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+  Scanner *s = (Scanner *)payload;
+
   PRINTF(
-    "SCAN character: [%c] col:%i validity: %i, %i, %i, %i, %i, %i, %i, %i, %i, sdm:%i, sdc:%i\n",
-    lexer->lookahead,
-    lexer->get_column(lexer),
-    valid_symbols[DESCENDANT_OP],
-    valid_symbols[PSEUDO_CLASS_SELECTOR_COLON],
-    valid_symbols[NO_WHITESPACE],
-    valid_symbols[SINGLE_QUOTED_STRING_SEGMENT],
-    valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT],
-    valid_symbols[APPLY_VALUE],
-    valid_symbols[VARIABLE_WITH_REST],
-    valid_symbols[VARIABLE_WITHOUT_REST],
-    valid_symbols[ERROR_SENTINEL],
-    valid_symbols[SASSDOC_MARKER],
-    valid_symbols[SASSDOC_CONTENT]
+    "SCAN [%c] col:%i valid: desc:%i pseudo:%i nows:%i sq:%i dq:%i apply:%i "
+    "vrest:%i var:%i err:%i sdm:%i sdc:%i sdd:%i slc:%i\n",
+    lexer->lookahead, lexer->get_column(lexer),
+    valid_symbols[DESCENDANT_OP], valid_symbols[PSEUDO_CLASS_SELECTOR_COLON],
+    valid_symbols[NO_WHITESPACE], valid_symbols[SINGLE_QUOTED_STRING_SEGMENT],
+    valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT], valid_symbols[APPLY_VALUE],
+    valid_symbols[VARIABLE_WITH_REST], valid_symbols[VARIABLE_WITHOUT_REST],
+    valid_symbols[ERROR_SENTINEL], valid_symbols[SASSDOC_MARKER],
+    valid_symbols[SASSDOC_CONTENT], valid_symbols[SASSDOC_DELIMITER],
+    valid_symbols[SINGLE_LINE_COMMENT]
   );
 
-  // SASSDOC_CONTENT is only valid right after a SASSDOC_MARKER (inside a
-  // sassdoc_line). If it's not valid, we've left the sassdoc context.
+  // SASSDOC_CONTENT is only valid right after a SASSDOC_MARKER. Reset
+  // sassdoc block state whenever we've left that context.
   if (!valid_symbols[SASSDOC_CONTENT]) {
-    Scanner *s = (Scanner *)payload;
     s->in_sassdoc_block = false;
   }
-
 
   // Handle //-based tokens before anything else touches `/`.
   // Skip whitespace to reach `//`, but not when DESCENDANT_OP needs it.
   if (valid_symbols[SINGLE_LINE_COMMENT] || valid_symbols[SASSDOC_DELIMITER] ||
       valid_symbols[SASSDOC_MARKER]) {
-    Scanner *s = (Scanner *)payload;
     int newline_count = 0;
 
     if (!valid_symbols[DESCENDANT_OP]) {
