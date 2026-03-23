@@ -60,6 +60,7 @@ module.exports = grammar({
     [$.container_statement, $._identifier_with_interpolation],
     [$.if_expression, $.arguments],
     [$.selector_query, $.if_supports_condition],
+    [$.nested_declaration, $.declaration],
   ],
 
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
@@ -555,8 +556,19 @@ module.exports = grammar({
         "}",
       ),
 
+    // SCSS nested property declaration: `border: { style: solid; }`
+    // or with a value: `margin: auto { bottom: 10px; }`
+    nested_declaration: ($) =>
+      seq(
+        alias($._identifier_with_interpolation, $.property_name),
+        ":",
+        repeat($._value),
+        $.block,
+      ),
+
     _block_item: ($) =>
       choice(
+        $.nested_declaration,
         $.declaration,
         $.rule_set,
         $.import_statement,

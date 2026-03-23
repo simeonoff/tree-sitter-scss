@@ -1323,6 +1323,10 @@
           "named": true
         },
         {
+          "type": "nested_declaration",
+          "named": true
+        },
+        {
           "type": "page_statement",
           "named": true
         },
@@ -4956,6 +4960,10 @@
           "named": true
         },
         {
+          "type": "nested_declaration",
+          "named": true
+        },
+        {
           "type": "page_statement",
           "named": true
         },
@@ -5251,6 +5259,101 @@
         },
         {
           "type": "string_value",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "nested_declaration",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "attr_expression",
+          "named": true
+        },
+        {
+          "type": "binary_expression",
+          "named": true
+        },
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "boolean_value",
+          "named": true
+        },
+        {
+          "type": "call_expression",
+          "named": true
+        },
+        {
+          "type": "color_value",
+          "named": true
+        },
+        {
+          "type": "float_value",
+          "named": true
+        },
+        {
+          "type": "grid_value",
+          "named": true
+        },
+        {
+          "type": "if_expression",
+          "named": true
+        },
+        {
+          "type": "integer_value",
+          "named": true
+        },
+        {
+          "type": "list_value",
+          "named": true
+        },
+        {
+          "type": "map_value",
+          "named": true
+        },
+        {
+          "type": "nesting_value",
+          "named": true
+        },
+        {
+          "type": "null_value",
+          "named": true
+        },
+        {
+          "type": "parenthesized_value",
+          "named": true
+        },
+        {
+          "type": "plain_value",
+          "named": true
+        },
+        {
+          "type": "property_name",
+          "named": true
+        },
+        {
+          "type": "string_value",
+          "named": true
+        },
+        {
+          "type": "unary_expression",
+          "named": true
+        },
+        {
+          "type": "variable_module",
+          "named": true
+        },
+        {
+          "type": "variable_value",
           "named": true
         }
       ]

@@ -1600,3 +1600,50 @@ a {
             (keyword))
           fallback: (attr_fallback
             (integer_value)))))))
+
+=============================================
+Nested property declarations (namespace only)
+=============================================
+
+.test {
+  border: {
+    style: solid;
+    width: 1px;
+  }
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors (class_selector (class_name)))
+    (block
+      (nested_declaration
+        (property_name)
+        (block
+          (declaration (property_name) (plain_value))
+          (declaration (property_name) (integer_value (unit))))))))
+
+=============================================
+Nested property declarations (with value)
+=============================================
+
+.info-page {
+  margin: auto {
+    bottom: 10px;
+    top: 2px;
+  }
+}
+
+---
+
+(stylesheet
+  (rule_set
+    (selectors (class_selector (class_name)))
+    (block
+      (nested_declaration
+        (property_name)
+        (plain_value)
+        (block
+          (declaration (property_name) (integer_value (unit)))
+          (declaration (property_name) (integer_value (unit))))))))

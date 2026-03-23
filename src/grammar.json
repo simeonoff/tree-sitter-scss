@@ -2783,9 +2783,42 @@
         }
       ]
     },
+    "nested_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_identifier_with_interpolation"
+          },
+          "named": true,
+          "value": "property_name"
+        },
+        {
+          "type": "STRING",
+          "value": ":"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_value"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "block"
+        }
+      ]
+    },
     "_block_item": {
       "type": "CHOICE",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "nested_declaration"
+        },
         {
           "type": "SYMBOL",
           "name": "declaration"
@@ -7243,6 +7276,10 @@
     [
       "selector_query",
       "if_supports_condition"
+    ],
+    [
+      "nested_declaration",
+      "declaration"
     ]
   ],
   "precedences": [],
