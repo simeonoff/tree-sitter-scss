@@ -287,8 +287,11 @@ bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const
 
   // Handle //-based tokens before anything else touches `/`.
   // Skip whitespace to reach `//`, but not when DESCENDANT_OP needs it.
-  if (valid_symbols[SINGLE_LINE_COMMENT] || valid_symbols[SASSDOC_DELIMITER] ||
-      valid_symbols[SASSDOC_MARKER]) {
+  // Never fire inside a string — slashes there belong to the string scanner.
+  if ((valid_symbols[SINGLE_LINE_COMMENT] || valid_symbols[SASSDOC_DELIMITER] ||
+       valid_symbols[SASSDOC_MARKER]) &&
+      !valid_symbols[SINGLE_QUOTED_STRING_SEGMENT] &&
+      !valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT]) {
     int newline_count = 0;
 
     if (!valid_symbols[DESCENDANT_OP]) {
