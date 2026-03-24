@@ -259,12 +259,10 @@ module.exports = grammar({
       seq(
         "(",
         choice(
-          // Only regular parameters, or…
-          sep(",", $.parameter),
-          // …one or more parameters followed by a rest parameter, or…
           seq(sep1(",", $.parameter), ",", $.rest_parameter),
-          // …a lone rest parameter.
           $.rest_parameter,
+          seq(sep1(",", $.parameter), optional(",")),
+          seq(),
         ),
         ")",
       ),

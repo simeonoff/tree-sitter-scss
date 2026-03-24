@@ -712,6 +712,31 @@ Mixins with arguments
         (plain_value)))))
 
 =================================
+Mixins with trailing comma in parameters
+=================================
+
+@mixin foo($a, $b: red,) {
+  color: $a;
+}
+
+---
+
+(stylesheet
+  (mixin_statement
+    (name)
+    (parameters
+      (parameter
+        (variable_name))
+      (parameter
+        (variable_name)
+        (default_value
+          (plain_value))))
+    (mixin_block
+      (declaration
+        (property_name)
+        (variable_value)))))
+
+=================================
 Mixins with interpolations and content
 =================================
 
