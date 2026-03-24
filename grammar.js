@@ -51,6 +51,8 @@ module.exports = grammar({
     $._error_sentinel,
     $._sassdoc_marker,
     $.sassdoc_content,
+    $.sassdoc_delimiter,
+    $.single_line_comment,
   ],
 
   conflicts: ($) => [
@@ -58,6 +60,8 @@ module.exports = grammar({
     [$.container_statement, $._identifier_with_interpolation],
     [$.if_expression, $.arguments],
     [$.selector_query, $.if_supports_condition],
+    [$.nested_declaration, $.declaration],
+    [$.relative_selector, $.unary_expression],
   ],
 
   inline: ($) => [$._top_level_item, $._block_item, $.argument],
@@ -163,7 +167,11 @@ module.exports = grammar({
         "}",
       ),
 
-    keyframe_block: ($) => seq(choice($.from, $.to, $.integer_value), $.block),
+    keyframe_block: ($) =>
+      seq(
+        sep1(",", choice($.from, $.to, $.integer_value, $.float_value)),
+        $.block,
+      ),
 
     from: (_) => "from",
     to: (_) => "to",
@@ -251,12 +259,10 @@ module.exports = grammar({
       seq(
         "(",
         choice(
-          // Only regular parameters, or…
-          sep(",", $.parameter),
-          // …one or more parameters followed by a rest parameter, or…
           seq(sep1(",", $.parameter), ",", $.rest_parameter),
-          // …a lone rest parameter.
           $.rest_parameter,
+          seq(sep1(",", $.parameter), optional(",")),
+          seq(),
         ),
         ")",
       ),
@@ -288,12 +294,20 @@ module.exports = grammar({
         optional($.default),
       ),
 
+    mixin_block: ($) =>
+      seq(
+        "{",
+        repeat(choice($._block_item, $.keyframe_block, ";")),
+        optional(alias($.last_declaration, $.declaration)),
+        "}",
+      ),
+
     mixin_statement: ($) =>
       seq(
         "@mixin",
         alias($._identifier, $.name),
         optional($.parameters),
-        $.block,
+        $.mixin_block,
       ),
 
     include_statement: ($) =>
@@ -308,13 +322,22 @@ module.exports = grammar({
         ),
         alias($._identifier, $.mixin_name),
         optional(alias($.include_arguments, $.arguments)),
-        choice($.block, ";"),
+        choice($.mixin_block, ";"),
       ),
 
     include_arguments: ($) =>
       seq(
         token.immediate("("),
-        sep(",", alias($.include_argument, $.argument)),
+        choice(
+          seq(
+            sep1(",", alias($.include_argument, $.argument)),
+            ",",
+            $.rest_argument,
+          ),
+          $.rest_argument,
+          seq(sep1(",", alias($.include_argument, $.argument)), optional(",")),
+          seq(),
+        ),
         ")",
       ),
 
@@ -358,8 +381,10 @@ module.exports = grammar({
         alias($._variable_identifier, $.variable_name),
         "from",
         alias($._value, $.from),
-        "through",
-        alias($._value, $.through),
+        choice(
+          seq("to", alias($._value, $.to)),
+          seq("through", alias($._value, $.through)),
+        ),
         $.block,
       ),
 
@@ -511,7 +536,7 @@ module.exports = grammar({
         $.block,
       ),
 
-    at_root_statement: ($) => seq("@at-root", $.selectors, $.block),
+    at_root_statement: ($) => seq("@at-root", optional($.selectors), $.block),
 
     error_statement: ($) => seq("@error", $._value, ";"),
 
@@ -533,8 +558,19 @@ module.exports = grammar({
         "}",
       ),
 
+    // SCSS nested property declaration: `border: { style: solid; }`
+    // or with a value: `margin: auto { bottom: 10px; }`
+    nested_declaration: ($) =>
+      seq(
+        alias($._identifier_with_interpolation, $.property_name),
+        ":",
+        repeat($._value),
+        $.block,
+      ),
+
     _block_item: ($) =>
       choice(
+        $.nested_declaration,
         $.declaration,
         $.rule_set,
         $.import_statement,
@@ -726,10 +762,20 @@ module.exports = grammar({
 
     namespace_selector: ($) => prec.left(seq($._selector, "|", $._selector)),
 
+    // A relative selector starts with a combinator (>, +, ~) and no left operand.
+    // Used in :has(), :is(), :not(), :where() per Selectors Level 4.
+    // prec(3) on the `+` alternative beats unary_expression (prec 2) when
+    // the argument is a selector rather than a plain value.
+    relative_selector: ($) =>
+      choice(
+        seq(choice(">", "~"), field("right", $._selector)),
+        prec(3, seq("+", field("right", $._selector))),
+      ),
+
     pseudo_class_arguments: ($) =>
       seq(
         token.immediate("("),
-        sep(",", choice(prec.dynamic(1, $._selector), repeat1($._value))),
+        sep(",", choice(prec.dynamic(3, $.relative_selector), prec.dynamic(1, $._selector), prec.dynamic(0, repeat1($._value)))),
         ")",
       ),
 
@@ -970,10 +1016,17 @@ module.exports = grammar({
     boolean_value: (_) => choice("true", "false"),
     null_value: (_) => "null",
 
-    parenthesized_value: ($) => seq("(", $._value, ")"),
+    parenthesized_value: ($) => seq("(", repeat1($._value), ")"),
 
     list_value: ($) =>
-      seq("(", $._value, ",", sep(",", $._value), optional(","), ")"),
+      seq(
+        "(",
+        repeat1($._value),
+        ",",
+        sep(",", repeat1($._value)),
+        optional(","),
+        ")",
+      ),
 
     map_value: ($) => seq("(", sep(",", $.map_pair), optional(","), ")"),
 
@@ -1284,12 +1337,14 @@ module.exports = grammar({
       seq(
         token.immediate("("),
         choice(
-          // Only regular values, or…
-          sep(choice(",", ";"), $.argument),
           // one or more arguments followed by a rest argument, or…
           seq(sep1(choice(",", ";"), $.argument), ",", $.rest_argument),
-          // …a lone rest argument.
+          // …a lone rest argument, or…
           $.rest_argument,
+          // …regular values with optional trailing separator.
+          seq(sep1(choice(",", ";"), $.argument), optional(choice(",", ";"))),
+          // …empty argument list.
+          seq(),
         ),
         ")",
       ),
@@ -1330,17 +1385,8 @@ module.exports = grammar({
 
     comment: (_) => token(seq("/*", /[^*]*\*+([^/*][^*]*\*+)*/, "/")),
 
-    // Single-line comment: matches // optionally followed by content.
-    // Does NOT match: /// (sassdoc marker), //// (sassdoc delimiter).
-    single_line_comment: (_) =>
-      token(choice(seq("//", /[^\/\n]/, /[^\n]*/), "//")),
-
-    // //// delimiter: a visual separator used in sassdoc sections.
-    // Parsed as a top-level item so it breaks sassdoc_block boundaries
-    // (not an extra, which would be consumed inside repeat1(sassdoc_line)).
-    // Also matches ///// and beyond.
-    // Visible node (no underscore prefix) so it can be targeted by highlight queries.
-    sassdoc_delimiter: (_) => token(seq("////", /[^\n]*/)),
+    // sassdoc_delimiter (////) and single_line_comment (//) are handled by the
+    // external scanner to prevent the internal lexer from partially consuming //.
 
     // A sassdoc block is one or more consecutive /// lines. It is a top-level
     // item that wraps individual sassdoc_line nodes. Neovim injects the entire
@@ -1360,8 +1406,8 @@ module.exports = grammar({
     interpolation: ($) =>
       seq(
         "#{",
-        choice($._value, $._expression),
-        repeat(seq(",", choice($._value, $._expression))),
+        repeat1(choice($._value, $._expression)),
+        repeat(seq(",", repeat1(choice($._value, $._expression)))),
         "}",
       ),
 

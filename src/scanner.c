@@ -22,12 +22,20 @@ typedef enum TokenType {
   VARIABLE_WITH_REST,
   ERROR_SENTINEL,
   SASSDOC_MARKER,
-  SASSDOC_CONTENT
+  SASSDOC_CONTENT,
+  SASSDOC_DELIMITER,
+  SINGLE_LINE_COMMENT
 } TokenType;
 
 static inline void advance(TSLexer *lexer) { lexer->advance(lexer, false); }
 
 static inline void skip(TSLexer *lexer) { lexer->advance(lexer, true); }
+
+static inline void consume_line(TSLexer *lexer) {
+  while (lexer->lookahead != '\n' && !lexer->eof(lexer)) {
+    lexer->advance(lexer, false);
+  }
+}
 
 typedef struct {
   bool in_sassdoc_block;
@@ -200,46 +208,40 @@ static bool scan_for_variable(TSLexer *lexer, const bool *valid_symbols) {
   }
 }
 
-// Scan for the /// marker that starts a sassdoc line.
-// Matches exactly /// (not //// or more).
-// Skips leading whitespace (including newlines) so that repeat1(sassdoc_line)
-// can match consecutive lines across newline boundaries.
-//
-// Block-breaking: when already inside a sassdoc_block (in_block is true),
-// refuses to match if a blank line (2+ newlines) was encountered while
-// skipping whitespace. This causes repeat1(sassdoc_line) to end, splitting
-// separate documentation sections into distinct sassdoc_block nodes.
-// When starting a new block (in_block is false), blank lines are allowed.
-static bool scan_for_sassdoc_marker(TSLexer *lexer, bool in_block) {
-  int newline_count = 0;
+// Dispatch //-based tokens: //// → SASSDOC_DELIMITER, /// → SASSDOC_MARKER,
+// // → SINGLE_LINE_COMMENT. Must run before the internal lexer can partially
+// consume `//` and leave the lexer in a broken state.
+static bool scan_for_slash_token(TSLexer *lexer, const bool *valid_symbols, bool allow_sassdoc_marker) {
+  if (lexer->lookahead != '/') return false;
+  lexer->advance(lexer, false);
+  if (lexer->lookahead != '/') return false;
+  lexer->advance(lexer, false);
 
-  // Skip whitespace, counting newlines to detect blank lines.
-  while (iswspace(lexer->lookahead)) {
-    if (lexer->eof(lexer)) return false;
-    if (lexer->lookahead == '\n') newline_count++;
-    lexer->advance(lexer, true);
+  if (lexer->lookahead == '/') {
+    lexer->advance(lexer, false);
+    if (lexer->lookahead == '/') {
+      // //// or more → SASSDOC_DELIMITER
+      if (!valid_symbols[SASSDOC_DELIMITER]) return false;
+      consume_line(lexer);
+      lexer->mark_end(lexer);
+      lexer->result_symbol = SASSDOC_DELIMITER;
+      return true;
+    }
+    // Exactly /// → SASSDOC_MARKER (prefix only; content is separate)
+    if (allow_sassdoc_marker && valid_symbols[SASSDOC_MARKER]) {
+      lexer->mark_end(lexer);
+      lexer->result_symbol = SASSDOC_MARKER;
+      return true;
+    }
+    // /// not valid here; bail without consuming.
+    return false;
   }
 
-  // A blank line (2+ newlines) breaks the sassdoc block,
-  // but only when continuing an existing block.
-  if (in_block && newline_count >= 2) return false;
-
-  if (lexer->lookahead != '/') return false;
-
-  // Mark the start of our token.
+  // Exactly // → SINGLE_LINE_COMMENT
+  if (!valid_symbols[SINGLE_LINE_COMMENT]) return false;
+  consume_line(lexer);
   lexer->mark_end(lexer);
-
-  lexer->advance(lexer, false);
-  if (lexer->lookahead != '/') return false;
-  lexer->advance(lexer, false);
-  if (lexer->lookahead != '/') return false;
-  lexer->advance(lexer, false);
-
-  // If the next char is '/', this is //// or more — not a sassdoc marker.
-  if (lexer->lookahead == '/') return false;
-
-  lexer->mark_end(lexer);
-  lexer->result_symbol = SASSDOC_MARKER;
+  lexer->result_symbol = SINGLE_LINE_COMMENT;
   return true;
 }
 
@@ -253,57 +255,66 @@ static bool scan_for_sassdoc_content(TSLexer *lexer) {
   // If column is 0, the parser skipped a newline and we're on a new line.
   if (lexer->get_column(lexer) < 3) return false;
 
-  // Must have at least some content (not just newline/EOF).
   if (lexer->eof(lexer) || lexer->lookahead == '\n') return false;
 
-  lexer->mark_end(lexer);
-
-  // Consume everything up to newline or EOF.
-  while (!lexer->eof(lexer) && lexer->lookahead != '\n') {
-    lexer->advance(lexer, false);
-  }
-
+  consume_line(lexer);
   lexer->mark_end(lexer);
   lexer->result_symbol = SASSDOC_CONTENT;
   return true;
 }
 
 bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
+  Scanner *s = (Scanner *)payload;
+
   PRINTF(
-    "SCAN character: [%c] col:%i validity: %i, %i, %i, %i, %i, %i, %i, %i, %i, sdm:%i, sdc:%i\n",
-    lexer->lookahead,
-    lexer->get_column(lexer),
-    valid_symbols[DESCENDANT_OP],
-    valid_symbols[PSEUDO_CLASS_SELECTOR_COLON],
-    valid_symbols[NO_WHITESPACE],
-    valid_symbols[SINGLE_QUOTED_STRING_SEGMENT],
-    valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT],
-    valid_symbols[APPLY_VALUE],
-    valid_symbols[VARIABLE_WITH_REST],
-    valid_symbols[VARIABLE_WITHOUT_REST],
-    valid_symbols[ERROR_SENTINEL],
-    valid_symbols[SASSDOC_MARKER],
-    valid_symbols[SASSDOC_CONTENT]
+    "SCAN [%c] col:%i valid: desc:%i pseudo:%i nows:%i sq:%i dq:%i apply:%i "
+    "vrest:%i var:%i err:%i sdm:%i sdc:%i sdd:%i slc:%i\n",
+    lexer->lookahead, lexer->get_column(lexer),
+    valid_symbols[DESCENDANT_OP], valid_symbols[PSEUDO_CLASS_SELECTOR_COLON],
+    valid_symbols[NO_WHITESPACE], valid_symbols[SINGLE_QUOTED_STRING_SEGMENT],
+    valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT], valid_symbols[APPLY_VALUE],
+    valid_symbols[VARIABLE_WITH_REST], valid_symbols[VARIABLE_WITHOUT_REST],
+    valid_symbols[ERROR_SENTINEL], valid_symbols[SASSDOC_MARKER],
+    valid_symbols[SASSDOC_CONTENT], valid_symbols[SASSDOC_DELIMITER],
+    valid_symbols[SINGLE_LINE_COMMENT]
   );
 
-  // Check for sassdoc marker (///) FIRST, even during error recovery.
-  // The scanner skips leading whitespace so that repeat1(sassdoc_line)
-  // can consume consecutive lines across newline boundaries.
-  if (valid_symbols[SASSDOC_MARKER] &&
-      (lexer->lookahead == '/' || iswspace(lexer->lookahead))) {
-    Scanner *s = (Scanner *)payload;
-    PRINTF("SASSDOC_MARKER is valid, trying scan at col %i, in_block: %i\n",
-           lexer->get_column(lexer), s->in_sassdoc_block);
-    bool result = scan_for_sassdoc_marker(lexer, s->in_sassdoc_block);
-    PRINTF("SASSDOC_MARKER scan result: %i\n", result);
-    if (result) {
-      // After matching, we're inside a block. Reset happens when
-      // the scanner fails to match (block ends) or on deserialize.
-      s->in_sassdoc_block = true;
-      return true;
-    }
-    // Match failed — if we were in a block, the block just ended.
+  // SASSDOC_CONTENT is only valid right after a SASSDOC_MARKER. Reset
+  // sassdoc block state whenever we've left that context.
+  if (!valid_symbols[SASSDOC_CONTENT]) {
     s->in_sassdoc_block = false;
+  }
+
+  // Handle //-based tokens before anything else touches `/`.
+  // Skip whitespace to reach `//`, but not when DESCENDANT_OP needs it.
+  // Never fire inside a string — slashes there belong to the string scanner.
+  if ((valid_symbols[SINGLE_LINE_COMMENT] || valid_symbols[SASSDOC_DELIMITER] ||
+       valid_symbols[SASSDOC_MARKER]) &&
+      !valid_symbols[SINGLE_QUOTED_STRING_SEGMENT] &&
+      !valid_symbols[DOUBLE_QUOTED_STRING_SEGMENT]) {
+    int newline_count = 0;
+
+    if (!valid_symbols[DESCENDANT_OP]) {
+      while (iswspace(lexer->lookahead)) {
+        if (lexer->eof(lexer)) break;
+        if (lexer->lookahead == '\n') newline_count++;
+        lexer->advance(lexer, true);
+      }
+    }
+
+    // A blank line (2+ newlines) breaks a sassdoc block.
+    if (valid_symbols[SASSDOC_MARKER] && s->in_sassdoc_block && newline_count >= 2) {
+      s->in_sassdoc_block = false;
+      return false;
+    }
+
+    if (lexer->lookahead == '/') {
+      if (scan_for_slash_token(lexer, valid_symbols, true)) {
+        s->in_sassdoc_block = (lexer->result_symbol == SASSDOC_MARKER);
+        return true;
+      }
+      s->in_sassdoc_block = false;
+    }
   }
 
   // We might want more nuanced behavior here in the future, but for now we'll
@@ -377,9 +388,19 @@ bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const
         return false;
       }
       lexer->mark_end(lexer);
-      // If we reach a `{` first, we're in a selector. If we reach a `;` first
-      // We need a `{` to be a pseudo class selector; `;` indicates a property.
+      // Scan ahead: `{` means selector, `;`/`}` means property declaration.
+      // Skip string contents so `;` inside `[attr="val;"]` doesn't fool us.
       while (lexer->lookahead != ';' && lexer->lookahead != '}' && !lexer->eof(lexer)) {
+        if (lexer->lookahead == '"' || lexer->lookahead == '\'') {
+          char quote = lexer->lookahead;
+          advance(lexer);
+          while (!lexer->eof(lexer) && lexer->lookahead != quote) {
+            if (lexer->lookahead == '\\') advance(lexer); // skip escaped char
+            advance(lexer);
+          }
+          if (!lexer->eof(lexer)) advance(lexer); // closing quote
+          continue;
+        }
         advance(lexer);
         if (lexer->lookahead == '{') {
           lexer->result_symbol = PSEUDO_CLASS_SELECTOR_COLON;
