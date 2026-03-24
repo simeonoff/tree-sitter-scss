@@ -388,9 +388,19 @@ bool tree_sitter_scss_external_scanner_scan(void *payload, TSLexer *lexer, const
         return false;
       }
       lexer->mark_end(lexer);
-      // If we reach a `{` first, we're in a selector. If we reach a `;` first
-      // We need a `{` to be a pseudo class selector; `;` indicates a property.
+      // Scan ahead: `{` means selector, `;`/`}` means property declaration.
+      // Skip string contents so `;` inside `[attr="val;"]` doesn't fool us.
       while (lexer->lookahead != ';' && lexer->lookahead != '}' && !lexer->eof(lexer)) {
+        if (lexer->lookahead == '"' || lexer->lookahead == '\'') {
+          char quote = lexer->lookahead;
+          advance(lexer);
+          while (!lexer->eof(lexer) && lexer->lookahead != quote) {
+            if (lexer->lookahead == '\\') advance(lexer); // skip escaped char
+            advance(lexer);
+          }
+          if (!lexer->eof(lexer)) advance(lexer); // closing quote
+          continue;
+        }
         advance(lexer);
         if (lexer->lookahead == '{') {
           lexer->result_symbol = PSEUDO_CLASS_SELECTOR_COLON;
