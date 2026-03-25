@@ -1,25 +1,21 @@
-; CSS base indentation
+; Block indentation (CSS & SCSS constructs using { })
+(block) @indent.begin
+(block "}" @indent.branch @indent.dedent)
+
+; Mixin blocks (used by @mixin and @include)
+(mixin_block) @indent.begin
+(mixin_block "}" @indent.branch @indent.dedent)
+
+; Parenthesized groups (maps, lists, arguments)
 [
-  (block)
-  (declaration)
+  (map_value)
+  (list_value)
+  (parameters)
+  (arguments)
 ] @indent.begin
-
-(block
-  "}" @indent.branch)
-
-"}" @indent.dedent
+(map_value ")" @indent.end)
+(list_value ")" @indent.end)
+(parameters ")" @indent.end)
+(arguments ")" @indent.end)
 
 (comment) @indent.ignore
-
-; SCSS-specific indentation
-[
-  (mixin_statement)
-  (function_statement)
-  (if_clause)
-  (else_if_clause)
-  (else_clause)
-  (each_statement)
-  (for_statement)
-  (while_statement)
-  (include_statement)
-] @indent.begin
